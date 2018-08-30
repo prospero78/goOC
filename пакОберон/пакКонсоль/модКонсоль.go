@@ -12,6 +12,6 @@ import (
 type ТуКонсоль struct {
 }
 
-func (сам ТуКонсоль) Печать(пСбщ string) {
+func (сам *ТуКонсоль) Печать(пСбщ string) {
 	fmt.Println(пСбщ)
 }
