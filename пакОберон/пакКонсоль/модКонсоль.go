@@ -34,6 +34,17 @@ func (сам *ТуКонсоль) Ошибка(пСбщ string) {
 	fmt.Println(пСбщ + " !!")
 }
 
+// Печатает шапку в консоли
+func (сам *ТуКонсоль) Шапка_Печать() {
+	fmt.Println()
+	fmt.Println("\t+-----------------------------+")
+	fmt.Println("\t|   Компилятор Oberon-07      |")
+	fmt.Println("\t|KBK Techniks ltd. 2018 BSD-2 |")
+	fmt.Println("\t|2018-09-25 14:18 Сборка 0071 |")
+	fmt.Println("\t+-----------------------------+")
+	fmt.Println()
+}
+
 func init() {
 	Конс = new(ТуКонсоль)
 }
