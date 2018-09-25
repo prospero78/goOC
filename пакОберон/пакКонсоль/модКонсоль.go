@@ -6,6 +6,7 @@ package пакКонсоль
 */
 
 import (
+	пакРес "../пакРесурс"
 	"fmt"
 )
 
@@ -39,8 +40,8 @@ func (сам *ТуКонсоль) Шапка_Печать() {
 	fmt.Println()
 	fmt.Println("\t+-----------------------------+")
 	fmt.Println("\t|   Компилятор Oberon-07      |")
-	fmt.Println("\t|KBK Techniks ltd. 2018 BSD-2 |")
-	fmt.Println("\t|2018-09-25 14:18 Сборка 0071 |")
+	fmt.Println("\t|KBK Techniks ltd. " + пакРес.Год + " BSD-2 |")
+	fmt.Println("\t|" + пакРес.Дата + " " + пакРес.Время + " Сборка " + пакРес.Сборка + " |")
 	fmt.Println("\t+-----------------------------+")
 	fmt.Println()
 }
