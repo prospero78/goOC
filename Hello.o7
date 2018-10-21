@@ -2,7 +2,7 @@
 (* это комментарий можно пропустить.
 	(* а это вообще вложенный комментарий *)   *)
 
-IMPORT Test,
+ИМПОРТ Test,
 	mTask := pakSys.modTask,
 	мЧт := modAss, mTs := pakJob.modTask,
 	Constante;
