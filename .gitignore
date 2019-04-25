@@ -2,3 +2,4 @@
 *.geany
 *.debug.exe
 /debug
+/main.exe
