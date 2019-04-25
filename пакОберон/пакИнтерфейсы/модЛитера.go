@@ -14,6 +14,7 @@ type СЛит string
 type ИЛит interface {
 	ЕслиБуква() bool
 	ЕслиЦифра() bool
+	ЕслиЗнаки()bool
 	Уст(СЛит) error
 	Лит() СЛит
 }
