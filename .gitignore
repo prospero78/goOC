@@ -3,3 +3,4 @@
 *.debug.exe
 /debug
 /main.exe
+*.torrent
