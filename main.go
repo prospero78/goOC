@@ -6,7 +6,7 @@ package main
 */
 
 import (
-	мОбер "./пакОберон"
+	мОбер "github.com/prospero78/goOC/пакОберон"
 	мЛог "log"
 	//мФмт "fmt"
 )

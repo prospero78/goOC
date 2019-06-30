@@ -5,7 +5,7 @@ package пакСлово
 */
 
 import (
-	мИнт "../пакИнтерфейсы"
+	мИнт "github.com/prospero78/goOC/пакОберон/пакИнтерфейсы"
 	//мТест "testing"
 )
 

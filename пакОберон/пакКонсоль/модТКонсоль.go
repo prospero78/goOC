@@ -5,7 +5,7 @@ package пакКонсоль
 */
 
 import (
-	мРес "../пакРесурс"
+	мРес "github.com/prospero78/goOC/пакОберон/пакРесурс"
 	мЛог "log"
 )
 

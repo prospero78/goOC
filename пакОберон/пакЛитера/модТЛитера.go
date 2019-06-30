@@ -5,8 +5,8 @@ package пакЛитера
 */
 
 import (
-	мИнт "../пакИнтерфейсы"
 	мФмт "fmt"
+	мИнт "github.com/prospero78/goOC/пакОберон/пакИнтерфейсы"
 	мСтр "strings"
 )
 
