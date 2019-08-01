@@ -8,12 +8,19 @@ package пакСканер
 
 import (
 	мФмт "fmt"
+
 	мИнт "github.com/prospero78/goOC/пакОберон/пакИнтерфейсы"
 	мИсх "github.com/prospero78/goOC/пакОберон/пакИсходник"
 	мКонс "github.com/prospero78/goOC/пакОберон/пакКонсоль"
 	мКонст "github.com/prospero78/goOC/пакОберон/пакКонстанта"
 	мОш "github.com/prospero78/goOC/пакОберон/пакОшибка"
 )
+
+//ИСканер -- интерфейс сканера
+type ИСканер interface {
+	Обработать(СИсхФайл) error
+	Слова() map[ССловоНомерМодуль]ИСлово
+}
 
 //ТСканер -- тип распознаёт слова в исходнике
 type ТСканер struct {
