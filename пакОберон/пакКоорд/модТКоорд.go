@@ -8,8 +8,8 @@ package пакКоорд
 import (
 	мФмт "fmt"
 
-	мСн "github.com/prospero78/goOC/пакОберон/пакСтрНомер"
-	мСп "github.com/prospero78/goOC/пакОберон/пакСтрПоз"
+	мСн "../пакСтрНомер"
+	мСп "../пакСтрПоз"
 	мСинх "sync"
 )
 

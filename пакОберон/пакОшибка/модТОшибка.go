@@ -8,8 +8,8 @@ package пакОшибка
 */
 
 import (
+	мКонс "../пакКонсоль"
 	мФмт "fmt"
-	мКонс "github.com/prospero78/goOC/пакОберон/пакКонсоль"
 	"os"
 )
 
