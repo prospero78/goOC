@@ -6,7 +6,7 @@ package main
 */
 
 import (
-	мОбер "./пакОберон"
+	мОбер "./oberon"
 	мЛог "log"
 	//мФмт "fmt"
 )
