@@ -1,4 +1,4 @@
-package stringpos
+package pos
 
 /*
 	Модуль предоставляет тест для позиции в строке исходника
@@ -11,12 +11,12 @@ import (
 )
 
 var (
-	pos  *TStringPos
+	pos  *TPos
 	err  error
 	isOk bool
 )
 
-func TestStringPos(test *testing.T) {
+func TestPos(test *testing.T) {
 	createNegativePos(test)
 	create(test)
 	add(test)

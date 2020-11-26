@@ -1,4 +1,4 @@
-package stringnum
+package num
 
 /*
 	Модуль предоставляет test для номера строки
@@ -10,11 +10,11 @@ import (
 )
 
 var (
-	num *TStringNum
+	num *TNum
 	err error
 )
 
-func TestStringNum(test *testing.T) {
+func TestNum(test *testing.T) {
 	create0(test)
 	create(test)
 	inc(test)
