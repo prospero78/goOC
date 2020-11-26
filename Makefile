@@ -1,5 +1,6 @@
 run.app:
-	go build -mod=vendor -o ./bin/oc ./cmd/gooc/main.go
-	./bin/oc
+	export GOMODULE=on && \
+	go build -o ./bin/oc ./cmd/gooc/main.go
+	./bin/oc ./bin/Hello.o7
 fmt:
 	go fmt ./...
