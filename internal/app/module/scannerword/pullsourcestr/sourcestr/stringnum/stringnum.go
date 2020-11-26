@@ -6,48 +6,48 @@ package stringnum
 
 import (
 	"fmt"
-	мТип "oc/internal/types"
+	"oc/internal/types"
 )
 
-//ТСтрокаНом -- тип для операций с номером строки
-type ТСтрокаНом struct {
-	знач мТип.UStringNum
+//TStringNum -- тип для операций с номером строки
+type TStringNum struct {
+	val types.UStringNum // Хранимый номер строки
 }
 
-//Нов -- возвращает указатель  на новый ТСтрокаНом
-func Нов(пНомер мТип.UStringNum) (номер *ТСтрокаНом, ош error) {
-	_номер := ТСтрокаНом{}
-	if ош = _номер.Уст(пНомер); ош != nil {
-		return nil, fmt.Errorf("stringnum.go/Нов(): ERROR при присвоении номера исходной строки\n\t%v", ош)
+//New -- возвращает указатель  на новый TStringNum
+func New(numStr types.UStringNum) (num *TStringNum, err error) {
+	num = &TStringNum{}
+	if err = num.Set(numStr); err != nil {
+		return nil, fmt.Errorf("stringnum.go/New(): ERROR in set number string\n\t%v", err)
 	}
-	return &_номер, nil
+	return num, nil
 }
 
-//Уст -- однократная установка значения номера строки
-func (сам *ТСтрокаНом) Уст(пНомер мТип.UStringNum) (ош error) {
-	if пНомер <= 0 {
-		return fmt.Errorf("ТСтрокаНом.Уст(): ERROR значение меньше 1, пНомер=[%v]\n", пНомер)
+//Set -- установка значения номера строки
+func (sf *TStringNum) Set(numStr types.UStringNum) (ош error) {
+	if numStr <= 0 {
+		return fmt.Errorf("TStringNum.Set(): ERROR numStr(%v)<1\n", numStr)
 	}
-	сам.знач = пНомер
+	sf.val = numStr
 	return nil
 }
 
-//Получ -- возвращает хранимое значение номера строки
-func (сам *ТСтрокаНом) Получ() мТип.UStringNum {
-	return сам.знач
+//Get -- возвращает хранимое значение номера строки
+func (sf *TStringNum) Get() types.UStringNum {
+	return sf.val
 }
 
 //String -- возвращает строковое представление номера строки
-func (сам *ТСтрокаНом) String() string {
-	return fmt.Sprint(сам.знач)
+func (sf *TStringNum) String() string {
+	return fmt.Sprint(sf.val)
 }
 
-//Доб -- увеличивает номер строки на +1
-func (сам *ТСтрокаНом) Доб() {
-	сам.знач++
+//Inc -- увеличивает номер строки на +1
+func (sf *TStringNum) Inc() {
+	sf.val++
 }
 
-//Сброс -- сбрасывает значение в "1"
-func (сам *ТСтрокаНом) Сброс() {
-	сам.знач = 1
+//Reset -- сбрасывает значение в "1"
+func (sf *TStringNum) Reset() {
+	sf.val = 1
 }

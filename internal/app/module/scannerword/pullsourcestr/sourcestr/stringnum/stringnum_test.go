@@ -1,63 +1,70 @@
 package stringnum
 
 /*
-	Модуль предоставляет тест для номера строки
+	Модуль предоставляет test для номера строки
 */
 
 import (
-	мТип "oc/internal/types"
-	мТест "testing"
+	"oc/internal/types"
+	"testing"
 )
 
 var (
-	номер *ТСтрокаНом
-	ош    error
+	num *TStringNum
+	err error
 )
 
-func TestСтрНомер(тест *мТест.T) {
-	_Провер := func(пЗнач мТип.UStringNum) {
-		тест.Logf("_Провер(): пЗНач=%v\n", пЗнач)
-		знач := номер.Получ()
-		if знач != пЗнач {
-			тест.Errorf("_Провер(): ERROR знач(%v)!=пЗнач(%v)\n", знач, пЗнач)
-		}
-	}
-	_Создать := func() {
-		тест.Logf("_Создать()\n")
-		if номер, ош = Нов(1); ош != nil {
-			тест.Errorf("_Создать(): ERROR ош!=nil\n\t%v", ош)
+func TestStringNum(test *testing.T) {
+	create0(test)
+	create(test)
+	inc(test)
+	reset(test)
+}
 
-		}
-		if номер == nil {
-			тест.Errorf("_Создать(): ERROR номер==nil\n")
-		}
-		_Провер(1)
+func check(test *testing.T, val types.UStringNum) {
+	test.Logf("check(): пЗНач=%v\n", val)
+	_val := num.Get()
+	if _val != val {
+		test.Errorf("check(): ERROR val(%v)!=%v\n", _val, val)
 	}
-	_СоздатьНоль := func() {
-		тест.Logf("_СоздатьНоль()\n")
-		if _, ош = Нов(0); ош == nil {
-			тест.Errorf("_СоздатьНоль(): ERROR ош==nil\n")
-		}
+}
+
+func create(test *testing.T) {
+	test.Logf("create()\n")
+	if num, err = New(1); err != nil {
+		test.Errorf("create(): ERROR err!=nil\n\t%v", err)
+
 	}
-	_Доб := func() {
-		тест.Logf("_Доб()\n")
-		номер.Доб()
-		_Провер(2)
-		номер.Доб()
-		номер.Доб()
-		_Провер(4)
+	if num == nil {
+		test.Errorf("create(): ERROR num==nil\n")
 	}
-	_Сброс := func() {
-		тест.Logf("_Сброс()\n")
-		стр := номер.String()
-		if стр != "4" {
-			тест.Errorf("_Сброс(): ERROR стр(%q)!=4\n", стр)
-		}
-		номер.Сброс()
-		_Провер(1)
+	check(test, 1)
+}
+func create0(test *testing.T) {
+	test.Logf("create0()\n")
+	if _, err = New(0); err == nil {
+		test.Errorf("create0(): ERROR err==nil\n")
 	}
-	_Создать()
-	_СоздатьНоль()
-	_Доб()
-	_Сброс()
+}
+
+func inc(test *testing.T) {
+	test.Logf("inc()\n")
+	num.Inc()
+	check(test, 2)
+	num.Inc()
+	num.Inc()
+	check(test, 4)
+}
+
+func reset(test *testing.T) {
+	test.Logf("reset()\n")
+	стр := num.String()
+	if стр != "4" {
+		test.Errorf("reset(): ERROR стр(%q)!=4\n", стр)
+	}
+	num.Reset()
+	check(test, 1)
+	num.Inc()
+	num.Reset()
+	check(test, 1)
 }
