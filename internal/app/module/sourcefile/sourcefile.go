@@ -6,68 +6,68 @@ package sourcefile
 
 import (
 	"fmt"
-	мВв "io/ioutil"
-	мЛог "oc/internal/log"
+	"io/ioutil"
+	"oc/internal/log"
 )
 
-//ТФайлИсх -- тип для работы с исходным файлом
-type ТФайлИсх struct {
-	размер int //Размер исходника в рунах
-	текст  []rune
-	режим  int
-	лог    *мЛог.ТЛог
+//TFileSource -- тип для работы с исходным файлом
+type TFileSource struct {
+	size int //Размер исходника в рунах
+	text []rune
+	mode int
+	log  *log.TLog
 }
 
-//Нов -- возвращает указатель на новый ТФайлИсх
-func Нов(файлИмя string, режим int) (файл *ТФайлИсх, ош error) {
-	_файл := ТФайлИсх{
-		лог:   мЛог.Нов("ТФайлИсх", режим),
-		режим: режим,
+// New -- возвращает указатель на новый ТФайлИсх
+func New(fileName string, mode int) (filesource *ТФайлИсх, err error) {
+	filesource := &TFileSource{
+		log:  log.Нов("TFileSource", mode),
+		mode: mode,
 	}
-	_файл.лог.Отладка("Нов()")
-	if ош = _файл._Считать(файлИмя); ош != nil {
-		return nil, fmt.Errorf("sourcefile.go/Нов(): ОШИБКА чтения файла %q\n\t%v", файлИмя, ош)
+	filesource.log.Debugf("New()")
+	if err = _файл.read(fileName); err != nil {
+		return nil, fmt.Errorf("sourcefile.go/New(): ОШИБКА чтения файла %q\n\t%v", fileName, err)
 	}
-	return &_файл, nil
+	return filesource, nil
 }
 
-//_Считать -- читает исходный файл
-func (сам *ТФайлИсх) _Считать(файлИмя string) (ош error) {
-	сам.лог.Отладка("_Считать", файлИмя)
+// readFile -- читает исходный файл
+func (sf *TFileSource) readFile(файлИмя string) (ош error) {
+	sf.log.Отладка("readFile", файлИмя)
 	if файлИмя == "" {
 		файлИмя = "./Hello.o7"
 	}
 	байты, ош := мВв.ReadFile(файлИмя)
 	if ош != nil {
-		return fmt.Errorf("ТФайлИсх.Считать(): ОШИБКА при попытке прочитать файл\n")
+		return fmt.Errorf("TFileSource.readFile(): ОШИБКА при попытке прочитать файл")
 	}
 
 	// Строковое представление байтов
-	сам.текст = []rune(string(байты))
+	sf.text = []rune(string(байты))
 
-	сам.размер = len([]rune(сам.текст))
-	//сам.лог.Отладка("_Считать", fmt.Sprintf("Текст:\n%v\nДлина: %v\n", сам.текст, сам.размер))
+	sf.size = len([]rune(sf.text))
+	//sf.лог.Отладка("read", fmt.Sprintf("Текст:\n%v\nДлина: %v\n", sf.текст, sf.размер))
 	return nil
 }
 
-//Лит -- Возвращает литеру по номеру руны
-func (сам *ТФайлИсх) Лит(пПоз int) (лит string, ош error) {
+// PosLit -- Возвращает литеру по номеру руны
+func (sf *TFileSource) PosLit(пПоз int) (lit string, err error) {
 	if пПоз < 0 {
-		return "", fmt.Errorf("ТФайлИсх.Лит(): указатель литеры пПоз не может быть < 0\n")
+		return "", fmt.Errorf("TFileSource.PosLit(): указатель литеры пПоз не может быть < 0")
 	}
-	if пПоз > сам.размер-1 {
-		return "", fmt.Errorf("ТФайлИсх.Лит(): указатель литеры пПоз больше последней литеры, пПоз=%v, размер=[%v]\n", пПоз, сам.размер)
+	if пПоз > sf.size-1 {
+		return "", fmt.Errorf("TFileSource.PosLit(): указатель литеры пПоз больше последней литеры, пПоз=%v, размер=[%v]", пПоз, sf.size)
 	}
-	лит = string(сам.текст[пПоз])
-	return лит, nil
+	lit = string(sf.text[пПоз])
+	return lit, nil
 }
 
-//Исходник -- возвращает полностью исходный текст в отдельном срезе рун
-func (сам *ТФайлИсх) Исходник() (текст []rune) {
-	return сам.текст
+// Source -- возвращает полностью исходный текст в отдельном срезе рун
+func (sf *TFileSource) Source() (текст []rune) {
+	return sf.text
 }
 
-//Размер -- возвращает размер исходника в рунах
-func (сам *ТФайлИсх) Размер() int {
-	return сам.размер
+// Size -- возвращает размер исходника в рунах
+func (sf *TFileSource) Size() int {
+	return sf.size
 }
