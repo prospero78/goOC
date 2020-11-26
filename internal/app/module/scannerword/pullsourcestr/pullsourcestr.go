@@ -8,7 +8,6 @@ package pullsourcestr
 import (
 	"fmt"
 	мИс "oc/internal/app/module/scannerword/pullsourcestr/sourcestr"
-
 	//мЛог "oc/internal/log"
 	"oc/internal/log"
 	мТип "oc/internal/types"
@@ -23,11 +22,11 @@ type TPoolSource struct {
 
 // New -- возвращает новый *ТПулИсхСтроки
 func New(текстИсх мТип.UTextSource, режим int) (poolSource *TPoolSource) {
-	poolSource := &TPoolSource{
-		log:        мЛог.Нов("TPoolSource", режим),
+	poolSource = &TPoolSource{
+		log:        log.New("TPoolSource", режим),
 		poolSource: make(map[int]мТип.ISourceString),
 	}
-	poolSource._НаСтрокиРазбить(текстИсх)
+	poolSource.toStringSplit(текстИсх)
 	return poolSource
 }
 

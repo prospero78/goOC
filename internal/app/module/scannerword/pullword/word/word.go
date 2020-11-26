@@ -24,10 +24,10 @@ func Нов(пКоорд мТип.ICoordFix, пСлово мТип.UWord,
 	пСтрИсх мТип.ISourceString) (слово *ТСлово, ош error) {
 	{ //Предусловия
 		if пКоорд == nil {
-			return nil, fmt.Errorf("word.go/Нов(): ERROR пКоорд==nil\n")
+			return nil, fmt.Errorf("word.go/Нов(): ERROR пКоорд==nil")
 		}
 		if пСлово == "" {
-			return nil, fmt.Errorf("word.go/Нов(): ERROR пСлово==''\n")
+			return nil, fmt.Errorf("word.go/Нов(): ERROR пСлово==''")
 		}
 		if пСтрИсх == nil {
 			return nil, fmt.Errorf("word.go/Нов(): ERROR пСтрИсх==nil\n")
@@ -38,7 +38,7 @@ func Нов(пКоорд мТип.ICoordFix, пСлово мТип.UWord,
 		стрСлово: пСлово,
 		коорд:    пКоорд,
 	}
-	if _слово.лит, ош = мЛит.Нов("+"); ош != nil {
+	if _слово.лит, ош = мЛит.New("+"); ош != nil {
 		return nil, fmt.Errorf("word.go/Нов(): ERROR при создании литеры\n\t%v", ош)
 	}
 	return &_слово, nil
@@ -85,5 +85,5 @@ func (сам *ТСлово) Слово() мТип.UWord {
 
 // Строка -- возвращает строку исходника, содержащую подстроку
 func (сам *ТСлово) Строка() мТип.UStringSource {
-	return сам.стрИсх.Строка()
+	return сам.стрИсх.String()
 }

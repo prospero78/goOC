@@ -18,10 +18,10 @@ type TOc struct {
 }
 
 //New -- взвращает указатель на новый ТОк
-func New(param *мПарам.ТПарам) (ok *TOc, err error) {
-	ok := &TOc{
-		log:  log.New("TOc", param.Режим),
-		mode: param.Режим,
+func New(param *param.TParam) (ok *TOc, err error) {
+	ok = &TOc{
+		log:  log.New("TOc", param.Mode),
+		mode: param.Mode,
 	}
 	ok.log.Debugf("New", "Создание типа компилятора")
 	return ok, nil
@@ -31,7 +31,7 @@ func New(param *мПарам.ТПарам) (ok *TOc, err error) {
 func (sf *TOc) Run() {
 	sf.log.Debugf("Run")
 	fileName := "Hello.o7"
-	module, ош := мМод.Нов(fileName, sf.mode)
+	module, ош := module.Нов(fileName, sf.mode)
 	if ош != nil {
 		sf.log.Panicf("Run", "обработка модуля", ош)
 	}

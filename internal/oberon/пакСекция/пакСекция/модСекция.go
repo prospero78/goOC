@@ -6,9 +6,11 @@ package пакСекция
 */
 
 import (
+	мФмт "fmt"
+	"oc/internal/types"
+
 	мКлючи "../../пакКлючи"
 	мСлово "../../пакСлово"
-	мФмт "fmt"
 )
 
 //СКласс -- специальный строковый тип для хранения класса секции
@@ -19,15 +21,15 @@ type UWordNum int
 
 //ИСекция -- базовый тип секции
 type ИСекция interface {
-	Слова() map[UWordNum]мСлово.IWord
-	СловаУст(map[UWordNum]мСлово.IWord) error
+	Слова() map[types.UWordNum]types.IWord
+	СловаУст(map[types.UWordNum]types.IWord) error
 	Класс() СКласс
 }
 
 //тСекция -- базовый тип для всех секций
 type тСекция struct {
-	слова    map[UWordNum]мСлово.IWord
-	словаВсе map[UWordNum]мСлово.IWord
+	слова    map[types.UWordNum]types.IWord
+	словаВсе map[types.UWordNum]types.IWord
 	класс    СКласс //Хранит класс секциии
 }
 
@@ -40,12 +42,12 @@ func СекцияНов(пКласс СКласс) (секция ИСекция,
 	if ош = _секция._КлассУст(пКласс); ош != nil {
 		return nil, мФмт.Errorf("СекцияНов(): ошибка при установке класса секции\n\t%v", ош)
 	}
-	_секция.словаВсе = make(map[UWordNum]мСлово.IWord)
+	_секция.словаВсе = make(map[types.UWordNum]types.IWord)
 	return _секция, nil
 }
 
 // Слова -- возвращает список слов модуля
-func (сам *тСекция) Слова() map[UWordNum]мСлово.IWord {
+func (сам *тСекция) Слова() map[types.UWordNum]types.IWord {
 	return сам.слова
 }
 

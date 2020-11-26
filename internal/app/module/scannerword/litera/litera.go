@@ -47,11 +47,11 @@ const (
 	OPERATION
 )
 
-//Нов -- возвращает ссылку на новый ТЛит
-func Нов(пЛит мТип.ULit) (лит *ТЛит, ош error) {
+//New -- возвращает ссылку на новый ТЛит
+func New(пЛит мТип.ULit) (лит *ТЛит, ош error) {
 	_лит := ТЛит{}
 	if ош = _лит.Уст(пЛит); ош != nil {
-		return nil, fmt.Errorf("litera.go/Нов(): ERROR при установке литеры(%v)\n\t%v", пЛит, ош)
+		return nil, fmt.Errorf("litera.go/New(): ERROR при установке литеры(%v)\n\t%v", пЛит, ош)
 	}
 	return &_лит, nil
 }

@@ -5,7 +5,6 @@ package main
 */
 
 import (
-	"log"
 	"oc/internal/app"
 	"oc/internal/app/param"
 	"oc/internal/log"
@@ -14,7 +13,7 @@ import (
 
 func main() {
 	mode := log.DEBUG
-	param := &param.ТПарам{
+	param := &param.TParam{
 		Vers:  "0.0.6",
 		Build: "0070",
 		Data:  "2020-11-26 11:56:00",
@@ -27,5 +26,5 @@ func main() {
 	if err != nil {
 		log.Panicf("main", "Запуск приложения", err)
 	}
-	app.Пуск()
+	app.Run()
 }

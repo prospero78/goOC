@@ -18,10 +18,10 @@ type TFileSource struct {
 	log  *log.TLog
 }
 
-// New -- возвращает указатель на новый ТФайлИсх
-func New(fileName string, mode int) (filesource *ТФайлИсх, err error) {
-	filesource := &TFileSource{
-		log:  log.Нов("TFileSource", mode),
+// New -- возвращает указатель на новый TFileSource
+func New(fileName string, mode int) (filesource *TFileSource, err error) {
+	filesource = &TFileSource{
+		log:  log.New("TFileSource", mode),
 		mode: mode,
 	}
 	filesource.log.Debugf("New()")
@@ -33,11 +33,11 @@ func New(fileName string, mode int) (filesource *ТФайлИсх, err error) {
 
 // readFile -- читает исходный файл
 func (sf *TFileSource) readFile(файлИмя string) (ош error) {
-	sf.log.Отладка("readFile", файлИмя)
+	sf.log.Debugf("readFile", файлИмя)
 	if файлИмя == "" {
 		файлИмя = "./Hello.o7"
 	}
-	байты, ош := мВв.ReadFile(файлИмя)
+	байты, ош := ioutil.ReadFile(файлИмя)
 	if ош != nil {
 		return fmt.Errorf("TFileSource.readFile(): ERROR при попытке прочитать файл")
 	}
