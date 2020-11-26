@@ -25,7 +25,7 @@ func New(fileName string, mode int) (filesource *ТФайлИсх, err error) {
 		mode: mode,
 	}
 	filesource.log.Debugf("New()")
-	if err = _файл.read(fileName); err != nil {
+	if err = ioutil.ReadFile(fileName); err != nil {
 		return nil, fmt.Errorf("sourcefile.go/New(): ОШИБКА чтения файла %q\n\t%v", fileName, err)
 	}
 	return filesource, nil

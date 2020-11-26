@@ -5,6 +5,7 @@ package main
 */
 
 import (
+	"log"
 	"oc/internal/app"
 	"oc/internal/app/param"
 	"oc/internal/log"
@@ -12,19 +13,19 @@ import (
 )
 
 func main() {
-	режим := log.КОтладка
-	парам := &param.ТПарам{
-		Версия: "0.0.6",
-		Сборка: "0070",
-		Дата:   "2020-08-31 22:03:00",
-		Режим:  режим,
+	mode := log.DEBUG
+	param := &param.ТПарам{
+		Vers: "0.0.6",
+		Build: "0070",
+		Data:   "2020-08-31 22:03:00",
+		Mode:  mode,
 	}
-	mSs.Печать(парам)
-	лог := log.Нов("main", режим)
-	лог.Отладка("main", "Начало работы компилятора")
-	прилож, ош := app.Нов(парам)
-	if ош != nil {
-		лог.Паника("main", "Запуск приложения", ош)
+	mSs.Print(param)
+	log := log.Нов("main", mode)
+	log.Debugf("main", "Начало работы компилятора")
+	app, err := app.Нов(param)
+	if err != nil {
+		log.Panicf("main", "Запуск приложения", err)
 	}
-	прилож.Пуск()
+	app.Пуск()
 }

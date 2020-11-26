@@ -30,26 +30,27 @@ func New(текстИсх мТип.СТекстИсх, режим int) (poolSour
 	return poolSource
 }
 
-//НаСтрокиРазбить -- разбивает на строки содержимое строки
-func (sf *TPoolSource) _НаСтрокиРазбить(пИсх мТип.СТекстИсх) {
-	пулСтроки := мСтр.Split(string(пИсх), "\n")
+// toStringSplit -- разбивает на строки содержимое строки
+func (sf *TPoolSource) toStringSplit(txtSource мТип.СТекстИсх) {
+	poolString := мСтр.Split(string(txtSource), "\n")
 
-	for ном, стр := range пулСтроки {
-		исхСтрока, _ := мИс.Нов(мТип.ССтрокаНом(ном+1), мТип.ССтрокаИсх(стр))
-		sf.poolSource[len(sf.poolSource)+1] = исхСтрока
+	for adr, str := range poolString {
+		strSource, _ := мИс.Нов(мТип.ССтрокаНом(adr+1), мТип.ССтрокаИсх(str))
+		sf.poolSource[len(sf.poolSource)+1] = strSource
 	}
-	sf.log.Отладка("_НаСтрокиРазбить", "всего строк: ", len(пулСтроки))
+	sf.log.Debugf("toStringSplit", "всего строк: ", len(poolString))
 }
 
-//Строка -- возвращает строку по указанному номеру
-func (sf *TPoolSource) Строка(пНомер мТип.ССтрокаНом) (стр мТип.ИСтрокаИсх, ош error) {
-	стр, ок := sf.poolSource[int(пНомер)]
+// GetString -- возвращает строку по указанному номеру
+func (sf *TPoolSource) GetString(пНомер мТип.ССтрокаНом) (strSource мТип.ИСтрокаИсх, err error) {
+	strSource, ок := sf.poolSource[int(пНомер)]
 	if !ок {
-		return nil, fmt.Errorf("TPoolSource.Строка(): строки с номером [%v] не существует\n", пНомер)
+		return nil, fmt.Errorf("TPoolSource.GetString(): строки с номером [%v] не существует", пНомер)
 	}
-	return стр, nil
+	return strSource, nil
 }
 
-func (sf *TPoolSource) СтрокиВсе() map[int]мТип.ИСтрокаИсх {
+// GetPool -- возвращает пул строк
+func (sf *TPoolSource) GetPool() map[int]мТип.ИСтрокаИсх {
 	return sf.poolSource
 }
