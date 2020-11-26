@@ -15,15 +15,15 @@ import (
 func main() {
 	mode := log.DEBUG
 	param := &param.ТПарам{
-		Vers: "0.0.6",
+		Vers:  "0.0.6",
 		Build: "0070",
-		Data:   "2020-08-31 22:03:00",
+		Data:  "2020-11-26 11:56:00",
 		Mode:  mode,
 	}
 	mSs.Print(param)
-	log := log.Нов("main", mode)
+	log := log.New("main", mode)
 	log.Debugf("main", "Начало работы компилятора")
-	app, err := app.Нов(param)
+	app, err := app.New(param)
 	if err != nil {
 		log.Panicf("main", "Запуск приложения", err)
 	}
