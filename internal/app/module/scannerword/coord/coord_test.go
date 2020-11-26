@@ -1,121 +1,111 @@
 package пакКоорд
 
 /*
-	Модуль предоставляет тест для ИКоорд
+	Модуль предоставляет test для ИКоорд
 */
 
 import (
-	мТип "oc/internal/types"
-	мТест "testing"
+	"internal/testlog"
+	"oc/internal/types"
+	"testing"
 )
 
 const (
-	номСтр = 5
-	позСтр = 20
+	numStr = 5
+	posStr = 20
 )
 
 var (
-	коорд *ТКоорд
-	ош    error
+	coord *ТКоорд
+	err   error
 )
 
-func TestКоорд(тест *мТест.T) {
-	_Провер := func(пНом мТип.UStringNum, пПоз мТип.UStringPos) {
-		тест.Logf("_Провер(): пПСтр=%v пПоз=%v\n", пНом, пПоз)
-		номер := коорд.Стр()
-		if номер != пНом {
-			тест.Errorf("_Провер(): ERROR номер(%v)!=пНом(%v)\n", номер, пНом)
+func TestCoord(test *testing.T) {
+}
+
+func check(num мТип.UStringNum, pos мТип.UStringPos) {
+		test.Logf("check(): num=%v pos=%v\n", num, pos)
+		strNum := coord.String()
+		if strNum != num {
+			test.Errorf("check(): ERROR strNum(%v)!=num(%v)\n", strNum, num)
 		}
-		поз := коорд.Поз()
-		if поз != пПоз {
-			тест.Errorf("_Провер(): ERROR поз(%v)!=пПоз(%v)\n", поз, пПоз)
-		}
-	}
-	_Создать := func() {
-		тест.Logf("_Создать(): ТКоорд\n")
-		if коорд, ош = Нов(номСтр, позСтр); ош != nil {
-			тест.Errorf("п1.2 ERROR ош!=nil\n\t%v", ош)
-		}
-		if коорд == nil {
-			тест.Errorf("п1.2 ERROR коордИзм не может быть nil\n")
-		}
-		_Провер(номСтр, позСтр)
-	}
-	_СбросСтр := func() {
-		тест.Logf("_СбросСтр()\n")
-		коорд.СтрСброс()
-		_Провер(1, позСтр)
-	}
-	_СбросПоз := func() {
-		тест.Logf("_СбросПоз()\n")
-		коорд.ПозСброс()
-		_Провер(1, 0)
-	}
-	_НомерУст := func() {
-		тест.Logf("_НомерУст()\n")
-		коорд.СтрУст(номСтр)
-		_Провер(номСтр, 0)
-	}
-	_ПозУст := func() {
-		тест.Logf("_ПозУст()\n")
-		коорд.ПозУст(позСтр)
-		_Провер(номСтр, позСтр)
-	}
-	_СтрНомДоб := func() {
-		тест.Logf("_СтрНомДоб()\n")
-		коорд.СтрДоб()
-		_Провер(номСтр+1, позСтр)
-	}
-	_ПозДоб := func() {
-		коорд.ПозДоб()
-		_Провер(номСтр+1, позСтр+1)
-	}
-	_Стр := func() {
-		тест.Logf("п9 Проверка на строку\n")
-		if коорд.String() != "Коорд: стр=6 поз=21" {
-			тест.Errorf("п9.1 ERROR при получении строкового представления, знач=[%v]\n", коорд)
+		_pos := coord.Pos()
+		if _pos != pos {
+			test.Errorf("check(): ERROR по_posз(%v)!=pos(%v)\n", _pos, pos)
 		}
 	}
-	_Позитив := func() {
-		_Создать()
-		_СбросСтр()
-		_СбросПоз()
-		_НомерУст()
-		_ПозУст()
-		_СтрНомДоб()
-		_ПозДоб()
-		_Стр()
-	}
-	_Негатив := func() {
+
 		_НульСтрока := func() {
-			тест.Logf("н1 Создание ТКоорд с нправильным номером строки\n")
-			if _, ош = Нов(0, позСтр); ош == nil {
-				тест.Errorf("_НульСтрока(): ERROR ош==nil\n")
+			test.Logf("н1 Создание ТКоорд с нправильным номером строки\n")
+			if _, err = Нов(0, posStr); err == nil {
+				test.Errorf("_НульСтрока(): ERROR err==nil\n")
 			}
 		}
 		_ОтрицПоз := func() {
-			тест.Logf("н1 Создание ИКоордИзм с нправильным номером строки\n")
-			if _, ош = Нов(номСтр, -1); ош == nil {
-				тест.Errorf("_ОтрицПоз(): ERROR ош==nil\n")
+			test.Logf("н1 Создание ИКоордИзм с нправильным номером строки\n")
+			if _, err = Нов(numStr, -1); err == nil {
+				test.Errorf("_ОтрицПоз(): ERROR err==nil\n")
 			}
 		}
 		_УстСтрНоль := func() {
-			коорд, _ = Нов(номСтр, позСтр)
-			тест.Logf("н3 Неправильная установка номера строки\n")
-			if ош = коорд.СтрУст(0); ош == nil {
-				тест.Errorf("_УстСтрНоль(): ERROR ош==nil\n")
+			coord, _ = Нов(numStr, posStr)
+			test.Logf("н3 Неправильная установка номера строки\n")
+			if err = coord.СтрУст(0); err == nil {
+				test.Errorf("_УстСтрНоль(): ERROR err==nil\n")
 			}
 		}
 		_УстПозОтриц := func() {
-			if ош = коорд.ПозУст(-1); ош == nil {
-				тест.Errorf("_УстПозОтриц(): ERROR ош==nil\n")
+			if err = coord.ПозУст(-1); err == nil {
+				test.Errorf("_УстПозОтриц(): ERROR err==nil\n")
 			}
 		}
-		_НульСтрока()
-		_ОтрицПоз()
-		_УстСтрНоль()
-		_УстПозОтриц()
+
+func create() {
+		test.Logf("create()\n")
+		if coord, err = New(numStr, posStr); err != nil {
+			test.Errorf("create(): ERROR err!=nil\n\t%v", err)
+		}
+		if coord == nil {
+			test.Errorf("create(): ERROR коордИзм не может быть nil\n")
+		}
+		check(numStr, posStr)
 	}
-	_Позитив()
-	_Негатив()
-}
+
+func resetNum() {
+		test.Logf("resetNum()\n")
+		coord.NumReset()
+		check(1, posStr)
+	}
+
+func resetPos() {
+		test.Logf("resetPos()\n")
+		coord.PosReset()
+		check(1, 0)
+	}
+
+func numSet () {
+		test.Logf("numSet()\n")
+		coord.NumSet(numStr)
+		check(numStr, 0)
+	}
+func posSet() {
+		test.Logf("posSet()\n")
+		coord.PosSet(posStr)
+		check(numStr, posStr)
+	}
+func numInc  {
+		test.Logf("numInc()\n")
+		coord.NumInc()
+		check(numStr+1, posStr)
+	}
+func posInc () {
+	test.Logf("posInc()\n")
+		coord.PosInc()
+		check(numStr+1, posStr+1)
+	}
+func str () {
+	test.Logf("str()\n")
+		if coord.String() != "Coord=6:21" {
+			test.Errorf("str(): ERROR str(%v)!='Coord=6:21'\n", coord)
+		}
+	}

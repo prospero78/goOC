@@ -6,76 +6,75 @@ package coord
 
 import (
 	"fmt"
-	мСп "oc/internal/app/module/scannerword/coord/stringpos"
-	мСн "oc/internal/app/module/scannerword/pullsourcestr/sourcestr/stringnum"
-	мТип "oc/internal/types"
+	"oc/internal/app/module/scannerword/coord/num"
+	"oc/internal/app/module/scannerword/coord/pos"
 )
 
 //TCoord -- тип для хранения координат
 type TCoord struct {
-	стр *мСн.ТСтрокаНом
-	поз *мСп.ТСтрокаПоз
+	num *num.TNum
+	pos *pos.TPos
 }
 
-//Нов -- возвращает указатель на новый TCoord
-func Нов(пСтр мТип.UStringNum, пПоз мТип.UStringPos) (коорд *TCoord, ош error) {
-	_коорд := TCoord{}
-	if _коорд.стр, ош = мСн.Нов(пСтр); ош != nil {
-		return nil, fmt.Errorf("coord.go/Нов(): ERROR при создании номера строки\n\t%v", ош)
+//New -- возвращает указатель на новый TCoord
+func New(numStr мТип.UStringNum, posStr мТип.UStringPos) (coord *TCoord, err error) {
+	coord := &TCoord{}
+	if coord.num, err = num.New(numStr); err != nil {
+		return nil, fmt.Errorf("coord.go/New(): ERROR in create num source string\n\t%v", err)
 	}
-	if _коорд.поз, ош = мСп.Нов(пПоз); ош != nil {
-		return nil, fmt.Errorf("coord.go/Нов(): ERROR при создании позиции в строке строки\n\t%v", ош)
+	if coord.pos, err = pos.New(posStr); err != nil {
+		return nil, fmt.Errorf("coord.go/New(): ERROR in create pos source string\n\t%v", err)
 	}
-	return &_коорд, nil
+	return coord, nil
 }
 
 //Возвращает строковое представление координаты
-func (сам *TCoord) String() string {
-	return fmt.Sprintf("Коорд: стр=%v поз=%v", сам.стр, сам.поз)
+func (sf *TCoord) String() string {
+	return fmt.Sprintf("Coord=%v:%v", sf.num, sf.pos)
 }
 
-//Стр -- возвращает хранимый номера строки
-func (сам *TCoord) Стр() мТип.UStringNum {
-	return сам.стр.Получ()
+//Num -- возвращает хранимый номера строки
+func (sf *TCoord) Num() мТип.UStringNum {
+	return sf.num.Get()
 }
 
-//СтрДоб -- добавлет +1 номер строки
-func (сам *TCoord) СтрДоб() {
-	сам.стр.Доб()
+//NumInc -- добавлет +1 номер строки
+func (sf *TCoord) NumInc() {
+	sf.num.Inc()
 }
 
-//СтрУст -- устанавливает номер строки
-func (сам *TCoord) СтрУст(пНомер мТип.UStringNum) (ош error) {
-	if ош = сам.стр.Уст(пНомер); ош != nil {
-		return fmt.Errorf("TCoord.СтрУст(): ERROR при установке номера строки\n\t%v", ош)
+//NumSet -- устанавливает номер строки
+func (sf *TCoord) NumSet(num мТип.UStringNum) (err error) {
+	if err = sf.num.Set(num); err != nil {
+		return fmt.Errorf("TCoord.NumSet(): ERROR in set num source string\n\t%v", err)
 	}
 	return nil
 }
 
-//СтрСброс -- сброасывает номер строки
-func (сам *TCoord) СтрСброс() {
-	сам.стр.Сброс()
+//NumReset -- сброасывает номер строки
+func (sf *TCoord) NumReset() {
+	sf.num.Reset()
 }
 
-//Поз -- возвращает хранимую позицию в строке
-func (сам *TCoord) Поз() мТип.UStringPos {
-	return сам.поз.Получ()
+//Pos -- возвращает хранимую позицию в строке
+func (sf *TCoord) Pos() types.UStringPos {
+	return sf.pos.Get()
 }
 
-//ПозСброс -- сбрасывает позицию строки
-func (сам *TCoord) ПозСброс() {
-	сам.поз.Сброс()
+//PosReset -- сбрасывает позицию строки
+func (sf *TCoord) PosReset() {
+	sf.pos.Reset()
 }
 
-//СтрПозДоб -- добавлет +1 позицию в строке
-func (сам *TCoord) ПозДоб() {
-	сам.поз.Доб()
+//PosInc -- добавлет +1 позицию в строке
+func (sf *TCoord) PosInc() {
+	sf.pos.Inc()
 }
 
-//СтрПозУст -- устанавливает позицию строки
-func (сам *TCoord) ПозУст(пПоз мТип.UStringPos) (ош error) {
-	if ош = сам.поз.Уст(пПоз); ош != nil {
-		return fmt.Errorf("TCoord.ПозУст(): ERROR при установке позиции в строке\n\t%v", ош)
+//PosSet -- устанавливает позицию строки
+func (sf *TCoord) PosSet(pos мТип.UStringPos) (err error) {
+	if err = sf.pos.Уст(pos); err != nil {
+		return fmt.Errorf("TCoord.PosSet(): ERROR in set pos in source string\n\t%v", err)
 	}
 	return nil
 }
