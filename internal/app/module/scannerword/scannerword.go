@@ -36,10 +36,10 @@ func Нов(текстИсх мТип.UTextSource, режим int) (скан *TS
 		poolWord: мПс.Нов(),
 	}
 	if _скан.коорд, ош = мКоорд.Нов(1, 0); ош != nil {
-		return nil, fmt.Errorf("scannerword.go/Нов(): ОШИБКА при создании координат сканера\n\t%v", ош)
+		return nil, fmt.Errorf("scannerword.go/Нов(): ERROR при создании координат сканера\n\t%v", ош)
 	}
 	if ош = _скан._Обработать(текстИсх); ош != nil {
-		return nil, fmt.Errorf("scannerword.go/Нов(): ОШИБКА при работе сканера\n\t%v", ош)
+		return nil, fmt.Errorf("scannerword.go/Нов(): ERROR при работе сканера\n\t%v", ош)
 	}
 	_скан.лог.Отладка("scaner.go/Нов", "Создание сканера")
 	_скан.лог.Отладка("scaner.go/Нов", "Всего слов", _скан.poolWord.Len())
@@ -50,15 +50,15 @@ func Нов(текстИсх мТип.UTextSource, режим int) (скан *TS
 func (sf *TScannerWord) _СловоДобав(пСлово мТип.UWord) (ош error) {
 	коорд, ош := мКоорд.Нов(sf.коорд.Стр(), sf.коорд.Поз())
 	if ош != nil {
-		return fmt.Errorf("TScannerWord._СловоДобав(): ОШИБКА при создании координат слова\n\t%v", ош)
+		return fmt.Errorf("TScannerWord._СловоДобав(): ERROR при создании координат слова\n\t%v", ош)
 	}
 	строка, ош := sf.пулСтр.Строка(sf.коорд.Стр())
 	if ош != nil {
-		return fmt.Errorf("TScannerWord._СловоДобав(): ОШИБКА при получении строки\n\t%v", ош)
+		return fmt.Errorf("TScannerWord._СловоДобав(): ERROR при получении строки\n\t%v", ош)
 	}
 	слово, ош := мСлово.Нов(коорд, пСлово, строка)
 	if ош != nil {
-		return fmt.Errorf("TScannerWord._СловоДобав(): ОШИБКА при создании слова(%v)\n\t%v", пСлово, ош)
+		return fmt.Errorf("TScannerWord._СловоДобав(): ERROR при создании слова(%v)\n\t%v", пСлово, ош)
 	}
 	sf.poolWord.Доб(слово)
 	return nil
@@ -73,7 +73,7 @@ func (sf *TScannerWord) _Обработать(текстИсх мТип.UTextSou
 	_СловоНов := func() error {
 		if словоНов != "" {
 			if ош = sf._СловоДобав(словоНов); ош != nil {
-				return fmt.Errorf("TScannerWord._Обработать()._СловоНов(): ОШИБКА при добавлении слова %q\n\t%v", словоНов, ош)
+				return fmt.Errorf("TScannerWord._Обработать()._СловоНов(): ERROR при добавлении слова %q\n\t%v", словоНов, ош)
 			}
 		}
 		словоНов = ""

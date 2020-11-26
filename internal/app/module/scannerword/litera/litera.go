@@ -45,7 +45,7 @@ const (
 func Нов(пЛит мТип.ULit) (лит *ТЛит, ош error) {
 	_лит := ТЛит{}
 	if ош = _лит.Уст(пЛит); ош != nil {
-		return nil, fmt.Errorf("litera.go/Нов(): ОШИБКА при установке литеры(%v)\n\t%v", пЛит, ош)
+		return nil, fmt.Errorf("litera.go/Нов(): ERROR при установке литеры(%v)\n\t%v", пЛит, ош)
 	}
 	return &_лит, nil
 }
@@ -98,7 +98,7 @@ func (сам *ТЛит) Уст(пЛит мТип.ULit) error {
 	} else if strings.Contains(стрЛитОпер, string(пЛит)) {
 		сам.класс = КОперации
 	} else {
-		return fmt.Errorf("ТЛит.Уст(): ОШИБКА неизвестный класс литеры, пЛит=[%v]\n", пЛит)
+		return fmt.Errorf("ТЛит.Уст(): ERROR неизвестный класс литеры, пЛит=[%v]\n", пЛит)
 	}
 	сам.лит = пЛит
 	return nil

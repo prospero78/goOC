@@ -24,13 +24,13 @@ func Нов(пКоорд мТип.ICoordFix, пСлово мТип.UWord,
 	пСтрИсх мТип.ISourceString) (слово *ТСлово, ош error) {
 	{ //Предусловия
 		if пКоорд == nil {
-			return nil, fmt.Errorf("word.go/Нов(): ОШИБКА пКоорд==nil\n")
+			return nil, fmt.Errorf("word.go/Нов(): ERROR пКоорд==nil\n")
 		}
 		if пСлово == "" {
-			return nil, fmt.Errorf("word.go/Нов(): ОШИБКА пСлово==''\n")
+			return nil, fmt.Errorf("word.go/Нов(): ERROR пСлово==''\n")
 		}
 		if пСтрИсх == nil {
-			return nil, fmt.Errorf("word.go/Нов(): ОШИБКА пСтрИсх==nil\n")
+			return nil, fmt.Errorf("word.go/Нов(): ERROR пСтрИсх==nil\n")
 		}
 	}
 	_слово := ТСлово{
@@ -39,7 +39,7 @@ func Нов(пКоорд мТип.ICoordFix, пСлово мТип.UWord,
 		коорд:    пКоорд,
 	}
 	if _слово.лит, ош = мЛит.Нов("+"); ош != nil {
-		return nil, fmt.Errorf("word.go/Нов(): ОШИБКА при создании литеры\n\t%v", ош)
+		return nil, fmt.Errorf("word.go/Нов(): ERROR при создании литеры\n\t%v", ош)
 	}
 	return &_слово, nil
 }

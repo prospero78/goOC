@@ -26,7 +26,7 @@ func New(fileName string, mode int) (filesource *ТФайлИсх, err error) {
 	}
 	filesource.log.Debugf("New()")
 	if err = ioutil.ReadFile(fileName); err != nil {
-		return nil, fmt.Errorf("sourcefile.go/New(): ОШИБКА чтения файла %q\n\t%v", fileName, err)
+		return nil, fmt.Errorf("sourcefile.go/New(): ERROR чтения файла %q\n\t%v", fileName, err)
 	}
 	return filesource, nil
 }
@@ -39,7 +39,7 @@ func (sf *TFileSource) readFile(файлИмя string) (ош error) {
 	}
 	байты, ош := мВв.ReadFile(файлИмя)
 	if ош != nil {
-		return fmt.Errorf("TFileSource.readFile(): ОШИБКА при попытке прочитать файл")
+		return fmt.Errorf("TFileSource.readFile(): ERROR при попытке прочитать файл")
 	}
 
 	// Строковое представление байтов

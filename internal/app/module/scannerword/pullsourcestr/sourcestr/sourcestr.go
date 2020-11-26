@@ -23,10 +23,10 @@ func Нов(пНом мТип.UStringNum, пСтр мТип.UStringSource) (ст
 	_стр := ТСтрокаИсх{}
 
 	if _стр.номер, ош = мСн.Нов(пНом); ош != nil {
-		return nil, fmt.Errorf("sourcestr.go/Нов(): ОШИБКА при установке номера исходной строки\n\t%v", ош)
+		return nil, fmt.Errorf("sourcestr.go/Нов(): ERROR при установке номера исходной строки\n\t%v", ош)
 	}
 	if _стр.строка, ош = мСткс.Нов(пСтр); ош != nil {
-		return nil, fmt.Errorf("sourcestr.go/Нов(): ОШИБКА при установке текста исходной строки\n\t%v", ош)
+		return nil, fmt.Errorf("sourcestr.go/Нов(): ERROR при установке текста исходной строки\n\t%v", ош)
 	}
 	return &_стр, nil
 }

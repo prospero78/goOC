@@ -5,87 +5,68 @@ package stringpos
 */
 
 import (
-	мФмт "fmt"
-	мТип "oc/internal/types"
-	мТест "testing"
+	"fmt"
+	"oc/internal/types"
+	"testing"
 )
 
 var (
-	поз *ТСтрокаПоз
-	ош  error
-	ок  bool
+	pos  *TStringPos
+	err  error
+	isOk bool
 )
 
-func TestПозСтрИзм(тест *мТест.T) {
-	_Позитив := func() {
-		_Проверить := func(пЗнач мТип.UStringPos) {
-			тест.Logf("п2 Проверка начальных значений\n")
-			if поз.Получ() != пЗнач {
-				тест.Errorf("п2.1 ОШИБКА при хранении начального значения(%v), знач=%v\n", пЗнач, поз)
-			}
-			if поз.String() != мФмт.Sprint(пЗнач) {
-				тест.Errorf("п2.2 ОШИБКА при хранении строкового значения(%v), знач=%s", пЗнач, поз)
-			}
-		}
-		_Создать := func() {
-			тест.Logf("п1 Создание изменяемой позиции в строке\n")
-			if поз, ош = Нов(10); ош != nil {
-				тест.Errorf("п1.1 ОШИБКА ош!=nil\n\t%v", ош)
-			}
-			if поз == nil {
-				тест.Errorf("п1.1 ОШИБКА поз не может быть nil\n")
-			}
-			_Проверить(10)
-		}
-		_Уст := func() {
-			поз.Уст(11)
-			_Проверить(11)
-		}
-		_Создать()
-		_Уст()
-		{ //3 Установка значения
+func TestStringPos(test *testing.T) {
+	createNegativePos(test)
+	create(test)
+	add(test)
+	reset(test)
+}
 
-			if поз.Получ() != 11 {
-				тест.Errorf("п3.2 ОШИБКА поз строки должен быть 11, знач=[%v]\n", поз.Получ())
-			}
-			if поз.String() != "11" {
-				тест.Errorf("п3.3 ОШИБКА строковое представление поз в строке должен быть (11), стр=[%v]\n", поз)
-			}
+func add(test *testing.T) {
+	test.Logf("add()\n")
+	pos.Inc()
+	check(test, 11)
+	pos.Inc()
+	check(test, 12)
+}
 
-		}
-		{ //4 Добавление значения
-			тест.Logf("п4 Добавление значения\n")
-			поз.Доб()
-			if поз.Получ() != 12 {
-				тест.Errorf("п4.4 ОШИБКА поз строки должен быть 12, знач=[%v]\n", поз.Получ())
-			}
-			if поз.String() != "12" {
-				тест.Errorf("п4.5 ОШИБКА строковое представление поз в строке должен быть (12), стр=[%v]\n", поз)
-			}
-		}
-		{ //5 Сброс позиции
-			тест.Logf("п5 Сброс позиции в строке\n")
-			поз.Сброс()
-			if поз.Получ() != 0 {
-				тест.Errorf("п5.1 ОШИБКА позиция в строке должен быть 0, знач=[%v]\n", поз.Получ())
-			}
-			if поз.String() != "0" {
-				тест.Errorf("п5.2 ОШИБКА строковое представление позиции в строке должен быть (0), стр=[%v]\n", поз)
-			}
-		}
+func reset(test *testing.T) {
+	test.Logf("reset()\n")
+	pos.Reset()
+	check(test, 0)
+	pos.Inc()
+	pos.Reset()
+	check(test, 0)
+}
 
+func createNegativePos(test *testing.T) {
+	test.Logf("createNegativePos()\n")
+	if pos, err = New(-1); err == nil {
+		test.Errorf("createNegativePos(): ERROR err==nil\n")
 	}
-	_Негатив := func() {
-		{ //1 Создание изменяемой координаты с отрицаительным значением
-			тест.Logf("1 Создание изменяемой координаты с отрицательным значением\n")
-			if поз, ош = Нов(-1); ош == nil {
-				тест.Errorf("н1.2 ОШИБКА ош==nil\n")
-			}
-			if поз != nil {
-				тест.Errorf("н1.2 ОШИБКА поз должен быть nil\n")
-			}
-		}
+	if pos != nil {
+		test.Errorf("createNegativePos(): ERROR pos!=nil\n")
 	}
-	_Позитив()
-	_Негатив()
+}
+
+func create(test *testing.T) {
+	test.Logf("create()\n")
+	if pos, err = New(10); err != nil {
+		test.Errorf("create(): ERROR err!=nil\n\t%v", err)
+	}
+	if pos == nil {
+		test.Errorf("п1.1 ERROR поз не может быть nil\n")
+	}
+	check(test, 10)
+}
+
+func check(test *testing.T, val types.UStringPos) {
+	test.Logf("check(): val=%v\n", val)
+	if pos.Get() != val {
+		test.Errorf("check(): ERROR in save default value(%v), pos=%v\n", val, pos)
+	}
+	if pos.String() != fmt.Sprint(val) {
+		test.Errorf("check(): ERROR in save strings value(%v), pos=%s", val, pos)
+	}
 }

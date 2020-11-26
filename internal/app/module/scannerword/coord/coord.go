@@ -21,10 +21,10 @@ type TCoord struct {
 func Нов(пСтр мТип.UStringNum, пПоз мТип.UStringPos) (коорд *TCoord, ош error) {
 	_коорд := TCoord{}
 	if _коорд.стр, ош = мСн.Нов(пСтр); ош != nil {
-		return nil, fmt.Errorf("coord.go/Нов(): ОШИБКА при создании номера строки\n\t%v", ош)
+		return nil, fmt.Errorf("coord.go/Нов(): ERROR при создании номера строки\n\t%v", ош)
 	}
 	if _коорд.поз, ош = мСп.Нов(пПоз); ош != nil {
-		return nil, fmt.Errorf("coord.go/Нов(): ОШИБКА при создании позиции в строке строки\n\t%v", ош)
+		return nil, fmt.Errorf("coord.go/Нов(): ERROR при создании позиции в строке строки\n\t%v", ош)
 	}
 	return &_коорд, nil
 }
@@ -47,7 +47,7 @@ func (сам *TCoord) СтрДоб() {
 //СтрУст -- устанавливает номер строки
 func (сам *TCoord) СтрУст(пНомер мТип.UStringNum) (ош error) {
 	if ош = сам.стр.Уст(пНомер); ош != nil {
-		return fmt.Errorf("TCoord.СтрУст(): ОШИБКА при установке номера строки\n\t%v", ош)
+		return fmt.Errorf("TCoord.СтрУст(): ERROR при установке номера строки\n\t%v", ош)
 	}
 	return nil
 }
@@ -75,7 +75,7 @@ func (сам *TCoord) ПозДоб() {
 //СтрПозУст -- устанавливает позицию строки
 func (сам *TCoord) ПозУст(пПоз мТип.UStringPos) (ош error) {
 	if ош = сам.поз.Уст(пПоз); ош != nil {
-		return fmt.Errorf("TCoord.ПозУст(): ОШИБКА при установке позиции в строке\n\t%v", ош)
+		return fmt.Errorf("TCoord.ПозУст(): ERROR при установке позиции в строке\n\t%v", ош)
 	}
 	return nil
 }

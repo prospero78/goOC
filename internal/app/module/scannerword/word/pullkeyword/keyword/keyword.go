@@ -19,7 +19,7 @@ type ТКлюч struct {
 func Нов(пКлюч мТип.UWordKey, пАлиас ...мТип.UWordKey) (ключ *ТКлюч, ош error) {
 	{ //Предусловия
 		if пКлюч == "" {
-			return nil, fmt.Errorf("keyword.go/Нов(): ОШИБКА пКлюч==''\n")
+			return nil, fmt.Errorf("keyword.go/Нов(): ERROR пКлюч==''\n")
 		}
 	}
 	_ключ := ТКлюч{
