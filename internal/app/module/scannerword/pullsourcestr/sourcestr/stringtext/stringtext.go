@@ -7,33 +7,26 @@ package stringtext
 
 import (
 	"fmt"
-	мТип "oc/internal/types"
+	"oc/internal/types"
 )
 
-//ТСтрока -- тип для хранения строки исходного кода
-type ТСтрока struct {
-	знач мТип.UStringSource
+//TSourceString -- тип для хранения строки исходного кода
+type TSourceString struct {
+	val types.UStringSource
 }
 
-//Нов -- возвращает ссылку на новый ТСтрока
-func Нов(пСтр мТип.UStringSource) (стр *ТСтрока, ош error) {
-	_стр := ТСтрока{}
-	if ош = _стр._Уст(пСтр); ош != nil {
-		return nil, fmt.Errorf("stringtext.go/Нов(): ERROR при установке  начального значения строки\n\t%v", ош)
+//New -- возвращает ссылку на новый TSourceString
+func New(strSource types.UStringSource) (src *TSourceString, err error) {
+	if strSource == "" {
+		return nil, fmt.Errorf("stringtext.go/New(): ERROR strSource empty")
 	}
-	return &_стр, nil
-}
-
-//Получ -- возвращает хранимое значение строки исходника ТСтрока
-func (сам *ТСтрока) Получ() мТип.UStringSource {
-	return сам.знач
-}
-
-//_Уст -- однократно устанавливает хранимое значение строки исходника ТСтрока
-func (сам *ТСтрока) _Уст(пСтр мТип.UStringSource) (ош error) {
-	if пСтр == "" {
-		return fmt.Errorf("ТСтрока._Уст(): ERROR пСтр не может быть строкой\n")
+	src = &TSourceString{
+		val: strSource,
 	}
-	сам.знач = пСтр
-	return nil
+	return src, nil
+}
+
+//Get -- возвращает хранимое значение строки исходника TSourceString
+func (sf *TSourceString) Get() types.UStringSource {
+	return sf.val
 }

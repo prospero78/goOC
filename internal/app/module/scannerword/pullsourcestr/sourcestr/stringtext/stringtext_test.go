@@ -5,47 +5,46 @@ package stringtext
 */
 
 import (
-	мТест "testing"
+	"testing"
 )
 
 const (
-	стрСтрока = "МОДУЛЬ модТест;"
+	strSource = "МОДУЛЬ модТест;"
 )
 
 var (
-	строка *ТСтрока
-	ош     error
+	str *TSourceString
+	err error
 )
 
-func TestИсхСтрокаСтр(тест *мТест.T) {
-	_Позитив := func() {
-		{ //1 Создание строки
-			тест.Logf("п1 Создание строки\n")
-			if строка, ош = Нов(стрСтрока); ош != nil {
-				тест.Errorf("п1.1 ERROR при создании строки исходника\n\t%v", ош)
-			}
-			if строка == nil {
-				тест.Errorf("п1.2 ERROR строка не должна быть nil\n")
-			}
-		}
-		{ //2 Проверка начальных значений
-			тест.Logf("п2 Проверка начальных значений\n")
-			if строка.Получ() != стрСтрока {
-				тест.Errorf("п2.1 ERROR при хранении начального згачения строки(%v), стр=[%v]", стрСтрока, строка.Получ())
-			}
-		}
+func TestSourceString(test *testing.T) {
+	createEmpty(test)
+	create(test)
+	check(test)
+}
+
+func createEmpty(test *testing.T) {
+	test.Logf("createEmpty()\n")
+	if str, err = New(""); err == nil {
+		test.Errorf("createEmpty(): ERROR err==nil\n")
 	}
-	_Негатив := func() {
-		{ //1 Создание строки с устым значением
-			тест.Logf("н1 Создание строки с пустым значением\n")
-			if строка, ош = Нов(""); ош == nil {
-				тест.Errorf("н1.1 ERROR при создании строки исходника\n")
-			}
-			if строка != nil {
-				тест.Errorf("н1.2 ERROR строка должна быть nil\n")
-			}
-		}
+	if str != nil {
+		test.Errorf("createEmpty(): ERROR str!=nil\n")
 	}
-	_Позитив()
-	_Негатив()
+}
+func create(test *testing.T) {
+	test.Logf("create()\n")
+	if str, err = New(strSource); err != nil {
+		test.Errorf("create(): ERROR err!=nil\n\t%v", err)
+	}
+	if str == nil {
+		test.Errorf("create(): ERROR str==nil\n")
+	}
+}
+
+func check(test *testing.T) {
+	test.Logf("check()\n")
+	if str.Get() != strSource {
+		test.Errorf("check(): ERROR strSource(%v)!=val(%v)", strSource, str.Get())
+	}
 }
