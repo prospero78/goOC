@@ -9,60 +9,60 @@ import (
 	"time"
 )
 
-//ТЛог -- операции с логами типов
-type ТЛог struct {
-	префикс string //Постоянный префикс для вывода
-	режим   int    //Режим работы типа
+//TLog -- операции с логами типов
+type TLog struct {
+	pref string //Постоянный префикс для вывода
+	mode int    //Режим работы типа
 }
 
 const (
-	//КОтладка -- режим отладки приложения
-	КОтладка = iota
-	//КИнфо -- режим информирования приложения
-	КИнфо
-	//КОшибки -- режим вывода только ошибок приложения
-	КОшибки
+	// DEBUG -- режим отладки приложения
+	DEBUG = iota
+	// INFO -- режим информирования приложения
+	INFO
+	// ERROR -- режим вывода только ошибок приложения
+	ERROR
 )
 
-//Нов -- возвращает указатель на новый ТЛог
-func Нов(префикс string, режим int) (лог *ТЛог) {
-	_лог := ТЛог{
-		префикс: префикс,
-		режим:   режим,
+// New -- возвращает указатель на новый TLog
+func New(pref string, mode int) (log *TLog) {
+	log = &TLog{
+		pref: pref,
+		mode: mode,
 	}
-	return &_лог
+	return log
 }
 
-//Отладка -- печатает сообщение, если установлен режим отладки
-func (сам *ТЛог) Отладка(метод string, пулАрг ...interface{}) {
-	if сам.режим <= КОтладка {
-		время := time.Now().Format("2006-01-02 15:04:05.000")
-		fmt.Printf("ОТЛД %v %v.%v():", время, сам.префикс, метод)
-		for _, арг := range пулАрг {
-			fmt.Printf(" %v", арг)
+// Debugf -- печатает сообщение, если установлен режим отладки
+func (sf *TLog) Debugf(method string, poolArg ...interface{}) {
+	if sf.mode <= DEBUG {
+		tineNow := time.Now().Format("2006-01-02 15:04:05.000")
+		fmt.Printf("DEBU %v %v.%v():", tineNow, sf.pref, method)
+		for _, arg := range poolArg {
+			fmt.Printf(" %v", arg)
 		}
 		fmt.Printf("\n")
 	}
 }
 
-//Инфо -- печатает информацию, если установлен режим информации
-func (сам *ТЛог) Инфо(метод string, пулАрг ...interface{}) {
-	if сам.режим <= КИнфо {
-		время := time.Now().Format("2006-01-02 15:04:05.000")
-		fmt.Printf("ИНФО %v %v.%v():", время, сам.префикс, метод)
-		for _, арг := range пулАрг {
-			fmt.Printf(" %v", арг)
+// Infof -- печатает информацию, если установлен режим информации
+func (sf *TLog) Infof(method string, poolArg ...interface{}) {
+	if sf.mode <= INFO {
+		tineNow := time.Now().Format("2006-01-02 15:04:05.000")
+		fmt.Printf("INFO %v %v.%v():", tineNow, sf.pref, method)
+		for _, arg := range poolArg {
+			fmt.Printf(" %v", arg)
 		}
 		fmt.Printf("\n")
 	}
 }
 
-//Паника -- генерирует панику по требованию
-func (сам *ТЛог) Паника(метод string, пулАрг ...interface{}) {
-	время := time.Now().Format("2006-01-02 15:04:05.000")
-	fmt.Printf("ПАНИКА %v %v.%v():", время, сам.префикс, метод)
-	for _, арг := range пулАрг {
-		fmt.Printf(" %v", арг)
+// Panicf -- генерирует панику по требованию
+func (sf *TLog) Panicf(method string, poolArg ...interface{}) {
+	tineNow := time.Now().Format("2006-01-02 15:04:05.000")
+	fmt.Printf("PANIC %v %v.%v():", tineNow, sf.pref, method)
+	for _, arg := range poolArg {
+		fmt.Printf(" %v", arg)
 	}
 	fmt.Printf("\n")
 	panic("")
