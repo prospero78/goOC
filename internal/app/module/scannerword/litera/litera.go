@@ -13,7 +13,7 @@ import (
 //ТЛит -- тип для работы с отдельной литерой
 type ТЛит struct {
 	лит   мТип.ULit
-	класс мТип.ULitКласс //Хранит класс литеры
+	класс мТип.ULitType //Хранит класс литеры
 }
 
 const (
@@ -32,13 +32,19 @@ const (
 	//Литеры-скобки
 	стрЛитСкобки = "(){}[]"
 	//Литеры-операции
-	стрЛитОпер                = "*/+-"
-	КБуква     мТип.ULitКласс = iota + 1
-	КСпецЛит
-	КЦифра
-	КРазделит
-	КСкобки
-	КОперации
+	стрЛитОпер               = "*/+-"
+	//LETTER -- буквы
+	LETTER     мТип.ULitType = iota + 1
+	//SPECLETTER -- специальные литеры
+	SPECLETTER
+	//DIGIT -- цифры
+	DIGIT
+	//TERMINAL -- разделительные литеры
+	TERMINAL
+	//BRACKET -- скобки всех видов
+	BRACKET
+	//OPERATION -- литеры операций
+	OPERATION
 )
 
 //Нов -- возвращает ссылку на новый ТЛит
@@ -52,53 +58,54 @@ func Нов(пЛит мТип.ULit) (лит *ТЛит, ош error) {
 
 // IsLetter -- проверяет наличие буквы в литере
 func (сам *ТЛит) IsLetter() bool {
-	return сам.класс == КБуква
+	return сам.класс == LETTER
 }
 
 // IsSpecLetter -- проверяет наличие специальных литер не имеющих смысла в коде
 func (сам *ТЛит) IsSpecLetter() bool {
-	return сам.класс == КСпецЛит
+	return сам.класс == SPECLETTER
 }
 
 //IsDigit -- проверяет, что литера цифра
 func (сам *ТЛит) IsDigit() bool {
-	return сам.класс == КЦифра
+	return сам.класс == DIGIT
 }
 
-//ЕслиРаделит -- проверяет, что литера разделитель
+//ЕслиРазделит -- проверяет, что литера разделитель
 func (сам *ТЛит) ЕслиРазделит() bool {
-	return сам.класс == КРазделит
+	return сам.класс == TERMINAL
 }
 
 //ЕслиСкобки -- проверяет, что литера скобка
 func (сам *ТЛит) ЕслиСкобки() bool {
-	return сам.класс == КСкобки
+	return сам.класс == BRACKET
 }
 
 //ЕслиОпер -- проверяет, что литера операция
 func (сам *ТЛит) ЕслиОпер() bool {
-	return сам.класс == КОперации
+	return сам.класс == OPERATION
 }
 
 //Уст -- устанавливает хранимую литеру
 func (сам *ТЛит) Уст(пЛит мТип.ULit) error {
 	if пЛит == "" {
-		return fmt.Errorf("ТЛит.Уст(): пЛит не может быть пустой\n")
+		return fmt.Errorf("ТЛит.Уст(): пЛит не может быть пустой")
 	}
-	if strings.Contains(стрБуквыВсе, string(пЛит)) {
-		сам.класс = КБуква
-	} else if strings.Contains(стрСпецЛит, string(пЛит)) {
-		сам.класс = КСпецЛит
-	} else if strings.Contains(стрЦифры, string(пЛит)) {
-		сам.класс = КЦифра
-	} else if strings.Contains(стрРазделЛит, string(пЛит)) {
-		сам.класс = КРазделит
-	} else if strings.Contains(стрЛитСкобки, string(пЛит)) {
-		сам.класс = КСкобки
-	} else if strings.Contains(стрЛитОпер, string(пЛит)) {
-		сам.класс = КОперации
-	} else {
-		return fmt.Errorf("ТЛит.Уст(): ERROR неизвестный класс литеры, пЛит=[%v]\n", пЛит)
+	switch{
+	case strings.Contains(стрБуквыВсе, string(пЛит)):
+		сам.класс = LETTER
+	case strings.Contains(стрСпецЛит, string(пЛит)):
+		сам.класс = SPECLETTER
+	case strings.Contains(стрЦифры, string(пЛит)):
+		сам.класс = DIGIT
+	case strings.Contains(стрРазделЛит, string(пЛит)):
+		сам.класс = TERMINAL
+	case strings.Contains(стрЛитСкобки, string(пЛит)):
+		сам.класс = BRACKET
+	case strings.Contains(стрЛитОпер, string(пЛит)):
+		сам.класс = OPERATION
+	default:
+		return fmt.Errorf("ТЛит.Уст(): ERROR неизвестный класс литеры, пЛит=[%v]", пЛит)
 	}
 	сам.лит = пЛит
 	return nil
@@ -110,7 +117,7 @@ func (сам *ТЛит) Получ() мТип.ULit {
 }
 
 //Класс -- возвращает класс литеры
-func (сам *ТЛит) Класс() мТип.ULitКласс {
+func (сам *ТЛит) Класс() мТип.ULitType {
 	return сам.класс
 }
 

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"oc/internal/app/module/scannerword/coord/num"
 	"oc/internal/app/module/scannerword/coord/pos"
+	"oc/internal/types"
 )
 
 //TCoord -- тип для хранения координат
@@ -17,8 +18,8 @@ type TCoord struct {
 }
 
 //New -- возвращает указатель на новый TCoord
-func New(numStr мТип.UStringNum, posStr мТип.UStringPos) (coord *TCoord, err error) {
-	coord := &TCoord{}
+func New(numStr types.UStringNum, posStr types.UStringPos) (coord *TCoord, err error) {
+	coord = &TCoord{}
 	if coord.num, err = num.New(numStr); err != nil {
 		return nil, fmt.Errorf("coord.go/New(): ERROR in create num source string\n\t%v", err)
 	}
@@ -34,7 +35,7 @@ func (sf *TCoord) String() string {
 }
 
 //Num -- возвращает хранимый номера строки
-func (sf *TCoord) Num() мТип.UStringNum {
+func (sf *TCoord) Num() types.UStringNum {
 	return sf.num.Get()
 }
 
@@ -44,7 +45,7 @@ func (sf *TCoord) NumInc() {
 }
 
 //NumSet -- устанавливает номер строки
-func (sf *TCoord) NumSet(num мТип.UStringNum) (err error) {
+func (sf *TCoord) NumSet(num types.UStringNum) (err error) {
 	if err = sf.num.Set(num); err != nil {
 		return fmt.Errorf("TCoord.NumSet(): ERROR in set num source string\n\t%v", err)
 	}
@@ -72,8 +73,8 @@ func (sf *TCoord) PosInc() {
 }
 
 //PosSet -- устанавливает позицию строки
-func (sf *TCoord) PosSet(pos мТип.UStringPos) (err error) {
-	if err = sf.pos.Уст(pos); err != nil {
+func (sf *TCoord) PosSet(pos types.UStringPos) (err error) {
+	if err = sf.pos.Set(pos); err != nil {
 		return fmt.Errorf("TCoord.PosSet(): ERROR in set pos in source string\n\t%v", err)
 	}
 	return nil
