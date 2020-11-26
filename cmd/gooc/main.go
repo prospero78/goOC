@@ -5,24 +5,24 @@ package main
 */
 
 import (
-	мПрилож "oc/internal/app"
-	мПарам "oc/internal/app/param"
-	мЛог "oc/internal/log"
-	мШапка "oc/internal/splashscreen"
+	"oc/internal/app"
+	"oc/internal/app/param"
+	"oc/internal/log"
+	mSs "oc/internal/splashscreen"
 )
 
 func main() {
-	режим := мЛог.КОтладка
-	парам := &мПарам.ТПарам{
+	режим := log.КОтладка
+	парам := &param.ТПарам{
 		Версия: "0.0.6",
 		Сборка: "0070",
 		Дата:   "2020-08-31 22:03:00",
 		Режим:  режим,
 	}
-	мШапка.Печать(парам)
-	лог := мЛог.Нов("main", режим)
+	mSs.Печать(парам)
+	лог := log.Нов("main", режим)
 	лог.Отладка("main", "Начало работы компилятора")
-	прилож, ош := мПрилож.Нов(парам)
+	прилож, ош := app.Нов(парам)
 	if ош != nil {
 		лог.Паника("main", "Запуск приложения", ош)
 	}
