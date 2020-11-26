@@ -1,4 +1,4 @@
-package pullword
+package poolword
 
 /*
 	Модуль предоставляет тип пула слов модуля.

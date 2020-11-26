@@ -5,13 +5,13 @@ package pullkeyword
 */
 
 import (
-	мКлюч "oc/internal/app/module/scannerword/word/pullkeyword/keyword"
+	"oc/internal/app/module/scannerword/word/poolkeyword/keyword"
 	мТип "oc/internal/types"
 )
 
 //тПулКлючСлова -- операции с пулом ключевых слов
 type тПулКлючСлова struct {
-	пулСлова map[мТип.UWordKey]*мКлюч.ТКлюч
+	пулСлова map[мТип.UWordKey]*keyword.ТКлюч
 }
 
 var (

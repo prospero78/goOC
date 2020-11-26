@@ -7,7 +7,7 @@ package scannerword
 import (
 	"fmt"
 	"oc/internal/app/module/scannerword/coord"
-	"oc/internal/app/module/scannerword/pullword/word"
+	"oc/internal/app/module/scannerword/poolword/word"
 	"oc/internal/log"
 
 	//мЛит "oc/internal/app/module/scannerword/litera"
@@ -66,7 +66,7 @@ func (sf *TScannerWord) _СловоДобав(пСлово types.UWord) (ош er
 //   номера строк, позицию в строке. Тип не заполняет так как нужен семантический анализ (может это
 //   тупо комментарии или строки).
 func (sf *TScannerWord) _Обработать(текстИсх types.UTextSource) (ош error) {
-	sf.log.Отладка("_Обработать")
+	sf.log.Debugf("_Обработать")
 	словоНов := types.UWord("")
 	_СловоНов := func() error {
 		if словоНов != "" {

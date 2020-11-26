@@ -6,22 +6,22 @@ package word
 
 import (
 	"fmt"
-	мЛит "oc/internal/app/module/scannerword/litera"
-	мПулКлюч "oc/internal/app/module/scannerword/word/pullkeyword"
-	мТип "oc/internal/types"
+	"oc/internal/app/module/scannerword/litera"
+	mKey "oc/internal/app/module/scannerword/word/poolkeyword"
+	"oc/internal/types"
 )
 
 //ТСлово -- операции со словами
 type ТСлово struct {
-	стрИсх   мТип.ISourceString //Строка исходника
-	стрСлово мТип.UWord         //Само слово
-	коорд    мТип.ICoordFix     //Координаты слова
-	лит      мТип.ILit          //Вспомогательная литера на проверка слова
+	стрИсх   types.ISourceString //Строка исходника
+	стрСлово types.UWord         //Само слово
+	коорд    types.ICoordFix     //Координаты слова
+	лит      types.ILit          //Вспомогательная литера на проверка слова
 }
 
 //Нов -- возвращает указатель на новый ТСлово
-func Нов(пКоорд мТип.ICoordFix, пСлово мТип.UWord,
-	пСтрИсх мТип.ISourceString) (слово *ТСлово, ош error) {
+func Нов(пКоорд types.ICoordFix, пСлово types.UWord,
+	пСтрИсх types.ISourceString) (слово *ТСлово, ош error) {
 	{ //Предусловия
 		if пКоорд == nil {
 			return nil, fmt.Errorf("word.go/Нов(): ERROR пКоорд==nil")
@@ -30,7 +30,7 @@ func Нов(пКоорд мТип.ICoordFix, пСлово мТип.UWord,
 			return nil, fmt.Errorf("word.go/Нов(): ERROR пСлово==''")
 		}
 		if пСтрИсх == nil {
-			return nil, fmt.Errorf("word.go/Нов(): ERROR пСтрИсх==nil\n")
+			return nil, fmt.Errorf("word.go/Нов(): ERROR пСтрИсх==nil")
 		}
 	}
 	_слово := ТСлово{
@@ -38,7 +38,7 @@ func Нов(пКоорд мТип.ICoordFix, пСлово мТип.UWord,
 		стрСлово: пСлово,
 		коорд:    пКоорд,
 	}
-	if _слово.лит, ош = мЛит.New("+"); ош != nil {
+	if _слово.лит, ош = litera.New("+"); ош != nil {
 		return nil, fmt.Errorf("word.go/Нов(): ERROR при создании литеры\n\t%v", ош)
 	}
 	return &_слово, nil
@@ -46,7 +46,7 @@ func Нов(пКоорд мТип.ICoordFix, пСлово мТип.UWord,
 
 // Проверяет, что строка не находится в ключевых словах
 func (сам *ТСлово) _ЕслиКлючевоеСлово() bool {
-	return мПулКлюч.ПулКлюч.КлючНайти(мТип.UWordKey(сам.стрСлово))
+	return mKey.ПулКлюч.КлючНайти(types.UWordKey(сам.стрСлово))
 }
 
 // Проверяет, что литера не находится в списке запрещённых (для имён сущностей)
@@ -79,7 +79,7 @@ func (сам *ТСлово) IsName() bool {
 }
 
 //Слово -- возвращает слово, которое хранит тип
-func (сам *ТСлово) Слово() мТип.UWord {
+func (сам *ТСлово) Слово() types.UWord {
 	return сам.стрСлово
 }
 
