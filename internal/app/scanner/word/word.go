@@ -34,3 +34,8 @@ func New(numStr, pos int, val string) *TWord {
 	}
 	return word
 }
+
+// Word -- возвращает хранимое слово
+func (sf *TWord) Word() string {
+	return sf.word
+}

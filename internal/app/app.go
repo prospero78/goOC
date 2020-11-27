@@ -7,8 +7,8 @@ package app
 
 import (
 	"io/ioutil"
-	"oc/internal/log"
 	"oc/internal/app/scanner"
+	"oc/internal/log"
 	"os"
 )
 
