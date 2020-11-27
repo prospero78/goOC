@@ -1,6 +1,9 @@
 package word
 
-import "log"
+import (
+	"log"
+	"strings"
+)
 
 /*
 	Пакет предоставляет тип слова.
@@ -38,4 +41,39 @@ func New(numStr, pos int, val string) *TWord {
 // Word -- возвращает хранимое слово
 func (sf *TWord) Word() string {
 	return sf.word
+}
+
+// Проверяет, что есть конкретная литера
+func (sf *TWord) isLetter(lit string) (res int) {
+	if len(sf.word) == 0 {
+		log.Panicf("TWord.isLetter(): word==''")
+	}
+	if strings.Contains("_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz", lit) { // en_En.UTF-8
+		return 0
+	}
+	if strings.Contains("АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя", lit) { // ru_RU.UTF-8
+		return 0
+	}
+	if strings.Contains(".@!", lit) { // Если допустимые литеры
+		return 1
+	}
+	if strings.Contains("1234567890", lit) { // Если цифры
+		return 2
+	}
+	return 3
+}
+
+// IsName -- проверяет слово на строгое соответствие требованиям к имени
+func (sf *TWord) IsName() bool {
+	lit := string([]rune(sf.word)[0])
+	if res := sf.isLetter(lit); res != 0 { // Проверка на недопустимую первую литеру
+		return false
+	}
+	for _, rune := range []rune(sf.word) {
+		lit = string(rune)
+		if res := sf.isLetter(lit); !(res == 0 || res == 2) {
+			return false
+		}
+	}
+	return true
 }

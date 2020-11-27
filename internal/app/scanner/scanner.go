@@ -1,7 +1,7 @@
 package scanner
 
 import (
-	"fmt"
+	//"fmt"
 	"log"
 	"oc/internal/app/scanner/stringsource"
 	"oc/internal/app/scanner/word"
@@ -41,9 +41,9 @@ func (sf *TScanner) Scan(strSource string) {
 	sf.scanString(strSource)
 
 	log.Printf("TScanner.Run(): lines=%v word=%v\n", len(poolString), len(sf.poolWord))
-	for _, word := range sf.poolWord {
-		fmt.Printf("%v\t", word.Word())
-	}
+	// for _, word := range sf.poolWord {
+	// 	fmt.Printf("%v\t", word.Word())
+	// }
 }
 
 // Сканирует каждую строку, разбивает на слова
@@ -197,6 +197,7 @@ func (sf *TScanner) isTerminalEmpty() (res bool) {
 	}
 	if lit == "\n" {
 		sf.num++
+		sf.pos = -1
 		res = true
 	}
 	if res {
@@ -270,4 +271,11 @@ func (sf *TScanner) getWord() {
 func (sf *TScanner) addWord(wrd string) {
 	word := word.New(sf.num, sf.pos, wrd)
 	sf.poolWord = append(sf.poolWord, word)
+}
+
+// PoolWord -- возвращает пул слов после обработки
+func (sf *TScanner) PoolWord() (res []*word.TWord) {
+	res = make([]*word.TWord, 0)
+	res = append(res, sf.poolWord...)
+	return res
 }
