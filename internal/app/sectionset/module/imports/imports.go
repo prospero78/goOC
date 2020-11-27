@@ -66,5 +66,6 @@ func (sf *TImports) Split(pool []*word.TWord) []*word.TWord {
 			return pool
 		}
 	}
+	log.Panicf("TImports.Split(): not have IMPORTS\n")
 	return nil
 }

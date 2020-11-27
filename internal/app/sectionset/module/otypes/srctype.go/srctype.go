@@ -1,0 +1,44 @@
+package srctype
+
+import (
+	"log"
+	"oc/internal/app/scanner/word"
+)
+
+/*
+	Пакет предоставляет тип для хранения типа, определяемом в исходнике.
+*/
+
+// TSrcType -- операции со словами типа из исходника
+type TSrcType struct {
+	word     *word.TWord
+	isExport bool
+	poolWord []*word.TWord // Слова описателя типа
+}
+
+// New -- возвращает новый *TSrcType
+func New(wrd *word.TWord) *TSrcType {
+	if wrd == nil {
+		log.Panicf("srctype.go/New(): wrd==nil\n")
+	}
+	st := &TSrcType{
+		word:     wrd,
+		poolWord: make([]*word.TWord, 0),
+	}
+	return st
+}
+
+// SetExport -- устанавливает признак экспортирования типа
+func (sf *TSrcType) SetExport() {
+	if sf.isExport {
+		log.Panicf("srctype.go/New(): export already set\n")
+	}
+}
+
+// AddWord -- добавляет слово в описатель типа
+func (sf *TSrcType) AddWord(word *word.TWord) {
+	if word == nil {
+		log.Panicf("srctype.go/New(): word==nil\n")
+	}
+	sf.poolWord = append(sf.poolWord, word)
+}

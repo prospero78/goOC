@@ -16,6 +16,11 @@ func New() (kws *TKeywords) {
 	}
 	kws.addKeyword("MODULE", "МОДУЛЬ")
 	kws.addKeyword("IMPORT", "ИМПОРТ")
+	kws.addKeyword("CONST", "КОНСТ")
+	kws.addKeyword("TYPE", "ТИПЫ")
+	kws.addKeyword("VAR", "ПЕР" )
+	kws.addKeyword("PROCEDURE", "ПРОЦ")
+	kws.addKeyword("BEGIN", "НАЧ")
 	return kws
 }
 

@@ -22,6 +22,10 @@ TYPE
 
 	tpInt300 = POINTER TO tInt32;
 
+	tpInt300 = POINTER TO mIso.tInt32;
+
+	tpInt300 = POINTER TO ARRAY 201 OF CHAR;
+
 	SetCompilerFlagProc* = PROCEDURE(VAR pragma, tiles, block: ARRAY OF CHAR);
 	NotifyErrorProc* = PROCEDURE(pos: INTEGER; msg: ARRAY OF CHAR):REAL;
 	NoErrorProc = PROCEDURE(msg: ARRAY OF мЧт.тСтр):BOOLEAN;

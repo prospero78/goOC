@@ -8,16 +8,20 @@ package module
 import (
 	"log"
 	"oc/internal/app/scanner/word"
+	"oc/internal/app/sectionset/module/consts"
 	"oc/internal/app/sectionset/module/imports"
 	"oc/internal/app/sectionset/module/keywords"
+	"oc/internal/app/sectionset/module/otypes"
 )
 
 // TModule -- операции со словами модуля
 type TModule struct {
-	poolWord []*word.TWord
-	keywords *keywords.TKeywords
-	name     string
-	imports  *imports.TImports
+	poolWord []*word.TWord       // пул слов модуля
+	keywords *keywords.TKeywords // Пул допустимыз ключевых слов
+	name     string              // Имя модуля
+	imports  *imports.TImports   //  Секция импорта
+	consts   *consts.TConsts     // Секция констант
+	otypes   *otypes.TOtypes     // Секция типов
 }
 
 // New -- возвращает новый *TModule
@@ -26,6 +30,8 @@ func New() *TModule {
 		poolWord: make([]*word.TWord, 0),
 		keywords: keywords.New(),
 		imports:  imports.New(),
+		consts:   consts.New(),
+		otypes:   otypes.New(),
 	}
 }
 
@@ -70,5 +76,8 @@ func (sf *TModule) Set(poolWord []*word.TWord) (pool []*word.TWord, _len int) {
 func (sf *TModule) Split() {
 	poolWord := make([]*word.TWord, 0)
 	poolWord = append(poolWord, sf.poolWord...)
-	sf.imports.Split(poolWord)
+	poolWord = sf.imports.Split(poolWord)
+	poolWord = sf.consts.Split(poolWord)
+	log.Printf("TModule.Split(): const=%v\n", sf.consts.Len())
+	poolWord = sf.otypes.Split(poolWord)
 }
