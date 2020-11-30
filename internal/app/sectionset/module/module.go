@@ -12,6 +12,7 @@ import (
 	"oc/internal/app/sectionset/module/imports"
 	"oc/internal/app/sectionset/module/keywords"
 	"oc/internal/app/sectionset/module/otypes"
+	"oc/internal/app/sectionset/module/procs"
 	"oc/internal/app/sectionset/module/vars"
 )
 
@@ -24,6 +25,7 @@ type TModule struct {
 	consts   *consts.TConsts     // Секция констант
 	otypes   *otypes.TOtypes     // Секция типов
 	vars     *vars.TVars         // Секция переменных
+	procs    *procs.TProcedures  // Секция процедур
 }
 
 // New -- возвращает новый *TModule
@@ -35,6 +37,7 @@ func New() *TModule {
 		consts:   consts.New(),
 		otypes:   otypes.New(),
 		vars:     vars.New(),
+		procs:    procs.New(),
 	}
 }
 
@@ -86,4 +89,5 @@ func (sf *TModule) Split() {
 	log.Printf("TModule.Split(): types=%v\n", sf.otypes.Len())
 	poolWord = sf.vars.Split(poolWord)
 	log.Printf("TModule.Split(): vars=%v\n", sf.vars.Len())
+	poolWord = sf.procs.Split(poolWord)
 }

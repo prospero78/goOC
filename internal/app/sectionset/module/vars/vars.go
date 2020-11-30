@@ -1,7 +1,6 @@
 package vars
 
 import (
-	"fmt"
 	"log"
 	"oc/internal/app/scanner/word"
 	"oc/internal/app/sectionset/module/keywords"
@@ -154,12 +153,12 @@ func (sf *TVars) checkRecord(svar *srcvar.TSrcVar, pool []*word.TWord) (pl []*wo
 
 // Len -- возвращает количество типов
 func (sf *TVars) Len() int {
-	for _, vr := range sf.poolVar {
-		fmt.Printf("%v = ", vr.Name())
-		for _, word := range vr.Words() {
-			fmt.Printf("%v ", word.Word())
-		}
-		fmt.Print("\n")
-	}
+	// for _, vr := range sf.poolVar {
+	// 	fmt.Printf("%v = ", vr.Name())
+	// 	for _, word := range vr.Words() {
+	// 		fmt.Printf("%v ", word.Word())
+	// 	}
+	// 	fmt.Print("\n")
+	// }
 	return len(sf.poolVar)
 }

@@ -13,6 +13,7 @@ package sectionset
 */
 
 import (
+	"fmt"
 	"log"
 	"oc/internal/app/scanner/word"
 	"oc/internal/app/sectionset/comment"
@@ -42,6 +43,17 @@ func New() *TSectionSet {
 func (sf *TSectionSet) Split(scanner IScan) {
 	log.Printf("TSectionSet()\n")
 	poolWord := scanner.PoolWord()
+	num:=0
+	for adr, word:=range poolWord{
+		if word.NumStr()>87{
+			fmt.Printf("%v:%v\t", adr, word.Word())
+		}
+		if num!=word.NumStr(){
+			fmt.Print("\n")
+			num=word.NumStr()
+		}
+	}
+	panic("stop")
 	poolWord = sf.comment.Set(poolWord)
 	poolWord, numWordMod := sf.module.Set(poolWord) // Дополнительные комментарии за концом файла
 	numWordCom := sf.comment.AddWord(poolWord)

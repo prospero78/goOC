@@ -77,3 +77,8 @@ func (sf *TWord) IsName() bool {
 	}
 	return true
 }
+
+// NumStr -- возвращает номер строки
+func (sf *TWord)NumStr()int{
+	return sf.numStr
+}
