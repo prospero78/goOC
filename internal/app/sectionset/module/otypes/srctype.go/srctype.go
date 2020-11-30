@@ -42,3 +42,13 @@ func (sf *TSrcType) AddWord(word *word.TWord) {
 	}
 	sf.poolWord = append(sf.poolWord, word)
 }
+
+// Words -- возвращает хранимые слова типа
+func (sf *TSrcType) Words() []*word.TWord {
+	return sf.poolWord
+}
+
+// Name -- возвращает имя типа
+func (sf *TSrcType)Name()string{
+	return sf.word.Word()
+}

@@ -18,9 +18,11 @@ func New() (kws *TKeywords) {
 	kws.addKeyword("IMPORT", "ИМПОРТ")
 	kws.addKeyword("CONST", "КОНСТ")
 	kws.addKeyword("TYPE", "ТИПЫ")
-	kws.addKeyword("VAR", "ПЕР" )
+	kws.addKeyword("VAR", "ПРМ" )
 	kws.addKeyword("PROCEDURE", "ПРОЦ")
 	kws.addKeyword("BEGIN", "НАЧ")
+	kws.addKeyword("RECORD", "ЗАПИСЬ")
+	kws.addKeyword("END", "КНЦ")
 	return kws
 }
 

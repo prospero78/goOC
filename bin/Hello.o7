@@ -26,7 +26,7 @@ TYPE
 
 	tpInt300 = POINTER TO ARRAY 201 OF CHAR;
 
-	SetCompilerFlagProc* = PROCEDURE(VAR pragma, tiles, block: ARRAY OF CHAR);
+	SetCompilerFlagProc* = PROCEDURE(ПРМ pragma, tiles, block: ARRAY OF CHAR);
 	NotifyErrorProc* = PROCEDURE(pos: INTEGER; msg: ARRAY OF CHAR):REAL;
 	NoErrorProc = PROCEDURE(msg: ARRAY OF мЧт.тСтр):BOOLEAN;
 
@@ -90,7 +90,7 @@ PROCEDURE Test(st, al :REAL; VAR zt:INTEGER):мЧт.Буф;
 			iPos: INTEGER;
 			sRate: CHAR
 		END;
-	VAR
+	ПРМ
 		dlt: INTEGER;
 		dll: мЧт.тБуф;
 		бПривет: BOOLEAN;
@@ -117,9 +117,9 @@ PROCEDURE Init*(VAR st, al :REAL; zt:INTEGER);
 		Test
 	END Init;
 
-BEGIN
+НАЧ
 	a := 5
-КОНЕЦ _Test.
+КНЦ _Test.
 
 _А это текст за концом модуля, который тупо игнорируется. Ха-ха-ха!))
 Здесь можно писать всё, что угодно._
