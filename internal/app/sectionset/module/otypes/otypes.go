@@ -111,7 +111,7 @@ func (sf *TOtypes) checkExport(otp *srctype.TSrcType, pool []*word.TWord) []*wor
 func (sf *TOtypes) checkAsign(pool []*word.TWord) (pl []*word.TWord) {
 	assign := pool[0]
 	if assign.Word() != "=" { //Признак определения типа
-		//log.Panicf("TOtypes.fillTypes(): bad assign(%v) for type\n", assign.Word())
+		//log.Panicf("TOtypes.checkAsign(): bad assign(%v) for type\n", assign.Word())
 		return pool
 	}
 	// Получить описатель типа

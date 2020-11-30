@@ -79,6 +79,11 @@ VAR
 			цЛуч2: tInt32
 		END;
 	END;
+	des3 : PROCEDURE(msg: BOOLEAN):ARRAY OF мЧт.тСтр;
+	des4: PONTER TO RECORD;
+		beg :INTEGER;
+		end:INTEGER
+	END;
 
 PROCEDURE Test(st, al :REAL; VAR zt:INTEGER):мЧт.Буф;
 	CONST

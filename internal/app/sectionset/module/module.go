@@ -85,4 +85,5 @@ func (sf *TModule) Split() {
 	poolWord = sf.otypes.Split(poolWord)
 	log.Printf("TModule.Split(): types=%v\n", sf.otypes.Len())
 	poolWord = sf.vars.Split(poolWord)
+	log.Printf("TModule.Split(): vars=%v\n", sf.vars.Len())
 }
