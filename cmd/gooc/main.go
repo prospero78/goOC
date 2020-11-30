@@ -11,9 +11,9 @@ import (
 )
 
 var (
-	vers  = "0.0.6"
-	build = "0070"
-	data  = "2020-11-26 11:56:00"
+	vers  = "0.0.7"
+	build = "0090"
+	data  = "2020-11-30 12:06:00"
 	mode  = log.DEBUG
 )
 

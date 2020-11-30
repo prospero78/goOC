@@ -5,7 +5,6 @@ package otypes
 */
 
 import (
-	"fmt"
 	"log"
 	"oc/internal/app/scanner/word"
 	"oc/internal/app/sectionset/module/keywords"
@@ -157,12 +156,12 @@ func (sf *TOtypes) checkRecord(otp *srctype.TSrcType, pool []*word.TWord) (pl []
 
 // Len -- возвращает количество типов
 func (sf *TOtypes) Len() int {
-	for _, typ := range sf.poolType {
-		fmt.Printf("%v = ", typ.Name())
-		for _, word := range typ.Words() {
-			fmt.Printf("%v ", word.Word())
-		}
-		fmt.Print("\n")
-	}
+	// for _, typ := range sf.poolType {
+	// 	fmt.Printf("%v = ", typ.Name())
+	// 	for _, word := range typ.Words() {
+	// 		fmt.Printf("%v ", word.Word())
+	// 	}
+	// 	fmt.Print("\n")
+	// }
 	return len(sf.poolType)
 }
