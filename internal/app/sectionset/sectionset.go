@@ -56,3 +56,13 @@ func (sf *TSectionSet) Split(scanner IScan) {
 	// Теперь в модуле надо разделить слова по внутренним секциям
 	sf.module.Split()
 }
+
+// ModuleName -- возвращает имя модуля после сканирования
+func (sf *TSectionSet) ModuleName() string {
+	return sf.module.Name()
+}
+
+// Module -- возвращает модуль после сканирования
+func (sf *TSectionSet) Module() *module.TModule {
+	return sf.module
+}

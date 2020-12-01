@@ -1,5 +1,5 @@
 (* _Немного комментариев перед модулем_ *)
-МОДУЛЬ _Test;
+МОДУЛЬ Hello;
 (* _Это комментарий можно пропустить.
 	(* а это вообще вложенный комментарий_ *)   *)
 
@@ -99,13 +99,13 @@ PROCEDURE Test(st, al :REAL; VAR zt:INTEGER):мЧт.Буф;
 		dlt: INTEGER;
 		dll: мЧт.тБуф;
 		бПривет: BOOLEAN;
-	PROCEDURE Cargo(VAR sd, al :REAL; zt:INTEGER);
+	PROCEDURE _Cargo(VAR sd, al :REAL; zt:INTEGER);
 		BEGIN
 			(* _Ещё немного разных тегов для более большой разницы с чистыми тегами_ *)
 			sd := al * 2;
 			zt := FLOOR(sd) + 253;
 			Test
-		END Cargo;
+		END _Cargo;
 
 	BEGIN
 		(* Ещё1 немного2 разных3 слов4 для5 более6 большой7 разницы8 с9 чистыми0 словами@ *)
@@ -125,7 +125,7 @@ PROCEDURE Test(st, al :REAL; VAR zt:INTEGER):мЧт.Буф;
 НАЧ
 	a := 5;
 	Init
-КНЦ _Test.
+КНЦ Hello.
 
 _А это текст за концом модуля, который тупо игнорируется. Ха-ха-ха!))
 Здесь можно писать всё, что угодно._

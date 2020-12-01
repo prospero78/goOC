@@ -99,3 +99,8 @@ func (sf *TModule) Split() {
 		log.Panicf("TModule.Split(): after BEGIN poolWord len(%v)!=0\n", len(poolWord))
 	}
 }
+
+// Name -- возвращает имя модуля после сканирования
+func (sf *TModule) Name() string {
+	return sf.name
+}

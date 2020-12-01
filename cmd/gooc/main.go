@@ -13,7 +13,7 @@ import (
 var (
 	vers  = "0.0.8"
 	build = "0095"
-	data  = "2020-11-30 16:38:00"
+	data  = "2020-12-01 11:43:23"
 	mode  = log.DEBUG
 )
 
