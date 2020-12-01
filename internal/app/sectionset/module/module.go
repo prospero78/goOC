@@ -95,4 +95,7 @@ func (sf *TModule) Split() {
 	poolWord = sf.procs.Split(poolWord)
 	log.Printf("TModule.Split(): procs=%v\n", sf.procs.Len())
 	poolWord = sf.begin.Split(poolWord)
+	if len(poolWord)!=0{
+		log.Panicf("TModule.Split(): after BEGIN poolWord len(%v)!=0\n", len(poolWord))
+	}
 }
