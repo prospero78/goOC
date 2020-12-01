@@ -21,7 +21,7 @@ type TImports struct {
 func New() *TImports {
 	return &TImports{
 		poolAlias: make([]*alias.TAlias, 0),
-		keywords:  keywords.New(),
+		keywords:  keywords.Keys,
 	}
 }
 

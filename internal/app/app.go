@@ -51,9 +51,11 @@ func (sf *TOc) Run() {
 	nameMain := sf.section.Module().Name()
 	sf.path = sf.filePath[:len(sf.filePath)-len(nameMain+".o7")]
 	sf.checkModuleName(sf.filePath, nameMain)
-	sf.modules.SetMain(nameMain, sf.section.Module())
+	sf.modules.SetMain(nameMain)
+	sf.modules.AddModule(sf.section.Module())
 	sf.getImport(nameMain)
 	log.Printf("Toc.Run(): all modules=%v\n", sf.modules.Len())
+	sf.modules.ProcessConstant()
 }
 
 // По требованию читает файл, возвращает содержимое
@@ -89,6 +91,9 @@ func (sf *TOc) getImport(nameModule string) {
 
 // Готовит параметры под новый сканер
 func (sf *TOc) scanModule(moduleName string) {
+	if sf.modules.IsExist(moduleName){
+		return
+	}
 	filePath := sf.path + moduleName + ".o7"
 	sf.scanner = scanner.New()
 	sf.section = sectionset.New()

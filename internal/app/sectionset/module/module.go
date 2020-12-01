@@ -10,6 +10,7 @@ import (
 	"oc/internal/app/scanner/word"
 	"oc/internal/app/sectionset/module/begin"
 	"oc/internal/app/sectionset/module/consts"
+	"oc/internal/app/sectionset/module/consts/srcconst"
 	"oc/internal/app/sectionset/module/imports"
 	"oc/internal/app/sectionset/module/imports/alias"
 	"oc/internal/app/sectionset/module/keywords"
@@ -35,7 +36,7 @@ type TModule struct {
 func New() *TModule {
 	return &TModule{
 		poolWord: make([]*word.TWord, 0),
-		keywords: keywords.New(),
+		keywords: keywords.Keys,
 		imports:  imports.New(),
 		consts:   consts.New(),
 		otypes:   otypes.New(),
@@ -110,4 +111,9 @@ func (sf *TModule) Name() string {
 // GetImport -- возвращает модули для импорта
 func (sf *TModule) GetImport() []*alias.TAlias {
 	return sf.imports.Imports()
+}
+
+// GetConst -- возвращает пул констант модуля
+func (sf *TModule) GetConst() []*srcconst.TConst {
+	return sf.consts.Get()
 }

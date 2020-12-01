@@ -20,7 +20,7 @@ type TConsts struct {
 // New -- возвращает новый *TConsts
 func New() *TConsts {
 	return &TConsts{
-		keywords:  keywords.New(),
+		keywords:  keywords.Keys,
 		poolConst: make([]*srcconst.TConst, 0),
 	}
 }
@@ -74,7 +74,7 @@ func (sf *TConsts) Split(pool []*word.TWord) []*word.TWord {
 			if val.Word() == ";" { // Конец выражения
 				break
 			}
-			cons.AddExpr(val.Word()) // Продолжается выражение
+			cons.AddWord(val) // Продолжается выражение
 			pool = pool[1:]
 		}
 		if len(pool) == 0 {
@@ -95,4 +95,9 @@ func (sf *TConsts) Split(pool []*word.TWord) []*word.TWord {
 // Len -- возвращает количество констант.
 func (sf *TConsts) Len() int {
 	return len(sf.poolConst)
+}
+
+// Get -- возвращает пул констант
+func (sf *TConsts) Get() []*srcconst.TConst {
+	return sf.poolConst
 }

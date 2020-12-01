@@ -11,23 +11,21 @@ import (
 
 // TConst --  операции с константой секции CONST
 type TConst struct {
-	name     string
-	word     *word.TWord
+	name     *word.TWord
 	isExport bool
-	poolExpr []string
+	poolWord []*word.TWord
 }
 
 // New -- возвращает новый *TConst
-func New(word *word.TWord) *TConst {
+func New(name *word.TWord) *TConst {
 	{ // Предусловия
-		if word == nil {
-			log.Panicf("srcconst.go/New(): word==nil\n")
+		if name == nil {
+			log.Panicf("srcconst.go/New(): name==nil\n")
 		}
 	}
 	return &TConst{
-		name:     word.Word(),
-		word:     word,
-		poolExpr: make([]string, 0),
+		name:     name,
+		poolWord: make([]*word.TWord, 0),
 	}
 }
 
@@ -39,7 +37,17 @@ func (sf *TConst) SetExport() {
 	sf.isExport = true
 }
 
-// AddExpr -- добавляет часть выражения в константу
-func (sf *TConst) AddExpr(exp string) {
-	sf.poolExpr = append(sf.poolExpr, exp)
+// AddWord -- добавляет слова в константу
+func (sf *TConst) AddWord(word *word.TWord) {
+	sf.poolWord = append(sf.poolWord, word)
+}
+
+// GetWords -- возвращает слова константы
+func (sf *TConst) GetWords() []*word.TWord {
+	return sf.poolWord
+}
+
+// Name -- возвращает имя константы
+func (sf *TConst) Name() string {
+	return sf.name.Word()
 }

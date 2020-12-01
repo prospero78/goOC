@@ -1,20 +1,23 @@
 package word
 
-import (
-	"log"
-	"strings"
-)
-
 /*
 	Пакет предоставляет тип слова.
 	Содержит само слово и его атрибуты.
 */
+
+import (
+	"log"
+	"oc/internal/app/sectionset/module/keywords"
+	"strconv"
+	"strings"
+)
 
 // TWord -- операции со словом
 type TWord struct {
 	pos    int    // Позиция в строке
 	numStr int    // Номер строки
 	word   string // Само слово
+	keywords *keywords.TKeywords
 }
 
 // New -- возвращает новый *TWord
@@ -34,6 +37,7 @@ func New(numStr, pos int, val string) *TWord {
 		pos:    pos,
 		numStr: numStr,
 		word:   val,
+		keywords: keywords.Keys,
 	}
 	return word
 }
@@ -81,4 +85,41 @@ func (sf *TWord) IsName() bool {
 // NumStr -- возвращает номер строки
 func (sf *TWord) NumStr() int {
 	return sf.numStr
+}
+
+// IsInt -- проверяет, что слово является целым числом
+func (sf *TWord) IsInt() bool {
+	_, err := strconv.Atoi(sf.word)
+	return err == nil
+}
+
+// IsReal -- проверяет, что слово является вещественным числом
+func (sf *TWord) IsReal() bool {
+	_, err := strconv.ParseFloat(sf.word, 64)
+	return err == nil
+}
+
+// IsString -- проверяет, что слово является строкой
+func (sf *TWord) IsString() bool {
+	run := []rune(sf.word)
+	litBeg := string(run[0])
+	if litBeg != "\"" {
+		return false
+	}
+	litEnd := string(run[len(run)-1:])
+	if litEnd != "\"" {
+		return false
+	}
+	return true
+}
+
+// IsBool -- проверяет, что слово является булевым числом
+func (sf *TWord) IsBool() bool {
+	if sf.keywords.IsKey("TRUE", sf.word){
+		return true
+	}
+		if sf.keywords.IsKey("FALSE", sf.word){
+		return true
+	}
+	return false
 }

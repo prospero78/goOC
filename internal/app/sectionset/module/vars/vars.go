@@ -20,7 +20,7 @@ type TVars struct {
 // New -- возвращае тновый *TVars
 func New() *TVars {
 	return &TVars{
-		keywords: keywords.New(),
+		keywords: keywords.Keys,
 		poolVar:  make([]*srcvar.TSrcVar, 0),
 	}
 }

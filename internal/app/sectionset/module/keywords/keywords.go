@@ -9,21 +9,27 @@ type TKeywords struct {
 	poolKey map[string][]string
 }
 
-// New -- возвращает новый *TKeywords
-func New() (kws *TKeywords) {
-	kws = &TKeywords{
+var(
+	// Keys -- глобальный объект ключей
+	Keys *TKeywords
+)
+
+func init() {
+	Keys = &TKeywords{
 		poolKey: make(map[string][]string),
 	}
-	kws.addKeyword("MODULE", "МОДУЛЬ")
-	kws.addKeyword("IMPORT", "ИМПОРТ")
-	kws.addKeyword("CONST", "КОНСТ")
-	kws.addKeyword("TYPE", "ТИПЫ")
-	kws.addKeyword("VAR", "ПЕРЕМ", "ПРМ", "УКАЗ")
-	kws.addKeyword("PROCEDURE", "ПРОЦЕДУРА", "ПРОЦ")
-	kws.addKeyword("BEGIN", "НАЧАЛО", "НАЧ")
-	kws.addKeyword("RECORD", "ЗАПИСЬ")
-	kws.addKeyword("END", "КОНЕЦ", "КНЦ", "КОН")
-	return kws
+	Keys.addKeyword("MODULE", "МОДУЛЬ")
+	Keys.addKeyword("IMPORT", "ИМПОРТ")
+	Keys.addKeyword("CONST", "КОНСТ")
+	Keys.addKeyword("TYPE", "ТИПЫ")
+	Keys.addKeyword("VAR", "ПЕРЕМ", "ПРМ", "УКАЗ")
+	Keys.addKeyword("PROCEDURE", "ПРОЦЕДУРА", "ПРОЦ")
+	Keys.addKeyword("BEGIN", "НАЧАЛО", "НАЧ")
+	Keys.addKeyword("RECORD", "ЗАПИСЬ")
+	Keys.addKeyword("END", "КОНЕЦ", "КНЦ", "КОН")
+	Keys.addKeyword("RECORD", "ЗАПИСЬ")
+	Keys.addKeyword("TRUE", "ИСТИНА")
+	Keys.addKeyword("FALSE", "ЛОЖЬ")
 }
 
 // IsKey -- проверяет ключевое слово с необходимым образцом

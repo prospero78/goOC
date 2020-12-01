@@ -21,7 +21,7 @@ type TOtypes struct {
 // New -- возвращает новый *TOtypes
 func New() *TOtypes {
 	return &TOtypes{
-		keywords: keywords.New(),
+		keywords: keywords.Keys,
 		poolType: make([]*srctype.TSrcType, 0),
 	}
 }

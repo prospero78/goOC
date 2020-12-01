@@ -237,11 +237,12 @@ func (sf *TScanner) isString() bool {
 		return false
 	}
 	sf.pos++
-	word := ""
+	word := "\""
 	sf.runSource = sf.runSource[1:]
 	for len(sf.runSource) != 0 {
 		lit := string(sf.runSource[0])
 		if lit == "\"" {
+			word+="\""
 			sf.pos++
 			sf.runSource = sf.runSource[1:]
 			sf.addWord(word)

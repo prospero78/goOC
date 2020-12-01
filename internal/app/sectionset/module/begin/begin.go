@@ -19,7 +19,7 @@ type TBegin struct {
 // New -- возвращает новый *TBegin
 func New() *TBegin {
 	return &TBegin{
-		keywords: keywords.New(),
+		keywords: keywords.Keys,
 		poolWord: make([]*word.TWord, 0),
 	}
 }

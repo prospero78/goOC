@@ -20,7 +20,7 @@ type TProcedures struct {
 // New -- возвращает новый *TProcedures
 func New() *TProcedures {
 	return &TProcedures{
-		keywords: keywords.New(),
+		keywords: keywords.Keys,
 		poolProc: make([]*srcproc.TSrcProc, 0),
 	}
 }
