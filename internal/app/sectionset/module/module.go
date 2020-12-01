@@ -87,6 +87,7 @@ func (sf *TModule) Split() {
 	poolWord := make([]*word.TWord, 0)
 	poolWord = append(poolWord, sf.poolWord...)
 	poolWord = sf.imports.Split(poolWord)
+	log.Printf("TModule.Split() %q imports=%v", sf.name, sf.imports.Len())
 	poolWord = sf.consts.Split(poolWord)
 	//log.Printf("TModule.Split(): const=%v\n", sf.consts.Len())
 	poolWord = sf.otypes.Split(poolWord)

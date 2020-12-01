@@ -52,19 +52,35 @@ func (sf *TModules) AddModule(module *module.TModule) {
 	}
 	// Проверить циклический импорт
 	//   Не должен импортировать модули, которые импортируют его.
-	//   Для этого построить всё дерево импорта для рассматриваемого модуля из числа импортируемых.
+	//   Для этого проверим все модули, которые импортируют этот модуль
 	imports := module.GetImport()
-	for _, modName := range imports {
-		//poolName := make(map[string]bool)
-		if modName.Name() == name {
-			log.Panicf("TModules.AddModule(): for %q detected self import\n", name)
+	for _, nameCheck := range imports {
+		if name == nameCheck.Name() {
+			log.Panicf("TModules.AddModule(): for module %q detected auto import\n", name)
 		}
-		log.Printf("TModules.AddModule(): for %q find module %q\n", name, modName.Name())
+		modCheck, ok := sf.poolModule[nameCheck.Name()]
+		if !ok {
+			continue
+		}
+		sf.checkImport(modCheck, name)
 	}
+
 	sf.poolModule[name] = module
 }
 
 // Len -- возвращает число уникальных модулей
 func (sf *TModules) Len() int {
 	return len(sf.poolModule)
+}
+
+// Рекурсивно проверяет наличие циклического импорта для указанного имени модуля
+func (sf *TModules) checkImport(module *module.TModule, name string) {
+	imports := module.GetImport()
+	// Найти имя модуля в импорте проверяемого модуля
+	// Импортируемый модуль ещё может быть не зарегистрирован
+	for _, modImp := range imports {
+		if name == modImp.Name() {
+			log.Panicf("TModules.AddModule(): for module %q detected cyclo import in module %q:%q\n", name, module.Name(), modImp.Name())
+		}
+	}
 }

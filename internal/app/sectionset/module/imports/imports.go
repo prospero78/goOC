@@ -48,7 +48,6 @@ func (sf *TImports) Split(pool []*word.TWord) []*word.TWord {
 			alais := alias.New(wordName.Word(), "")
 			sf.poolAlias = append(sf.poolAlias, alais)
 			pool = pool[1:]
-			log.Printf("TImports.Split(): all imports=%v\n", len(sf.poolAlias))
 			return pool
 		case ":=": // Алиас к имени модуля
 			pool = pool[1:]
@@ -76,4 +75,9 @@ func (sf *TImports) Split(pool []*word.TWord) []*word.TWord {
 // Imports -- возращает все импроты в модуле
 func (sf *TImports) Imports() []*alias.TAlias {
 	return sf.poolAlias
+}
+
+// Len -- возвращает общее число импортов
+func (sf *TImports)Len()int{
+	return len(sf.poolAlias)
 }
