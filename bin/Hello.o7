@@ -99,11 +99,11 @@ PROCEDURE Test(st, al :REAL; VAR zt:INTEGER):мЧт.Буф;
 		dlt: INTEGER;
 		dll: мЧт.тБуф;
 		бПривет: BOOLEAN;
-	PROCEDURE Cargo(VAR st, al :REAL; zt:INTEGER);
+	PROCEDURE Cargo(VAR sd, al :REAL; zt:INTEGER);
 		BEGIN
 			(* _Ещё немного разных тегов для более большой разницы с чистыми тегами_ *)
-			st := al * 2;
-			zt := FLOOR(st) + 253;
+			sd := al * 2;
+			zt := FLOOR(sd) + 253;
 			Test
 		END Cargo;
 

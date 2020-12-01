@@ -53,8 +53,8 @@ func (sf *TImports) Split(pool []*word.TWord) []*word.TWord {
 			alias := alias.New(name.Word(), nameWord.Word())
 			sf.poolAlias = append(sf.poolAlias, alias)
 			pool = pool[1:]
-			term:=pool[0]
-			if !(term.Word()=="," ||  term.Word()==";"){
+			term := pool[0]
+			if !(term.Word() == "," || term.Word() == ";") {
 				log.Panicf("TImports.Split(): invalid term(%q)\n", term.Word())
 			}
 			pool = pool[1:]

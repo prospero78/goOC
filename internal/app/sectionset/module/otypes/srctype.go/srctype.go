@@ -49,6 +49,6 @@ func (sf *TSrcType) Words() []*word.TWord {
 }
 
 // Name -- возвращает имя типа
-func (sf *TSrcType)Name()string{
+func (sf *TSrcType) Name() string {
 	return sf.word.Word()
 }

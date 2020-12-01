@@ -21,11 +21,11 @@ func New(name *word.TWord) *TSrcProc {
 }
 
 // AddWord -- добавляет слово в пул слов процедуры
-func (sf *TSrcProc)AddWord(word *word.TWord){
+func (sf *TSrcProc) AddWord(word *word.TWord) {
 	sf.poolWord = append(sf.poolWord, word)
 }
 
 // Name -- возвращает хранимое имя процедуры
-func (sf *TSrcProc)Name()string{
+func (sf *TSrcProc) Name() string {
 	return sf.name.Word()
 }

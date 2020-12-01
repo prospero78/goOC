@@ -67,7 +67,7 @@ func (sf *TProcedures) getProcedure(proc *srcproc.TSrcProc, pool []*word.TWord) 
 			continue
 		}
 		// Это точно конец процедуры.
-		pool=pool[3:]
+		pool = pool[3:]
 		return pool
 	}
 }
