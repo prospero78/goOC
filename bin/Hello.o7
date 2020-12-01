@@ -114,13 +114,13 @@ PROCEDURE Test(st, al :REAL; VAR zt:INTEGER):мЧт.Буф;
 		zt := FLOOR(st) + 253
 	END Test;
 
-PROCEDURE Init*(VAR st, al :REAL; zt:INTEGER);
+ПРОЦ Init*(УКАЗ st, al :REAL; zt:INTEGER);
 	BEGIN
 		(* _Ещё2 немного разных тегов для более большой разницы с чистыми тегами_ *)
 		st := al * 2;
 		zt := FLOOR(st) + 253;
 		Test
-	END Init;
+	КОНЕЦ Init;
 
 НАЧ
 	a := 5

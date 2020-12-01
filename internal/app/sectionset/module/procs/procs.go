@@ -51,6 +51,7 @@ func (sf *TProcedures) getProcedure(proc *srcproc.TSrcProc, pool []*word.TWord) 
 	for {
 		word := pool[0]
 		if sf.keywords.IsKey("PROCEDURE", word.Word()) {
+			pool = pool[1:]
 			pool = sf.getProcedure(proc, pool)
 			word = pool[0]
 		}
@@ -70,4 +71,9 @@ func (sf *TProcedures) getProcedure(proc *srcproc.TSrcProc, pool []*word.TWord) 
 		pool = pool[3:]
 		return pool
 	}
+}
+
+// Len -- возвращает число процедур в модуле
+func (sf *TProcedures) Len() int {
+	return len(sf.poolProc)
 }

@@ -8,6 +8,7 @@ package module
 import (
 	"log"
 	"oc/internal/app/scanner/word"
+	"oc/internal/app/sectionset/module/begin"
 	"oc/internal/app/sectionset/module/consts"
 	"oc/internal/app/sectionset/module/imports"
 	"oc/internal/app/sectionset/module/keywords"
@@ -26,6 +27,7 @@ type TModule struct {
 	otypes   *otypes.TOtypes     // Секция типов
 	vars     *vars.TVars         // Секция переменных
 	procs    *procs.TProcedures  // Секция процедур
+	begin    *begin.TBegin       // Секция BEGIN модуля
 }
 
 // New -- возвращает новый *TModule
@@ -38,6 +40,7 @@ func New() *TModule {
 		otypes:   otypes.New(),
 		vars:     vars.New(),
 		procs:    procs.New(),
+		begin:    begin.New(),
 	}
 }
 
@@ -90,4 +93,6 @@ func (sf *TModule) Split() {
 	poolWord = sf.vars.Split(poolWord)
 	log.Printf("TModule.Split(): vars=%v\n", sf.vars.Len())
 	poolWord = sf.procs.Split(poolWord)
+	log.Printf("TModule.Split(): procs=%v\n", sf.procs.Len())
+	poolWord = sf.begin.Split(poolWord)
 }

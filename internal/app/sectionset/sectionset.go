@@ -44,10 +44,7 @@ func (sf *TSectionSet) Split(scanner IScan) {
 	log.Printf("TSectionSet()\n")
 	poolWord := scanner.PoolWord()
 	num := 0
-	for adr, word := range poolWord {
-		if word.NumStr() > 87 {
-			fmt.Printf("%v:%v\t", adr, word.Word())
-		}
+	for _, word := range poolWord {
 		if num != word.NumStr() {
 			fmt.Print("\n")
 			num = word.NumStr()
