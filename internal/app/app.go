@@ -7,42 +7,43 @@ package app
 
 import (
 	"io/ioutil"
+	"log"
+	"oc/internal/app/modules"
 	"oc/internal/app/scanner"
 	"oc/internal/app/sectionset"
-	"oc/internal/log"
 	"os"
 )
 
 //TOc -- Оберон-компилятор (главный тип приложения)
 type TOc struct {
-	log     *log.TLog
-	scanner *scanner.TScanner
-	section *sectionset.TSectionSet
+	scanner  *scanner.TScanner       // сканнер слов в модуле
+	section  *sectionset.TSectionSet // разбивщик модуля на секции
+	modules  *modules.TModules       // Набор модулей для компиляции
+	fileName string                  // Имя главного файла для компиляции
 }
 
 //New -- взвращает указатель на новый ТОк
 func New(vers, build, data string) (oc *TOc, err error) {
-	oc = &TOc{
-		log:     log.New("TOc", log.DEBUG),
-		scanner: scanner.New(),
-		section: sectionset.New(),
+	lenArgs := len(os.Args)
+	if lenArgs < 2 {
+		log.Panicf("app.go/New(): for compile plis set file name\n")
 	}
-	oc.log.Debugf("New", "Создание типа компилятора")
+	fileName := os.Args[1]
+	oc = &TOc{
+		scanner:  scanner.New(),
+		section:  sectionset.New(),
+		fileName: fileName,
+	}
+	log.Printf("app.go/New(): создание типа компилятора")
 	return oc, nil
 }
 
 //Run -- запуск компилтора после создания объекта компилятора
 func (sf *TOc) Run() {
-	sf.log.Debugf("Run")
-	lenArgs := len(os.Args)
-	if lenArgs < 2 {
-		sf.log.Panicf("Run()", "for compile plis set file name\n")
-	}
-	fileName := os.Args[1]
-	sf.log.Debugf("Run()", "fileName=", fileName)
-	binSource, err := ioutil.ReadFile(fileName)
+	log.Printf("TOc.Run(): fileName=%v\n", sf.fileName)
+	binSource, err := ioutil.ReadFile(sf.fileName)
 	if err != nil {
-		sf.log.Panicf("Run()", "Error in read file", fileName, err)
+		log.Panicf("TOc.Run(): error in read file(%v)\n\t%v", sf.fileName, err)
 	}
 	strSource := string(binSource)
 	sf.scanner.Scan(strSource)

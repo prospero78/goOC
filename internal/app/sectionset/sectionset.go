@@ -13,7 +13,6 @@ package sectionset
 */
 
 import (
-	"fmt"
 	"log"
 	"oc/internal/app/scanner/word"
 	"oc/internal/app/sectionset/comment"
@@ -46,7 +45,6 @@ func (sf *TSectionSet) Split(scanner IScan) {
 	num := 0
 	for _, word := range poolWord {
 		if num != word.NumStr() {
-			fmt.Print("\n")
 			num = word.NumStr()
 		}
 	}
