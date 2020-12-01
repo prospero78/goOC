@@ -33,24 +33,30 @@ func (sf *TImports) Split(pool []*word.TWord) []*word.TWord {
 	}
 	pool = pool[1:]
 	for len(pool) > 2 {
-		nameWord := pool[0]
-		if !nameWord.IsName() {
-			log.Panicf("TImports.Split(): module name (%q) not valid\n", nameWord.Word())
+		wordName := pool[0]
+		if !wordName.IsName() {
+			log.Panicf("TImports.Split(): module wordName (%q) not valid\n", wordName.Word())
 		}
 		pool = pool[1:]
 		term := pool[0]
 		switch term.Word() {
 		case ",": // Прямое имя модуля
-			alais := alias.New(nameWord.Word(), "")
+			alais := alias.New(wordName.Word(), "")
 			sf.poolAlias = append(sf.poolAlias, alais)
 			pool = pool[1:]
+		case ";": // Окончание импорта модулей
+			alais := alias.New(wordName.Word(), "")
+			sf.poolAlias = append(sf.poolAlias, alais)
+			pool = pool[1:]
+			log.Printf("TImports.Split(): all imports=%v\n", len(sf.poolAlias))
+			return pool
 		case ":=": // Алиас к имени модуля
 			pool = pool[1:]
-			name := pool[0]
-			if !name.IsName() {
-				log.Panicf("TImports.Split(): module name (%q) not valid\n", name.Word())
+			wordTrueName := pool[0]
+			if !wordTrueName.IsName() {
+				log.Panicf("TImports.Split(): module wordTrueName (%q) not valid\n", wordTrueName.Word())
 			}
-			alias := alias.New(name.Word(), nameWord.Word())
+			alias := alias.New(wordTrueName.Word(), wordName.Word())
 			sf.poolAlias = append(sf.poolAlias, alias)
 			pool = pool[1:]
 			term := pool[0]
@@ -58,15 +64,12 @@ func (sf *TImports) Split(pool []*word.TWord) []*word.TWord {
 				log.Panicf("TImports.Split(): invalid term(%q)\n", term.Word())
 			}
 			pool = pool[1:]
-		case ";": // Окончание импорта модулей
-			alais := alias.New(nameWord.Word(), "")
-			sf.poolAlias = append(sf.poolAlias, alais)
-			pool = pool[1:]
-			log.Printf("TImports.Split(): all imports=%v\n", len(sf.poolAlias))
-			return pool
+			if term.Word()==";"{
+				return pool
+			}
 		}
 	}
-	log.Panicf("TImports.Split(): not have IMPORTS\n")
+	//log.Panicf("TImports.Split(): not have IMPORTS\n")
 	return nil
 }
 

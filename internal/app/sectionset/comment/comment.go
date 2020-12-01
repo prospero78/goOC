@@ -59,6 +59,6 @@ func (sf *TComment) Set(poolWord []*word.TWord) (poolRes []*word.TWord) {
 // AddWord -- добавляет слова комментариев за концом модуля
 func (sf TComment) AddWord(poolWord []*word.TWord) int {
 	sf.poolWord = append(sf.poolWord, poolWord...)
-	log.Printf("TComment.AddWord(): len=%v", len(sf.poolWord))
+	//log.Printf("TComment.AddWord(): len=%v", len(sf.poolWord))
 	return len(sf.poolWord)
 }

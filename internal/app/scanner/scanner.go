@@ -32,7 +32,7 @@ func New() *TScanner {
 
 // Scan -- сканирует исходник, разбивает на необходимые структуры
 func (sf *TScanner) Scan(strSource string) {
-	log.Printf("Scan")
+	//log.Printf("Scan")
 	poolString := strings.Split(strSource, "\n")
 	for num, str := range poolString {
 		ss := stringsource.New(num+1, str)
@@ -40,7 +40,7 @@ func (sf *TScanner) Scan(strSource string) {
 	}
 	sf.scanString(strSource)
 
-	log.Printf("TScanner.Run(): lines=%v word=%v\n", len(poolString), len(sf.poolWord))
+	//log.Printf("TScanner.Run(): lines=%v word=%v\n", len(poolString), len(sf.poolWord))
 	// for _, word := range sf.poolWord {
 	// 	fmt.Printf("%v\t", word.Word())
 	// }

@@ -72,7 +72,7 @@ func (sf *TModule) Set(poolWord []*word.TWord) (pool []*word.TWord, _len int) {
 		name := word.Word()
 		if name == sf.name+"." {
 			poolWord = poolWord[2:]
-			log.Printf("TModule.Set(): name=%q word=%v\n", sf.name, len(sf.poolWord))
+			//log.Printf("TModule.Set(): name=%q word=%v\n", sf.name, len(sf.poolWord))
 			return poolWord, len(sf.poolWord)
 		}
 		sf.poolWord = append(sf.poolWord, word)
@@ -88,13 +88,13 @@ func (sf *TModule) Split() {
 	poolWord = append(poolWord, sf.poolWord...)
 	poolWord = sf.imports.Split(poolWord)
 	poolWord = sf.consts.Split(poolWord)
-	log.Printf("TModule.Split(): const=%v\n", sf.consts.Len())
+	//log.Printf("TModule.Split(): const=%v\n", sf.consts.Len())
 	poolWord = sf.otypes.Split(poolWord)
-	log.Printf("TModule.Split(): types=%v\n", sf.otypes.Len())
+	//log.Printf("TModule.Split(): types=%v\n", sf.otypes.Len())
 	poolWord = sf.vars.Split(poolWord)
-	log.Printf("TModule.Split(): vars=%v\n", sf.vars.Len())
+	//log.Printf("TModule.Split(): vars=%v\n", sf.vars.Len())
 	poolWord = sf.procs.Split(poolWord)
-	log.Printf("TModule.Split(): procs=%v\n", sf.procs.Len())
+	//log.Printf("TModule.Split(): procs=%v\n", sf.procs.Len())
 	poolWord = sf.begin.Split(poolWord)
 	if len(poolWord) != 0 {
 		log.Panicf("TModule.Split(): after BEGIN poolWord len(%v)!=0\n", len(poolWord))

@@ -4,8 +4,8 @@
 
 ИМПОРТ Test,
 	mTask := Task,
-	мЧт := Aic, mTs := Task,
-	Constante;
+	Constante,
+	mTs := Task;
 
 CONST  (* _В оригинале -- константы разделяются точка с запятой_ *)
 	цСчёт = 1;

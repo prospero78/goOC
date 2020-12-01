@@ -47,9 +47,21 @@ func (sf *TModules) AddModule(module *module.TModule) {
 		log.Panicf("TModules.AddModule(): module==nil\n")
 	}
 	name := module.Name()
-	if _, ok := sf.poolModule[name]; !ok {
-		sf.poolModule[name] = module
+	if _, ok := sf.poolModule[name]; ok {
+		return
 	}
+	// Проверить циклический импорт
+	//   Не должен импортировать модули, которые импортируют его.
+	//   Для этого построить всё дерево импорта для рассматриваемого модуля из числа импортируемых.
+	imports := module.GetImport()
+	for _, modName := range imports {
+		//poolName := make(map[string]bool)
+		if modName.Name() == name {
+			log.Panicf("TModules.AddModule(): for %q detected self import\n", name)
+		}
+		log.Printf("TModules.AddModule(): for %q find module %q\n", name, modName.Name())
+	}
+	sf.poolModule[name] = module
 }
 
 // Len -- возвращает число уникальных модулей
