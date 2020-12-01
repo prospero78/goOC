@@ -69,3 +69,8 @@ func (sf *TImports) Split(pool []*word.TWord) []*word.TWord {
 	log.Panicf("TImports.Split(): not have IMPORTS\n")
 	return nil
 }
+
+// Imports -- возращает все импроты в модуле
+func (sf *TImports) Imports() []*alias.TAlias {
+	return sf.poolAlias
+}

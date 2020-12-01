@@ -40,3 +40,19 @@ func (sf *TModules) SetMain(name string, module *module.TModule) {
 	sf.mainName = name
 	sf.poolModule[name] = module
 }
+
+// AddModule -- добавляет модуль в пул модулей, проверяет циклические ссылки
+func (sf *TModules) AddModule(module *module.TModule) {
+	if module == nil {
+		log.Panicf("TModules.AddModule(): module==nil\n")
+	}
+	name := module.Name()
+	if _, ok := sf.poolModule[name]; !ok {
+		sf.poolModule[name] = module
+	}
+}
+
+// Len -- возвращает число уникальных модулей
+func (sf *TModules) Len() int {
+	return len(sf.poolModule)
+}

@@ -17,6 +17,7 @@ import (
 	"oc/internal/app/scanner/word"
 	"oc/internal/app/sectionset/comment"
 	"oc/internal/app/sectionset/module"
+	"oc/internal/app/sectionset/module/imports/alias"
 )
 
 // IScan -- интерфейс к сканеру
@@ -65,4 +66,9 @@ func (sf *TSectionSet) ModuleName() string {
 // Module -- возвращает модуль после сканирования
 func (sf *TSectionSet) Module() *module.TModule {
 	return sf.module
+}
+
+// GetImport -- возвращает весь импорт модуля
+func (sf *TSectionSet) GetImport() []*alias.TAlias {
+	return sf.module.GetImport()
 }

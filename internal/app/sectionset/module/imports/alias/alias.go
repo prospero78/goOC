@@ -28,3 +28,13 @@ func New(name, alias string) *TAlias {
 		name:  name,
 	}
 }
+
+// Name -- возвращает имя модуля
+func (sf *TAlias) Name() string {
+	return sf.name
+}
+
+// Alias -- возвращает алиас модуля
+func (sf *TAlias) Alias() string {
+	return sf.alias
+}

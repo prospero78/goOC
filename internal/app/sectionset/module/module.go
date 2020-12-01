@@ -11,6 +11,7 @@ import (
 	"oc/internal/app/sectionset/module/begin"
 	"oc/internal/app/sectionset/module/consts"
 	"oc/internal/app/sectionset/module/imports"
+	"oc/internal/app/sectionset/module/imports/alias"
 	"oc/internal/app/sectionset/module/keywords"
 	"oc/internal/app/sectionset/module/otypes"
 	"oc/internal/app/sectionset/module/procs"
@@ -103,4 +104,9 @@ func (sf *TModule) Split() {
 // Name -- возвращает имя модуля после сканирования
 func (sf *TModule) Name() string {
 	return sf.name
+}
+
+// GetImport -- возвращает модули для импорта
+func (sf *TModule) GetImport() []*alias.TAlias {
+	return sf.imports.Imports()
 }

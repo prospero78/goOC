@@ -1,0 +1,129 @@
+МОДУЛЬ Task;
+(* _Это комментарий можно пропустить.
+	(* а это вообще вложенный комментарий_ *)   *)
+
+ИМПОРТ Test,
+	мЧт := Aic,
+	Constante;
+
+CONST  (* _В оригинале -- константы разделяются точка с запятой_ *)
+	цСчёт = 1;
+	вСреднее* = 12.899;
+	стрСообщ = "Проверка";
+	стрОш = "Ошибка в определении типа";
+	цЯблоки* = (цСчёт+10-4/0.28)*5; (* _Специально слепленные цифры и знаки для теста_ *)
+
+TYPE
+	tInt32 = INTEGER;
+
+	tpBigInt* = POINTER TO INTEGER;
+
+	tpInt300 = POINTER TO tInt32;
+
+	tpInt300 = POINTER TO mIso.tInt32;
+
+	tpInt300 = POINTER TO ARRAY 201 OF CHAR;
+
+	SetCompilerFlagProc* = PROCEDURE(ПРМ pragma, tiles, block: ARRAY OF CHAR);
+	NotifyErrorProc* = PROCEDURE(pos: INTEGER; msg: ARRAY OF CHAR):REAL;
+	NoErrorProc = PROCEDURE(msg: ARRAY OF мЧт.тСтр):BOOLEAN;
+
+	тСтрока = ARRAY 201 OF CHAR;
+
+	тТекст* = ARRAY 255, 84 OF тСтрока;
+
+	тЗапПусто = RECORD END;
+
+	тЗапПредок* = RECORD(тЗапПусто) END;
+
+	тЗапПредок2 = POINTER TO тЗапПредок;
+
+	тЗвено* = RECORD (тСписок)
+		цНомер* : INTEGER;
+		бЕсть   : BOOLEAN;
+		лНазван : ARRAY 2, 63 OF CHAR;
+		лГлава* : ARRAY 2, 63 OF тСтрока;
+		уЗвСлед : tpInt32
+	END;
+
+	туТекст* = POINTER TO RECORD (мЧт.тСтрока)
+		мСтр : ARRAY 1024 OF тСтрока;
+		цПоз : INTEGER;
+		лЛит : мБуф.тБуф;
+		зЛуч : RECORD
+			вАзимут    : REAL;
+			вСклонение : REAL;
+			цПоток*     : INTEGER;
+			зЛуч2* : RECORD
+				вАзимут2*    : REAL;
+				нСклонение2 : SET;
+				лПоток2     : ARRAY 2, 63 OF CHAR;
+			END;
+		END;
+	END;
+
+VAR
+	a : INTEGER;
+	b: tInt32;
+	c: INTEGER;
+	d: мБуф.тБуф;
+	des: ARRAY 22, 45 OF мЧт.тБуф;
+	des2*: RECORD
+		цПоз*: INTEGER;
+		вДробь: REAL;
+		сИмя: ARRAY 255 OF CHAR;
+		зЛуч*: RECORD (* _Проверка на переносимость комментариев_ *)
+			цЛуч1*: INTEGER;
+			цЛуч2: tInt32
+		END;
+	END;
+	des3 : PROCEDURE(msg: BOOLEAN):ARRAY OF мЧт.тСтр;
+	des4: PONTER TO RECORD;
+		beg :INTEGER;
+		end:INTEGER
+	END;
+
+PROCEDURE Test(st, al :REAL; VAR zt:INTEGER):мЧт.Буф;
+	CONST
+		dres = 5;
+		tres = 3;
+	TYPE
+		tpBuf = POINTER TO мЧт.тБуф;
+		tBuffer = RECORD
+			iPos: INTEGER;
+			sRate: CHAR
+		END;
+	ПРМ
+		dlt: INTEGER;
+		dll: мЧт.тБуф;
+		бПривет: BOOLEAN;
+	PROCEDURE _Cargo(VAR sd, al :REAL; zt:INTEGER);
+		BEGIN
+			(* _Ещё немного разных тегов для более большой разницы с чистыми тегами_ *)
+			sd := al * 2;
+			zt := FLOOR(sd) + 253;
+			Test
+		END _Cargo;
+
+	BEGIN
+		(* Ещё1 немного2 разных3 слов4 для5 более6 большой7 разницы8 с9 чистыми0 словами@ *)
+		st := al * 2;
+		Cargo;
+		zt := FLOOR(st) + 253
+	END Test;
+
+ПРОЦ Init*(УКАЗ st, al :REAL; zt:INTEGER);
+	BEGIN
+		(* _Ещё2 немного разных тегов для более большой разницы с чистыми тегами_ *)
+		st := al * 2;
+		zt := FLOOR(st) + 253;
+		Test
+	КОНЕЦ Init;
+
+НАЧ
+	a := 5;
+	Init
+КНЦ Task.
+
+_А это текст за концом модуля, который тупо игнорируется. Ха-ха-ха!))
+Здесь можно писать всё, что угодно._
