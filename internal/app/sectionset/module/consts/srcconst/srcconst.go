@@ -40,6 +40,9 @@ func (sf *TConst) SetExport() {
 
 // AddWord -- добавляет слова в константу
 func (sf *TConst) AddWord(word *word.TWord) {
+	if word==nil{
+		log.Panicf("TConst.AddWord(): word==nil\n")
+	}
 	sf.poolWord = append(sf.poolWord, word)
 }
 

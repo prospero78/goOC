@@ -51,7 +51,7 @@ func (sf *TSectionSet) Split(scanner IScan) {
 	}
 	poolWord = sf.comment.Set(poolWord)
 	poolWord, _ = sf.module.Set(poolWord) // Дополнительные комментарии за концом файла
-	_ = sf.comment.AddWord(poolWord)
+	_ = sf.comment.AddPoolWord(poolWord)
 	//log.Printf("TSectionSet.Split(): comment+module=%v", numWordMod+numWordCom)
 
 	// Теперь в модуле надо разделить слова по внутренним секциям

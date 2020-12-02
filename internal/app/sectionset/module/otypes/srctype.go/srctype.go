@@ -38,7 +38,7 @@ func (sf *TSrcType) SetExport() {
 // AddWord -- добавляет слово в описатель типа
 func (sf *TSrcType) AddWord(word *word.TWord) {
 	if word == nil {
-		log.Panicf("srctype.go/New(): word==nil\n")
+		log.Panicf("TSrcType.AddWord(): word==nil\n")
 	}
 	sf.poolWord = append(sf.poolWord, word)
 }

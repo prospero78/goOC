@@ -1,6 +1,9 @@
 package srcproc
 
-import "oc/internal/app/scanner/word"
+import (
+	"log"
+	"oc/internal/app/scanner/word"
+)
 
 /*
 	Пакет предоставляет тип для хранения слов отдельной процедуры.
@@ -22,6 +25,9 @@ func New(name *word.TWord) *TSrcProc {
 
 // AddWord -- добавляет слово в пул слов процедуры
 func (sf *TSrcProc) AddWord(word *word.TWord) {
+	if word == nil {
+		log.Panicf("TSrcProc.AddWord(): word==nil\n")
+	}
 	sf.poolWord = append(sf.poolWord, word)
 }
 

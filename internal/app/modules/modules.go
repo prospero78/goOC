@@ -9,6 +9,7 @@ import (
 	"oc/internal/app/sectionset/module/consts/srcconst"
 	"oc/internal/app/sectionset/module/consts/srcconst/constexpres"
 	"oc/internal/app/sectionset/module/keywords"
+	"strings"
 )
 
 // TModules -- операции с модулями для компиляции
@@ -124,23 +125,9 @@ func (sf *TModules) checkTypeWordConst() {
 	case sf.wordCurrent.IsBool(): // Если булево
 		sf.wordCurrent.SetType("BOOLEAN")
 	case sf.wordCurrent.Word() == "(": // Если начало выражения
-		sf.stackConstExp = append(sf.stackConstExp, sf.expCurrent)
-		sf.expCurrent = sf.consCurrent.GetExpres()
-		poolWord := sf.consCurrent.GetWords()
-		poolWord = poolWord[:len(poolWord)-1] // Откинуть открывающую скобку
-		for poolWord[0].Word() != ")" {
-			sf.expCurrent.AddWord(poolWord[0])
-			poolWord = poolWord[1:]
-		}
-		sf.exprConstCalc()
-		poolWord = poolWord[1:] // Откинуть закрывающую скобку
-		// После передачи слов в выражение -- надо сформировать новый словарь слов
-		poolNew := make([]*word.TWord, 0)
-		poolNew = append(poolNew, sf.expCurrent.GetWord())
-		poolNew = append(poolNew, poolWord...)
-		sf.consCurrent.SetPoolWord(poolNew)
-		sf.expCurrent = sf.stackConstExp[len(sf.stackConstExp)-1]
-		sf.wordCurrent = poolNew[0]
+		sf.wordCurrent.SetType("(")
+	case sf.wordCurrent.Word() == ")": // Если конец выражения
+		sf.wordCurrent.SetType(")")
 	case sf.wordCurrent.IsName(): // Если присвоение из другой константы
 		if sf.wordCurrent.GetType() == "" { // Если ещё это имя не встречалось -- найти его тип
 			// Сохранить текущую константу в стеке
@@ -163,8 +150,16 @@ func (sf *TModules) checkTypeWordConst() {
 			sf.stackConst = sf.stackConst[:len(sf.stackConst)-1]
 
 		}
-	case sf.wordCurrent.IsCompoundName(): // Имя состояит из нескольких частей
-
+	case sf.wordCurrent.IsCompoundName(): // Имя состоит из нескольких частей
+		poolName := strings.Split(sf.wordCurrent.Word(), ".")
+		// Проверить, что "Модуль:имя"
+		if len(poolName) == 2 {
+			// Найти имя модуля
+			modName := poolName[0]
+			if _, ok := sf.poolModule[modName]; !ok { // К этому моменту все модули просканированы
+				log.Panicf("TModules.checkTypeConstant(): unknown name module(%v) for constante %v.%v\n", sf.wordCurrent.Word(), sf.modCurrent.Name(), sf.wordCurrent.Word())
+			}
+		}
 	case sf.wordCurrent.Word() == "+": // Операция "+"
 		sf.wordCurrent.SetType("+")
 	case sf.wordCurrent.Word() == "-": // Операция "-"
@@ -212,10 +207,14 @@ func (sf *TModules) processConstant() {
 	if len(pool) == 0 { // У константы нет имени. Теоретически, это невозможно
 		log.Panicf("TModules.processConstant(): const(%v.%v) not have type\n", sf.modCurrent.Name(), sf.consCurrent.Name())
 	}
+	if sf.consCurrent.Name() == "\"цЯблоки\"" {
+			log.Print("")
+		}
 	lenPool := len(pool)
-	fnChekWord := func()bool {
+	fnCheckWord := func() bool {
 		adr := 0
 		for {
+			pool = sf.consCurrent.GetWords()
 			if adr >= len(pool) {
 				sf.setConstType()
 				return false
@@ -225,23 +224,20 @@ func (sf *TModules) processConstant() {
 			sf.checkTypeWordConst()
 			_lenPool := len(pool)
 			if _lenPool < lenPool {
-				lenPool=_lenPool
+				lenPool = _lenPool
 				return true
 			}
 		}
 	}
 
-	for {
-		pool = sf.consCurrent.GetWords()
-		if len(pool) == 1 {
-			break
-		}
-		if fnChekWord() {
-			continue
-		}
+	if len(pool) == 1 {
+		sf.wordCurrent = pool[0]
+		sf.checkTypeWordConst()
+		sf.setConstType()
+		return
 	}
-
-	sf.setConstType()
+	for fnCheckWord() {
+	}
 }
 
 // После обработки всех слов константы -- устанавливает её тип
@@ -255,7 +251,26 @@ func (sf *TModules) setConstType() {
 	default: // Тип имеет выражение и его надо вычислить
 		//exp := sf.consCurrent.GetExpres()
 		//sf.exprConstCalc(exp)
-		log.Panicf("TModules.setConstType(): переделать\n")
+		sf.stackConstExp = append(sf.stackConstExp, sf.expCurrent)
+		sf.expCurrent = sf.consCurrent.GetExpres()
+		poolWord := sf.consCurrent.GetWords()
+		poolWord = poolWord[1:] // Откинуть открывающую скобку
+		for len(poolWord) > 0 {
+			word := poolWord[0]
+			sf.expCurrent.AddWord(word)
+			poolWord = poolWord[1:]
+			if word.Word() == ")" {
+				break
+			}
+		}
+		sf.exprConstCalc()
+		// После передачи слов в выражение -- надо сформировать новый словарь слов
+		poolNew := make([]*word.TWord, 0)
+		poolNew = append(poolNew, sf.expCurrent.GetWord())
+		poolNew = append(poolNew, poolWord...)
+		sf.consCurrent.SetPoolWord(poolNew)
+		sf.exprConstCalc()
+		sf.expCurrent = sf.stackConstExp[len(sf.stackConstExp)-1]
 	}
 }
 
