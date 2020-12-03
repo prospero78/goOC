@@ -4,12 +4,13 @@ package modules
 
 import (
 	"log"
+	"oc/internal/app/modules/calcconst"
+	"oc/internal/app/modules/calcword"
 	"oc/internal/app/scanner/word"
 	"oc/internal/app/sectionset/module"
 	"oc/internal/app/sectionset/module/consts/srcconst"
 	"oc/internal/app/sectionset/module/consts/srcconst/constexpres"
 	"oc/internal/app/sectionset/module/keywords"
-	"strings"
 )
 
 // TModules -- операции с модулями для компиляции
@@ -24,6 +25,8 @@ type TModules struct {
 
 	stackConst    []*srcconst.TConst              // Стек для констант
 	stackConstExp []*constexpres.TConstExpression // стек для выражений констант
+	calcConst     *calcconst.TCalcConst           // Калькулятор констант
+	calcWord      *calcword.TCalcWord             // Калькулятор отдельного слова
 }
 
 // New -- возвращает новый *TModules
@@ -32,6 +35,8 @@ func New() *TModules {
 		poolModule: make(map[string]*module.TModule),
 		keywords:   keywords.Keys,
 		stackConst: make([]*srcconst.TConst, 0),
+		calcConst:  calcconst.New(),
+		calcWord:   calcword.New(),
 	}
 }
 
@@ -108,68 +113,8 @@ func (sf *TModules) ProcessConstant() {
 		poolConst := module.GetConst()
 		for _, cons := range poolConst {
 			sf.consCurrent = cons
-			sf.processConstant()
+			sf.calcConst.Calc(cons)
 		}
-	}
-}
-
-// Проверяет простой тип константы.
-func (sf *TModules) checkTypeWordConst() {
-	switch {
-	case sf.wordCurrent.IsInt(): // Если целое
-		sf.wordCurrent.SetType("INTEGER")
-	case sf.wordCurrent.IsReal(): // Если вещественное
-		sf.wordCurrent.SetType("REAL")
-	case sf.wordCurrent.IsString(): // Если строка
-		sf.wordCurrent.SetType("ARRAY OF CHAR")
-	case sf.wordCurrent.IsBool(): // Если булево
-		sf.wordCurrent.SetType("BOOLEAN")
-	case sf.wordCurrent.Word() == "(": // Если начало выражения
-		sf.wordCurrent.SetType("(")
-	case sf.wordCurrent.Word() == ")": // Если конец выражения
-		sf.wordCurrent.SetType(")")
-	case sf.wordCurrent.IsName(): // Если присвоение из другой константы
-		if sf.wordCurrent.GetType() == "" { // Если ещё это имя не встречалось -- найти его тип
-			// Сохранить текущую константу в стеке
-			sf.stackConst = append(sf.stackConst, sf.consCurrent)
-			// Найти константу в списке констант модуля
-			cons := sf.modCurrent.GetConst()
-			sf.consCurrent = nil
-			for _, con := range cons {
-				if con.Name() == sf.wordCurrent.Word() {
-					sf.consCurrent = con
-					break
-				}
-			}
-			if sf.consCurrent == nil { // убедиться, что такая константа существует
-				log.Panicf("TModules.checkTypeWordConst(): unknown constante  %v.%v\n", sf.modCurrent.Name(), sf.wordCurrent.Word())
-			}
-			sf.processConstant()                                 // обработать новую константу
-			sf.wordCurrent.SetType(sf.consCurrent.GetType())     // Установить тип текущей константы из обработанной
-			sf.consCurrent = sf.stackConst[len(sf.stackConst)-1] // Восстановить текущую константу
-			sf.stackConst = sf.stackConst[:len(sf.stackConst)-1]
-
-		}
-	case sf.wordCurrent.IsCompoundName(): // Имя состоит из нескольких частей
-		poolName := strings.Split(sf.wordCurrent.Word(), ".")
-		// Проверить, что "Модуль:имя"
-		if len(poolName) == 2 {
-			// Найти имя модуля
-			modName := poolName[0]
-			if _, ok := sf.poolModule[modName]; !ok { // К этому моменту все модули просканированы
-				log.Panicf("TModules.checkTypeConstant(): unknown name module(%v) for constante %v.%v\n", sf.wordCurrent.Word(), sf.modCurrent.Name(), sf.wordCurrent.Word())
-			}
-		}
-	case sf.wordCurrent.Word() == "+": // Операция "+"
-		sf.wordCurrent.SetType("+")
-	case sf.wordCurrent.Word() == "-": // Операция "-"
-		sf.wordCurrent.SetType("-")
-	case sf.wordCurrent.Word() == "/": // Операция РАЗДЕЛИТЬ
-		sf.wordCurrent.SetType("/")
-	case sf.wordCurrent.Word() == "*": // Операция "*"
-		sf.wordCurrent.SetType("*")
-	default:
-		log.Panicf("TModules.checkTypeConstant(): unknown type for constante %v.%v\n", sf.modCurrent.Name(), sf.wordCurrent.Word())
 	}
 }
 
@@ -201,51 +146,13 @@ func (sf *TModules) findConstName(name *word.TWord) *srcconst.TConst {
 	return nil
 }
 
-// Проверяет типы констант в отдельном модуле
-func (sf *TModules) processConstant() {
-	pool := sf.consCurrent.GetWords()
-	if len(pool) == 0 { // У константы нет имени. Теоретически, это невозможно
-		log.Panicf("TModules.processConstant(): const(%v.%v) not have type\n", sf.modCurrent.Name(), sf.consCurrent.Name())
-	}
-	if sf.consCurrent.Name() == "\"цЯблоки\"" {
-			log.Print("")
-		}
-	lenPool := len(pool)
-	fnCheckWord := func() bool {
-		adr := 0
-		for {
-			pool = sf.consCurrent.GetWords()
-			if adr >= len(pool) {
-				sf.setConstType()
-				return false
-			}
-			sf.wordCurrent = pool[adr]
-			adr++
-			sf.checkTypeWordConst()
-			_lenPool := len(pool)
-			if _lenPool < lenPool {
-				lenPool = _lenPool
-				return true
-			}
-		}
-	}
-
-	if len(pool) == 1 {
-		sf.wordCurrent = pool[0]
-		sf.checkTypeWordConst()
-		sf.setConstType()
-		return
-	}
-	for fnCheckWord() {
-	}
-}
 
 // После обработки всех слов константы -- устанавливает её тип
 func (sf *TModules) setConstType() {
 	pool := sf.consCurrent.GetWords()
 	switch len(pool) {
 	case 0: // Нет слов у константы (теоретически такого быть не может)
-		log.Panicf("TModules.processConstant(): const(%v.%v) not have type\n", sf.modCurrent.Name(), sf.consCurrent.Name())
+		log.Panicf("TModules.setConstType(): const(%v.%v) not have type\n", sf.modCurrent.Name(), sf.consCurrent.Name())
 	case 1: // Тип константы определяется единственным словом
 		sf.consCurrent.SetType(pool[0].GetType())
 	default: // Тип имеет выражение и его надо вычислить
@@ -279,10 +186,10 @@ func (sf *TModules) exprConstCalc() {
 	pool := sf.expCurrent.GetWords()
 	switch len(pool) {
 	case 0: // Теоретически такое невозможно
-		log.Panicf("TModules.processConstant(): const(%v.%v) not have word in expression\n", sf.modCurrent.Name(), sf.consCurrent.Name())
+		log.Panicf("TModules.exprConstCalc(): const(%v.%v) not have word in expression\n", sf.modCurrent.Name(), sf.consCurrent.Name())
 	case 1: // Такое теоретически возможно (если одно слово в скобках)
-		sf.wordCurrent = pool[0]
-		sf.checkTypeWordConst()
+		word := pool[0]
+		sf.calcWord.RecognizeType(word)
 		sf.expCurrent.SetType(sf.wordCurrent.GetType())
 	}
 }

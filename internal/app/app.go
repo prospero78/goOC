@@ -11,6 +11,7 @@ import (
 	"oc/internal/app/modules"
 	"oc/internal/app/scanner"
 	"oc/internal/app/sectionset"
+	"strings"
 	//"oc/internal/app/sectionset/module"
 	"os"
 )
@@ -45,7 +46,10 @@ func New(vers, build, data string) (oc *TOc, err error) {
 func (sf *TOc) Run() {
 	log.Printf("TOc.Run(): fileName=%v\n", sf.filePath)
 	strSource := sf.readFile(sf.filePath)
-	sf.scanner.Scan(strSource)
+	poolName:=strings.Split(sf.filePath, "/")
+	nameMod:=poolName[len(poolName)-1]
+	nameMod=nameMod[:len(nameMod)-3]
+	sf.scanner.Scan(nameMod, strSource)
 	// Разбить по секциям
 	sf.section.Split(sf.scanner)
 	nameMain := sf.section.Module().Name()
@@ -98,7 +102,7 @@ func (sf *TOc) scanModule(moduleName string) {
 	sf.scanner = scanner.New()
 	sf.section = sectionset.New()
 	strSource := sf.readFile(filePath)
-	sf.scanner.Scan(strSource)
+	sf.scanner.Scan(moduleName, strSource)
 	sf.section.Split(sf.scanner)
 	module := sf.section.Module()
 	sf.checkModuleName(filePath, module.Name())

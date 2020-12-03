@@ -12,8 +12,9 @@ type TConst struct {
 	name     *word.TWord
 	isExport bool
 	poolWord []*word.TWord
-	exp      *constexpres.TConstExpression // Выражение для константы
 	strType  string                        // Строковое представление типа
+	exp      *constexpres.TConstExpression // Выражение для константы
+
 }
 
 // New -- возвращает новый *TConst
@@ -40,7 +41,7 @@ func (sf *TConst) SetExport() {
 
 // AddWord -- добавляет слова в константу
 func (sf *TConst) AddWord(word *word.TWord) {
-	if word==nil{
+	if word == nil {
 		log.Panicf("TConst.AddWord(): word==nil\n")
 	}
 	sf.poolWord = append(sf.poolWord, word)
@@ -85,11 +86,13 @@ func (sf *TConst) GetExpres() *constexpres.TConstExpression {
 
 // SetPoolWord -- устанавливает пул слов после обработки выражения
 func (sf *TConst) SetPoolWord(pool []*word.TWord) {
-	if len(sf.exp.GetWords()) == 0 {
-		log.Panicf("TConst.SetPoolWord(): expression words not set!\n")
-	}
 	if pool == nil {
 		log.Panicf("TConst.SetPoolWord(): pool==nil\n")
 	}
 	sf.poolWord = pool
+}
+
+// Module -- возвращает имя модуля, к которой относится константа
+func (sf *TConst) Module() string {
+	return *sf.name.Module()
 }

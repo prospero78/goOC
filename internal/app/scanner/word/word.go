@@ -14,7 +14,8 @@ type TWord struct {
 	numStr   int    // Номер строки
 	word     string // Само слово
 	keywords *keywords.TKeywords
-	strType  string // Строковое представление типа
+	strType  string  // Строковое представление типа
+	module   *string // Имя модуля для слова
 }
 
 // New -- возвращает новый *TWord
@@ -171,4 +172,22 @@ func (sf *TWord) SetType(strType string) {
 // GetType -- возвращает хранимое значение типа
 func (sf *TWord) GetType() string {
 	return sf.strType
+}
+
+// SetModule -- устанавливает имя модуля
+func (sf *TWord) SetModule(module *string) {
+	if *module == "" {
+		log.Panicf("TWord.SetModule(): module=''\n")
+	}
+	sf.module = module
+}
+
+// Module -- возвращает хранимое имя модуля
+func (sf *TWord) Module() *string {
+	return sf.module
+}
+
+// Pos -- возвращает позицию в строке
+func (sf *TWord) Pos() int {
+	return sf.pos
 }

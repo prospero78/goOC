@@ -31,7 +31,7 @@ func New() *TScanner {
 }
 
 // Scan -- сканирует исходник, разбивает на необходимые структуры
-func (sf *TScanner) Scan(strSource string) {
+func (sf *TScanner) Scan(nameMod, strSource string) {
 	//log.Printf("Scan")
 	poolString := strings.Split(strSource, "\n")
 	for num, str := range poolString {
@@ -40,6 +40,10 @@ func (sf *TScanner) Scan(strSource string) {
 	}
 	sf.scanString(strSource)
 
+	// Присовить всем словам имя модуля
+	for _, word:=range sf.poolWord{
+		word.SetModule(&nameMod)
+	}
 	//log.Printf("TScanner.Run(): lines=%v word=%v\n", len(poolString), len(sf.poolWord))
 	// for _, word := range sf.poolWord {
 	// 	fmt.Printf("%v\t", word.Word())
