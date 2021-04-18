@@ -19,7 +19,7 @@ import (
 type TModules struct {
 	mainName    string                        // Имя главного модуля
 	poolModule  map[string]*module.TModule    // Пул модулей для компиляции
-	keywords    types.IKeywords           // Ключевые слова
+	keywords    types.IKeywords               // Ключевые слова
 	modCurrent  *module.TModule               // Текущий обрабатываемый модуль
 	consCurrent *srcconst.TConst              // Текущая константа
 	expCurrent  *constexpres.TConstExpression // Текущее выражение для вычисления
@@ -147,7 +147,6 @@ func (sf *TModules) findConstName(name *word.TWord) *srcconst.TConst {
 	log.Panicf("TModules.findSimpleName(): not find constante %v.%v\n", sf.modCurrent.Name(), name.Word())
 	return nil
 }
-
 
 // После обработки всех слов константы -- устанавливает её тип
 func (sf *TModules) setConstType() {

@@ -23,15 +23,15 @@ import (
 
 // TModule -- операции со словами модуля
 type TModule struct {
-	poolWord []*word.TWord       // пул слов модуля
-	keywords types.IKeywords // Пул допустимыз ключевых слов
-	name     string              // Имя модуля
-	imports  *imports.TImports   //  Секция импорта
-	consts   *consts.TConsts     // Секция констант
-	otypes   *otypes.TOtypes     // Секция типов
-	vars     *vars.TVars         // Секция переменных
-	procs    *procs.TProcedures  // Секция процедур
-	begin    *begin.TBegin       // Секция BEGIN модуля
+	poolWord []*word.TWord      // пул слов модуля
+	keywords types.IKeywords    // Пул допустимыз ключевых слов
+	name     string             // Имя модуля
+	imports  *imports.TImports  //  Секция импорта
+	consts   *consts.TConsts    // Секция констант
+	otypes   *otypes.TOtypes    // Секция типов
+	vars     *vars.TVars        // Секция переменных
+	procs    *procs.TProcedures // Секция процедур
+	begin    *begin.TBegin      // Секция BEGIN модуля
 }
 
 // New -- возвращает новый *TModule

@@ -6,6 +6,7 @@ import (
 	"github.com/prospero78/goOC/internal/app/scanner/word"
 	"github.com/prospero78/goOC/internal/app/sectionset/module/keywords"
 	"github.com/prospero78/goOC/internal/app/sectionset/module/procs/srcproc"
+	"github.com/prospero78/goOC/internal/types"
 )
 
 /*
@@ -14,14 +15,14 @@ import (
 
 // TProcedures -- операции с вырезаним слов модуля для процедур
 type TProcedures struct {
-	keywords *keywords.TKeywords
+	keywords types.IKeywords
 	poolProc []*srcproc.TSrcProc // Пул вычисленных процедур
 }
 
 // New -- возвращает новый *TProcedures
 func New() *TProcedures {
 	return &TProcedures{
-		keywords: keywords.Keys,
+		keywords: keywords.GetKeys(),
 		poolProc: make([]*srcproc.TSrcProc, 0),
 	}
 }

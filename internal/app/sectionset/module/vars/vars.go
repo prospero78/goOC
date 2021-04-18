@@ -6,6 +6,7 @@ import (
 	"github.com/prospero78/goOC/internal/app/scanner/word"
 	"github.com/prospero78/goOC/internal/app/sectionset/module/keywords"
 	"github.com/prospero78/goOC/internal/app/sectionset/module/vars/srcvar"
+	"github.com/prospero78/goOC/internal/types"
 )
 
 /*
@@ -15,13 +16,13 @@ import (
 // TVars -- операции со словами секции переменных
 type TVars struct {
 	poolVar  []*srcvar.TSrcVar
-	keywords *keywords.TKeywords
+	keywords types.IKeywords
 }
 
-// New -- возвращае тновый *TVars
+// New -- возвращает новый *TVars
 func New() *TVars {
 	return &TVars{
-		keywords: keywords.Keys,
+		keywords: keywords.GetKeys(),
 		poolVar:  make([]*srcvar.TSrcVar, 0),
 	}
 }

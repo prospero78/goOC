@@ -13,11 +13,10 @@ package sectionset
 */
 
 import (
-	//"log"
-	"oc/internal/app/scanner/word"
-	"oc/internal/app/sectionset/comment"
-	"oc/internal/app/sectionset/module"
-	"oc/internal/app/sectionset/module/imports/alias"
+	"github.com/prospero78/goOC/internal/app/scanner/word"
+	"github.com/prospero78/goOC/internal/app/sectionset/comment"
+	"github.com/prospero78/goOC/internal/app/sectionset/module"
+	"github.com/prospero78/goOC/internal/app/sectionset/module/imports/alias"
 )
 
 // IScan -- интерфейс к сканеру
@@ -41,7 +40,7 @@ func New() *TSectionSet {
 
 // Split -- разделяет слова по секциям
 func (sf *TSectionSet) Split(scanner IScan) {
-	//log.Printf("TSectionSet()\n")
+	// log.Printf("TSectionSet()\n")
 	poolWord := scanner.PoolWord()
 	num := 0
 	for _, word := range poolWord {
@@ -52,7 +51,7 @@ func (sf *TSectionSet) Split(scanner IScan) {
 	poolWord = sf.comment.Set(poolWord)
 	poolWord, _ = sf.module.Set(poolWord) // Дополнительные комментарии за концом файла
 	_ = sf.comment.AddPoolWord(poolWord)
-	//log.Printf("TSectionSet.Split(): comment+module=%v", numWordMod+numWordCom)
+	// log.Printf("TSectionSet.Split(): comment+module=%v", numWordMod+numWordCom)
 
 	// Теперь в модуле надо разделить слова по внутренним секциям
 	sf.module.Split()

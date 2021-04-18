@@ -2,11 +2,11 @@
 package calcconst
 
 import (
-	"log"
 	"github.com/prospero78/goOC/internal/app/modules/calcexp"
 	"github.com/prospero78/goOC/internal/app/modules/calcword"
 	"github.com/prospero78/goOC/internal/app/scanner/word"
 	"github.com/prospero78/goOC/internal/app/sectionset/module/consts/srcconst"
+	"log"
 )
 
 // TCalcConst -- операци ипо вычислению констант
@@ -84,12 +84,10 @@ func (sf *TCalcConst) setType(cons *srcconst.TConst) {
 				break
 			}
 		}
-		
+
 		// sf.exprConstCalc()
 		sf.calcExp.RecognizeType()
-		
-		
-		
+
 		// После передачи слов в выражение -- надо сформировать новый словарь слов
 		poolNew := make([]*word.TWord, 0)
 		poolNew = append(poolNew, poolWord...)

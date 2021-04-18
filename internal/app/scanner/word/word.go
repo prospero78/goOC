@@ -2,9 +2,10 @@
 package word
 
 import (
-	"log"
 	"strconv"
 	"strings"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/prospero78/goOC/internal/app/sectionset/module/keywords"
 	"github.com/prospero78/goOC/internal/types"
@@ -94,7 +95,7 @@ func (sf *TWord) isName(name string) bool {
 	if res := sf.isLetter(lit); res != 0 { // Проверка на недопустимую первую литеру
 		return false
 	}
-	for _, rune := range []rune(name) {
+	for _, rune := range name {
 		lit = string(rune)
 		if res := sf.isLetter(lit); !(res == 0 || res == 2) {
 			return false

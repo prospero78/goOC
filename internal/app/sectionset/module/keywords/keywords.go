@@ -11,13 +11,13 @@ type TKeywords struct {
 	dictKey map[string][]string
 }
 
-var(
+var (
 	// keys -- глобальный объект ключей
 	keys *TKeywords
 )
 
 // GetKeys -- возвращает набор ключей для языка
-func GetKeys()types.IKeywords{
+func GetKeys() types.IKeywords {
 	return keys
 }
 

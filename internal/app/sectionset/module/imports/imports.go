@@ -65,7 +65,7 @@ func (sf *TImports) Split(pool []*word.TWord) []*word.TWord {
 				log.Panicf("TImports.Split(): invalid term(%q)\n", term.Word())
 			}
 			pool = pool[1:]
-			if term.Word()==";"{
+			if term.Word() == ";" {
 				return pool
 			}
 		}
@@ -80,6 +80,6 @@ func (sf *TImports) Imports() []*alias.TAlias {
 }
 
 // Len -- возвращает общее число импортов
-func (sf *TImports)Len()int{
+func (sf *TImports) Len() int {
 	return len(sf.poolAlias)
 }

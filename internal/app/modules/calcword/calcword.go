@@ -2,8 +2,8 @@
 package calcword
 
 import (
-	"log"
 	"github.com/prospero78/goOC/internal/app/scanner/word"
+	"log"
 	"strings"
 )
 

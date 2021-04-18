@@ -6,11 +6,11 @@ package app
 */
 
 import (
-	"io/ioutil"
-	"log"
 	"github.com/prospero78/goOC/internal/app/modules"
 	"github.com/prospero78/goOC/internal/app/scanner"
 	"github.com/prospero78/goOC/internal/app/sectionset"
+	"io/ioutil"
+	"log"
 	"strings"
 	// "oc/internal/app/sectionset/module"
 	"os"
@@ -46,9 +46,9 @@ func New(vers, build, data string) (oc *TOc, err error) {
 func (sf *TOc) Run() {
 	log.Printf("TOc.Run(): fileName=%v\n", sf.filePath)
 	strSource := sf.readFile(sf.filePath)
-	poolName:=strings.Split(sf.filePath, "/")
-	nameMod:=poolName[len(poolName)-1]
-	nameMod=nameMod[:len(nameMod)-3]
+	poolName := strings.Split(sf.filePath, "/")
+	nameMod := poolName[len(poolName)-1]
+	nameMod = nameMod[:len(nameMod)-3]
 	sf.scanner.Scan(nameMod, strSource)
 	// Разбить по секциям
 	sf.section.Split(sf.scanner)
@@ -95,7 +95,7 @@ func (sf *TOc) getImport(nameModule string) {
 
 // Готовит параметры под новый сканер
 func (sf *TOc) scanModule(moduleName string) {
-	if sf.modules.IsExist(moduleName){
+	if sf.modules.IsExist(moduleName) {
 		return
 	}
 	filePath := sf.path + moduleName + ".o7"

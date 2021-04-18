@@ -3,9 +3,9 @@ package calcexp
 
 import (
 	"fmt"
-	"log"
 	"github.com/prospero78/goOC/internal/app/modules/calcword"
 	"github.com/prospero78/goOC/internal/app/scanner/word"
+	"log"
 	"strconv"
 )
 

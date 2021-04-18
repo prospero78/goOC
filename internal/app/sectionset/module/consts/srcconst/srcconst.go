@@ -3,7 +3,7 @@ package srcconst
 
 import (
 	"log"
-	
+
 	"github.com/prospero78/goOC/internal/app/scanner/word"
 	"github.com/prospero78/goOC/internal/app/sectionset/module/consts/srcconst/constexpres"
 )

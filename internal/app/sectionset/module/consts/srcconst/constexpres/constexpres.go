@@ -4,14 +4,14 @@ package constexpres
 
 import (
 	"log"
-	
+
 	"github.com/prospero78/goOC/internal/app/scanner/word"
 )
 
 // TConstExpression -- операции с вычислимым выражением констант
 type TConstExpression struct {
 	poolWord []*word.TWord // Члены выражения
-	word     *word.TWord    // Фактическое значение
+	word     *word.TWord   // Фактическое значение
 }
 
 // New -- возвращает новый *TExpression
@@ -46,6 +46,6 @@ func (sf *TConstExpression) AddWord(word *word.TWord) {
 }
 
 // GetWord -- возвращает хранимое слово значения
-func (sf *TConstExpression)GetWord()*word.TWord{
+func (sf *TConstExpression) GetWord() *word.TWord {
 	return sf.word
 }
