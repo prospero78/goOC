@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 
 	"github.com/prospero78/goOC/internal/app/sectionset/module/keywords"
 	"github.com/prospero78/goOC/internal/types"
@@ -31,13 +31,13 @@ type TWord struct {
 func New(numStr, pos int, val string) *TWord {
 	{ // Предусловия
 		if numStr < 1 {
-			log.Panicf("word.go/New(): numStr(%v)<1\n", numStr)
+			logrus.Panicf("word.go/New(): numStr(%v)<1\n", numStr)
 		}
 		if pos < 0 {
-			log.Panicf("word.go/New(): pos(%v)<0\n", pos)
+			logrus.Panicf("word.go/New(): pos(%v)<0\n", pos)
 		}
 		if val == "" {
-			log.Panicf("word.go/New(): val==''\n")
+			logrus.Panicf("word.go/New(): val==''\n")
 		}
 	}
 	word := &TWord{
@@ -57,7 +57,7 @@ func (sf *TWord) Word() string {
 // Проверяет, что есть конкретная литера
 func (sf *TWord) isLetter(lit string) (res int) {
 	if len(sf.word) == 0 {
-		log.Panicf("TWord.isLetter(): word==''")
+		logrus.Panicf("TWord.isLetter(): word==''")
 	}
 	if strings.Contains(litEng, lit) { // en_En.UTF-8
 		return 0
@@ -164,16 +164,16 @@ func (sf *TWord) IsBool() bool {
 // SetType -- устанавливает значение типа слова
 func (sf *TWord) SetType(strType string) {
 	if strType == "" {
-		log.Panicf("TWord.SetType(): strType==''\n")
+		logrus.Panicf("TWord.SetType(): strType==''\n")
 	}
 	if sf.strType != "" {
 		if sf.strType != strType {
-			log.Panicf("TWord.SetType(): type(%v)!=strType(%v)\n", sf.strType, strType)
+			logrus.Panicf("TWord.SetType(): type(%v)!=strType(%v)\n", sf.strType, strType)
 		}
 		return
 	}
 	if sf.strType != "" {
-		log.Panicf("TWord.SetType(): type(%v) already set, strType=%v\n", sf.strType, strType)
+		logrus.Panicf("TWord.SetType(): type(%v) already set, strType=%v\n", sf.strType, strType)
 	}
 	sf.strType = strType
 }
@@ -186,7 +186,7 @@ func (sf *TWord) GetType() string {
 // SetModule -- устанавливает имя модуля
 func (sf *TWord) SetModule(module *string) {
 	if *module == "" {
-		log.Panicf("TWord.SetModule(): module=''\n")
+		logrus.Panicf("TWord.SetModule(): module=''\n")
 	}
 	sf.module = module
 }

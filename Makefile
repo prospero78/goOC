@@ -3,6 +3,7 @@ run.app:
 	go fmt ./...
 	go build -o ./bin/oc ./cmd/gooc/main.go
 	cd ./bin && \
+	export DEBUG=true && \
 	./oc ./src/Main.o7
 mod:
 	clear
