@@ -3,10 +3,10 @@ package calcconst
 
 import (
 	"log"
-	"oc/internal/app/modules/calcexp"
-	"oc/internal/app/modules/calcword"
-	"oc/internal/app/scanner/word"
-	"oc/internal/app/sectionset/module/consts/srcconst"
+	"github.com/prospero78/goOC/internal/app/modules/calcexp"
+	"github.com/prospero78/goOC/internal/app/modules/calcword"
+	"github.com/prospero78/goOC/internal/app/scanner/word"
+	"github.com/prospero78/goOC/internal/app/sectionset/module/consts/srcconst"
 )
 
 // TCalcConst -- операци ипо вычислению констант
@@ -72,8 +72,8 @@ func (sf *TCalcConst) setType(cons *srcconst.TConst) {
 	case 1: // Тип константы определяется единственным словом
 		cons.SetType(pool[0].GetType())
 	default: // Тип имеет выражение и его надо вычислить
-		//exp := sf.consCurrent.GetExpres()
-		//sf.exprConstCalc(exp)
+		// exp := sf.consCurrent.GetExpres()
+		// sf.exprConstCalc(exp)
 		poolWord := cons.GetWords()
 		poolWord = poolWord[1:] // Откинуть открывающую скобку
 		for len(poolWord) > 0 {
@@ -85,7 +85,7 @@ func (sf *TCalcConst) setType(cons *srcconst.TConst) {
 			}
 		}
 		
-		//sf.exprConstCalc()
+		// sf.exprConstCalc()
 		sf.calcExp.RecognizeType()
 		
 		

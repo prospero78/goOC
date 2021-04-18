@@ -4,20 +4,22 @@ package modules
 
 import (
 	"log"
-	"oc/internal/app/modules/calcconst"
-	"oc/internal/app/modules/calcword"
-	"oc/internal/app/scanner/word"
-	"oc/internal/app/sectionset/module"
-	"oc/internal/app/sectionset/module/consts/srcconst"
-	"oc/internal/app/sectionset/module/consts/srcconst/constexpres"
-	"oc/internal/app/sectionset/module/keywords"
+
+	"github.com/prospero78/goOC/internal/app/modules/calcconst"
+	"github.com/prospero78/goOC/internal/app/modules/calcword"
+	"github.com/prospero78/goOC/internal/app/scanner/word"
+	"github.com/prospero78/goOC/internal/app/sectionset/module"
+	"github.com/prospero78/goOC/internal/app/sectionset/module/consts/srcconst"
+	"github.com/prospero78/goOC/internal/app/sectionset/module/consts/srcconst/constexpres"
+	"github.com/prospero78/goOC/internal/app/sectionset/module/keywords"
+	"github.com/prospero78/goOC/internal/types"
 )
 
 // TModules -- операции с модулями для компиляции
 type TModules struct {
 	mainName    string                        // Имя главного модуля
 	poolModule  map[string]*module.TModule    // Пул модулей для компиляции
-	keywords    *keywords.TKeywords           // Ключевые слова
+	keywords    types.IKeywords           // Ключевые слова
 	modCurrent  *module.TModule               // Текущий обрабатываемый модуль
 	consCurrent *srcconst.TConst              // Текущая константа
 	expCurrent  *constexpres.TConstExpression // Текущее выражение для вычисления
@@ -33,7 +35,7 @@ type TModules struct {
 func New() *TModules {
 	return &TModules{
 		poolModule: make(map[string]*module.TModule),
-		keywords:   keywords.Keys,
+		keywords:   keywords.GetKeys(),
 		stackConst: make([]*srcconst.TConst, 0),
 		calcConst:  calcconst.New(),
 		calcWord:   calcword.New(),
@@ -156,8 +158,8 @@ func (sf *TModules) setConstType() {
 	case 1: // Тип константы определяется единственным словом
 		sf.consCurrent.SetType(pool[0].GetType())
 	default: // Тип имеет выражение и его надо вычислить
-		//exp := sf.consCurrent.GetExpres()
-		//sf.exprConstCalc(exp)
+		// exp := sf.consCurrent.GetExpres()
+		// sf.exprConstCalc(exp)
 		sf.stackConstExp = append(sf.stackConstExp, sf.expCurrent)
 		sf.expCurrent = sf.consCurrent.GetExpres()
 		poolWord := sf.consCurrent.GetWords()

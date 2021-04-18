@@ -2,9 +2,10 @@ package vars
 
 import (
 	"log"
-	"oc/internal/app/scanner/word"
-	"oc/internal/app/sectionset/module/keywords"
-	"oc/internal/app/sectionset/module/vars/srcvar"
+
+	"github.com/prospero78/goOC/internal/app/scanner/word"
+	"github.com/prospero78/goOC/internal/app/sectionset/module/keywords"
+	"github.com/prospero78/goOC/internal/app/sectionset/module/vars/srcvar"
 )
 
 /*
@@ -107,8 +108,8 @@ func (sf *TVars) checkExport(svar *srcvar.TSrcVar, pool []*word.TWord) []*word.T
 // Проверяет наличие присвоения в указанной позиции
 func (sf *TVars) checkDefine(pool []*word.TWord) (pl []*word.TWord) {
 	define := pool[0]
-	if define.Word() != ":" { //Признак определения типа
-		//log.Panicf("TVars.checkAsign(): bad assign(%v) for type\n", assign.Word())
+	if define.Word() != ":" { // Признак определения типа
+		// log.Panicf("TVars.checkAsign(): bad assign(%v) for type\n", assign.Word())
 		return pool
 	}
 	// Получить описатель типа

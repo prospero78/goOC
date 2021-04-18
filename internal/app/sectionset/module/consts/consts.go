@@ -6,21 +6,23 @@ package consts
 
 import (
 	"log"
-	"oc/internal/app/scanner/word"
-	"oc/internal/app/sectionset/module/consts/srcconst"
-	"oc/internal/app/sectionset/module/keywords"
+
+	"github.com/prospero78/goOC/internal/app/scanner/word"
+	"github.com/prospero78/goOC/internal/app/sectionset/module/consts/srcconst"
+	"github.com/prospero78/goOC/internal/app/sectionset/module/keywords"
+	"github.com/prospero78/goOC/internal/types"
 )
 
 // TConsts -- операции с секцией констант
 type TConsts struct {
-	keywords  *keywords.TKeywords
+	keywords  types.IKeywords
 	poolConst []*srcconst.TConst
 }
 
 // New -- возвращает новый *TConsts
 func New() *TConsts {
 	return &TConsts{
-		keywords:  keywords.Keys,
+		keywords:  keywords.GetKeys(),
 		poolConst: make([]*srcconst.TConst, 0),
 	}
 }

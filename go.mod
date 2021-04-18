@@ -1,3 +1,3 @@
-module oc
+module github.com/prospero78/goOC
 
-go 1.15
+go 1.16

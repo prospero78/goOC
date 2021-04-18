@@ -6,22 +6,24 @@ package imports
 
 import (
 	"log"
-	"oc/internal/app/scanner/word"
-	"oc/internal/app/sectionset/module/imports/alias"
-	"oc/internal/app/sectionset/module/keywords"
+
+	"github.com/prospero78/goOC/internal/app/scanner/word"
+	"github.com/prospero78/goOC/internal/app/sectionset/module/imports/alias"
+	"github.com/prospero78/goOC/internal/app/sectionset/module/keywords"
+	"github.com/prospero78/goOC/internal/types"
 )
 
 // TImports -- операции с секцией импорта
 type TImports struct {
 	poolAlias []*alias.TAlias
-	keywords  *keywords.TKeywords
+	keywords  types.IKeywords
 }
 
 // New -- возвращает новый *tImports
 func New() *TImports {
 	return &TImports{
 		poolAlias: make([]*alias.TAlias, 0),
-		keywords:  keywords.Keys,
+		keywords:  keywords.GetKeys(),
 	}
 }
 
@@ -68,7 +70,7 @@ func (sf *TImports) Split(pool []*word.TWord) []*word.TWord {
 			}
 		}
 	}
-	//log.Panicf("TImports.Split(): not have IMPORTS\n")
+	// log.Panicf("TImports.Split(): not have IMPORTS\n")
 	return nil
 }
 

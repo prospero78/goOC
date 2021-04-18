@@ -2,9 +2,9 @@
 package main
 
 import (
-	"oc/internal/app"
-	"oc/internal/log"
-	mSs "oc/internal/splashscreen"
+	"github.com/prospero78/goOC/internal/app"
+	"github.com/prospero78/goOC/internal/log"
+	mSs "github.com/prospero78/goOC/internal/splashscreen"
 )
 
 var (

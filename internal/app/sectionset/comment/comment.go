@@ -7,7 +7,8 @@ package comment
 import (
 	// "fmt"
 	"log"
-	"oc/internal/app/scanner/word"
+
+	"github.com/prospero78/goOC/internal/app/scanner/word"
 )
 
 // TComment -- операции с секцией коментариев
@@ -62,6 +63,6 @@ func (sf TComment) AddPoolWord(poolWord []*word.TWord) int {
 		log.Panicf("TComment.AddPoolWord(): poolWord==nil\n")
 	}
 	sf.poolWord = append(sf.poolWord, poolWord...)
-	//log.Printf("TComment.AddPoolWord(): len=%v", len(sf.poolWord))
+	// log.Printf("TComment.AddPoolWord(): len=%v", len(sf.poolWord))
 	return len(sf.poolWord)
 }

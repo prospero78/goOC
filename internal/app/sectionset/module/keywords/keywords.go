@@ -1,40 +1,47 @@
 package keywords
 
+import "github.com/prospero78/goOC/internal/types"
+
 /*
 	Пакет предоставляет тип с ключевыми словами
 */
 
 // TKeywords -- операции с ключевыми словами
 type TKeywords struct {
-	poolKey map[string][]string
+	dictKey map[string][]string
 }
 
 var(
-	// Keys -- глобальный объект ключей
-	Keys *TKeywords
+	// keys -- глобальный объект ключей
+	keys *TKeywords
 )
 
+// GetKeys -- возвращает набор ключей для языка
+func GetKeys()types.IKeywords{
+	return keys
+}
+
 func init() {
-	Keys = &TKeywords{
-		poolKey: make(map[string][]string),
+	keys = &TKeywords{
+		dictKey: make(map[string][]string),
 	}
-	Keys.addKeyword("MODULE", "МОДУЛЬ")
-	Keys.addKeyword("IMPORT", "ИМПОРТ")
-	Keys.addKeyword("CONST", "КОНСТ")
-	Keys.addKeyword("TYPE", "ТИПЫ")
-	Keys.addKeyword("VAR", "ПЕРЕМ", "ПРМ", "УКАЗ")
-	Keys.addKeyword("PROCEDURE", "ПРОЦЕДУРА", "ПРОЦ")
-	Keys.addKeyword("BEGIN", "НАЧАЛО", "НАЧ")
-	Keys.addKeyword("RECORD", "ЗАПИСЬ")
-	Keys.addKeyword("END", "КОНЕЦ", "КНЦ", "КОН")
-	Keys.addKeyword("RECORD", "ЗАПИСЬ")
-	Keys.addKeyword("TRUE", "ИСТИНА")
-	Keys.addKeyword("FALSE", "ЛОЖЬ")
+	keys.addKeyword("MODULE", "МОДУЛЬ")
+	keys.addKeyword("IMPORT", "ИМПОРТ")
+	keys.addKeyword("CONST", "КОНСТ")
+	keys.addKeyword("TYPE", "ТИПЫ")
+	keys.addKeyword("VAR", "ПЕРЕМ", "ПРМ", "УКАЗ")
+	keys.addKeyword("PROCEDURE", "ПРОЦЕДУРА", "ПРОЦ")
+	keys.addKeyword("BEGIN", "НАЧАЛО", "НАЧ")
+	keys.addKeyword("RECORD", "ЗАПИСЬ")
+	keys.addKeyword("END", "КОНЕЦ", "КНЦ", "КОН")
+	keys.addKeyword("RECORD", "ЗАПИСЬ")
+	keys.addKeyword("TRUE", "ИСТИНА")
+	keys.addKeyword("FALSE", "ЛОЖЬ")
 }
 
 // IsKey -- проверяет ключевое слово с необходимым образцом
 func (sf *TKeywords) IsKey(sample, key string) bool {
-	keyword, ok := sf.poolKey[sample]
+	keyword, ok := sf.dictKey[sample]
 	if !ok {
 		return false
 	}
@@ -47,9 +54,9 @@ func (sf *TKeywords) IsKey(sample, key string) bool {
 }
 
 // Конструирует срез допустимых ключевых слов по позиции
-func (sf *TKeywords) addKeyword(key string, key1 ...string) {
+func (sf *TKeywords) addKeyword(primarKey string, otherkeys ...string) {
 	res := make([]string, 0)
-	res = append(res, key)
-	res = append(res, key1...)
-	sf.poolKey[key] = res
+	res = append(res, primarKey)
+	res = append(res, otherkeys...)
+	sf.dictKey[primarKey] = res
 }

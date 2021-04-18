@@ -4,8 +4,8 @@ package calcexp
 import (
 	"fmt"
 	"log"
-	"oc/internal/app/modules/calcword"
-	"oc/internal/app/scanner/word"
+	"github.com/prospero78/goOC/internal/app/modules/calcword"
+	"github.com/prospero78/goOC/internal/app/scanner/word"
 	"strconv"
 )
 
@@ -34,7 +34,7 @@ func (sf *TCalcExp) AddWord(word *word.TWord) {
 
 // RecognizeType -- распознаёт тип выражения
 func (sf *TCalcExp) RecognizeType() (name, operation string) {
-	//log.Panicf("TCalcExp.RecognizeType(): доделать\n")
+	// log.Panicf("TCalcExp.RecognizeType(): доделать\n")
 	for _, word := range sf.poolWord {
 		if word.GetType() == "" {
 			name, operation = sf.calcWord.RecognizeType(word)

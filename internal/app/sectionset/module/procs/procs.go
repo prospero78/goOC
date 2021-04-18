@@ -2,9 +2,10 @@ package procs
 
 import (
 	"log"
-	"oc/internal/app/scanner/word"
-	"oc/internal/app/sectionset/module/keywords"
-	"oc/internal/app/sectionset/module/procs/srcproc"
+
+	"github.com/prospero78/goOC/internal/app/scanner/word"
+	"github.com/prospero78/goOC/internal/app/sectionset/module/keywords"
+	"github.com/prospero78/goOC/internal/app/sectionset/module/procs/srcproc"
 )
 
 /*

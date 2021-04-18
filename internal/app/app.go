@@ -8,15 +8,15 @@ package app
 import (
 	"io/ioutil"
 	"log"
-	"oc/internal/app/modules"
-	"oc/internal/app/scanner"
-	"oc/internal/app/sectionset"
+	"github.com/prospero78/goOC/internal/app/modules"
+	"github.com/prospero78/goOC/internal/app/scanner"
+	"github.com/prospero78/goOC/internal/app/sectionset"
 	"strings"
-	//"oc/internal/app/sectionset/module"
+	// "oc/internal/app/sectionset/module"
 	"os"
 )
 
-//TOc -- Оберон-компилятор (главный тип приложения)
+// TOc -- Оберон-компилятор (главный тип приложения)
 type TOc struct {
 	scanner  *scanner.TScanner       // сканнер слов в модуле
 	section  *sectionset.TSectionSet // разбивщик модуля на секции
@@ -25,7 +25,7 @@ type TOc struct {
 	path     string                  // общий путь к файлу
 }
 
-//New -- взвращает указатель на новый ТОк
+// New -- взвращает указатель на новый ТОк
 func New(vers, build, data string) (oc *TOc, err error) {
 	lenArgs := len(os.Args)
 	if lenArgs < 2 {
@@ -42,7 +42,7 @@ func New(vers, build, data string) (oc *TOc, err error) {
 	return oc, nil
 }
 
-//Run -- запуск компилтора после создания объекта компилятора
+// Run -- запуск компилтора после создания объекта компилятора
 func (sf *TOc) Run() {
 	log.Printf("TOc.Run(): fileName=%v\n", sf.filePath)
 	strSource := sf.readFile(sf.filePath)

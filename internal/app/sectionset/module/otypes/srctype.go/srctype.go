@@ -2,7 +2,8 @@ package srctype
 
 import (
 	"log"
-	"oc/internal/app/scanner/word"
+
+	"github.com/prospero78/goOC/internal/app/scanner/word"
 )
 
 /*

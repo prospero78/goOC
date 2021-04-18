@@ -2,7 +2,8 @@ package srcvar
 
 import (
 	"log"
-	"oc/internal/app/scanner/word"
+
+	"github.com/prospero78/goOC/internal/app/scanner/word"
 )
 
 /*
@@ -26,7 +27,7 @@ func New(name *word.TWord) *TSrcVar {
 
 // AddWord -- добавляет слово в словарь переменных
 func (sf *TSrcVar) AddWord(word *word.TWord) {
-	if word==nil{
+	if word == nil {
 		log.Panicf("TSrcVar.AddWord(): word==nil\n")
 	}
 	sf.poolWord = append(sf.poolWord, word)

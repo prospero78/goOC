@@ -6,20 +6,22 @@ package begin
 
 import (
 	"log"
-	"oc/internal/app/scanner/word"
-	"oc/internal/app/sectionset/module/keywords"
+
+	"github.com/prospero78/goOC/internal/app/scanner/word"
+	"github.com/prospero78/goOC/internal/app/sectionset/module/keywords"
+	"github.com/prospero78/goOC/internal/types"
 )
 
 // TBegin -- операци ис секцией BEGIN модуля
 type TBegin struct {
-	keywords *keywords.TKeywords
+	keywords types.IKeywords
 	poolWord []*word.TWord
 }
 
 // New -- возвращает новый *TBegin
 func New() *TBegin {
 	return &TBegin{
-		keywords: keywords.Keys,
+		keywords: keywords.GetKeys(),
 		poolWord: make([]*word.TWord, 0),
 	}
 }

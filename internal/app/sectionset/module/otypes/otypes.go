@@ -6,22 +6,24 @@ package otypes
 
 import (
 	"log"
-	"oc/internal/app/scanner/word"
-	"oc/internal/app/sectionset/module/keywords"
 
-	"oc/internal/app/sectionset/module/otypes/srctype.go"
+	"github.com/prospero78/goOC/internal/app/scanner/word"
+	"github.com/prospero78/goOC/internal/app/sectionset/module/keywords"
+	"github.com/prospero78/goOC/internal/types"
+
+	"github.com/prospero78/goOC/internal/app/sectionset/module/otypes/srctype.go"
 )
 
 // TOtypes -- операци ис секцией типов
 type TOtypes struct {
-	keywords *keywords.TKeywords
+	keywords types.IKeywords
 	poolType []*srctype.TSrcType
 }
 
 // New -- возвращает новый *TOtypes
 func New() *TOtypes {
 	return &TOtypes{
-		keywords: keywords.Keys,
+		keywords: keywords.GetKeys(),
 		poolType: make([]*srctype.TSrcType, 0),
 	}
 }
@@ -83,7 +85,7 @@ func (sf *TOtypes) fillTypes(pool []*word.TWord) []*word.TWord {
 		}
 		term = pool[3]
 		if !(term.Word() == "=" || term.Word() == "*") {
-			//log.Panicf("TOtypes.fiilTypes(): term=%q\n", term.Word())
+			// log.Panicf("TOtypes.fiilTypes(): term=%q\n", term.Word())
 			otp.AddWord(pool[0])
 			otp.AddWord(pool[1])
 			otp.AddWord(pool[2])
@@ -110,8 +112,8 @@ func (sf *TOtypes) checkExport(otp *srctype.TSrcType, pool []*word.TWord) []*wor
 // Проверяет наличие присвоения в указанной позиции
 func (sf *TOtypes) checkAsign(pool []*word.TWord) (pl []*word.TWord) {
 	assign := pool[0]
-	if assign.Word() != "=" { //Признак определения типа
-		//log.Panicf("TOtypes.checkAsign(): bad assign(%v) for type\n", assign.Word())
+	if assign.Word() != "=" { // Признак определения типа
+		// log.Panicf("TOtypes.checkAsign(): bad assign(%v) for type\n", assign.Word())
 		return pool
 	}
 	// Получить описатель типа

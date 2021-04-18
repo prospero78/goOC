@@ -7,22 +7,24 @@ package module
 
 import (
 	"log"
-	"oc/internal/app/scanner/word"
-	"oc/internal/app/sectionset/module/begin"
-	"oc/internal/app/sectionset/module/consts"
-	"oc/internal/app/sectionset/module/consts/srcconst"
-	"oc/internal/app/sectionset/module/imports"
-	"oc/internal/app/sectionset/module/imports/alias"
-	"oc/internal/app/sectionset/module/keywords"
-	"oc/internal/app/sectionset/module/otypes"
-	"oc/internal/app/sectionset/module/procs"
-	"oc/internal/app/sectionset/module/vars"
+
+	"github.com/prospero78/goOC/internal/app/scanner/word"
+	"github.com/prospero78/goOC/internal/app/sectionset/module/begin"
+	"github.com/prospero78/goOC/internal/app/sectionset/module/consts"
+	"github.com/prospero78/goOC/internal/app/sectionset/module/consts/srcconst"
+	"github.com/prospero78/goOC/internal/app/sectionset/module/imports"
+	"github.com/prospero78/goOC/internal/app/sectionset/module/imports/alias"
+	"github.com/prospero78/goOC/internal/app/sectionset/module/keywords"
+	"github.com/prospero78/goOC/internal/app/sectionset/module/otypes"
+	"github.com/prospero78/goOC/internal/app/sectionset/module/procs"
+	"github.com/prospero78/goOC/internal/app/sectionset/module/vars"
+	"github.com/prospero78/goOC/internal/types"
 )
 
 // TModule -- операции со словами модуля
 type TModule struct {
 	poolWord []*word.TWord       // пул слов модуля
-	keywords *keywords.TKeywords // Пул допустимыз ключевых слов
+	keywords types.IKeywords // Пул допустимыз ключевых слов
 	name     string              // Имя модуля
 	imports  *imports.TImports   //  Секция импорта
 	consts   *consts.TConsts     // Секция констант
@@ -36,7 +38,7 @@ type TModule struct {
 func New() *TModule {
 	return &TModule{
 		poolWord: make([]*word.TWord, 0),
-		keywords: keywords.Keys,
+		keywords: keywords.GetKeys(),
 		imports:  imports.New(),
 		consts:   consts.New(),
 		otypes:   otypes.New(),
@@ -73,7 +75,7 @@ func (sf *TModule) Set(poolWord []*word.TWord) (pool []*word.TWord, _len int) {
 		name := word.Word()
 		if name == sf.name+"." {
 			poolWord = poolWord[2:]
-			//log.Printf("TModule.Set(): name=%q word=%v\n", sf.name, len(sf.poolWord))
+			// log.Printf("TModule.Set(): name=%q word=%v\n", sf.name, len(sf.poolWord))
 			return poolWord, len(sf.poolWord)
 		}
 		sf.poolWord = append(sf.poolWord, word)
@@ -90,13 +92,13 @@ func (sf *TModule) Split() {
 	poolWord = sf.imports.Split(poolWord)
 	log.Printf("TModule.Split() %q imports=%v", sf.name, sf.imports.Len())
 	poolWord = sf.consts.Split(poolWord)
-	//log.Printf("TModule.Split(): const=%v\n", sf.consts.Len())
+	// log.Printf("TModule.Split(): const=%v\n", sf.consts.Len())
 	poolWord = sf.otypes.Split(poolWord)
-	//log.Printf("TModule.Split(): types=%v\n", sf.otypes.Len())
+	// log.Printf("TModule.Split(): types=%v\n", sf.otypes.Len())
 	poolWord = sf.vars.Split(poolWord)
-	//log.Printf("TModule.Split(): vars=%v\n", sf.vars.Len())
+	// log.Printf("TModule.Split(): vars=%v\n", sf.vars.Len())
 	poolWord = sf.procs.Split(poolWord)
-	//log.Printf("TModule.Split(): procs=%v\n", sf.procs.Len())
+	// log.Printf("TModule.Split(): procs=%v\n", sf.procs.Len())
 	poolWord = sf.begin.Split(poolWord)
 	if len(poolWord) != 0 {
 		log.Panicf("TModule.Split(): after BEGIN poolWord len(%v)!=0\n", len(poolWord))

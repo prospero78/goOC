@@ -3,9 +3,17 @@ package word
 
 import (
 	"log"
-	"oc/internal/app/sectionset/module/keywords"
 	"strconv"
 	"strings"
+
+	"github.com/prospero78/goOC/internal/app/sectionset/module/keywords"
+	"github.com/prospero78/goOC/internal/types"
+)
+
+const (
+	litEng   = "_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+	litRu    = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя"
+	litDigit = "1234567890"
 )
 
 // TWord -- операции со словом
@@ -13,7 +21,7 @@ type TWord struct {
 	pos      int    // Позиция в строке
 	numStr   int    // Номер строки
 	word     string // Само слово
-	keywords *keywords.TKeywords
+	keywords types.IKeywords
 	strType  string  // Строковое представление типа
 	module   *string // Имя модуля для слова
 }
@@ -35,7 +43,7 @@ func New(numStr, pos int, val string) *TWord {
 		pos:      pos,
 		numStr:   numStr,
 		word:     val,
-		keywords: keywords.Keys,
+		keywords: keywords.GetKeys(),
 	}
 	return word
 }
@@ -50,16 +58,16 @@ func (sf *TWord) isLetter(lit string) (res int) {
 	if len(sf.word) == 0 {
 		log.Panicf("TWord.isLetter(): word==''")
 	}
-	if strings.Contains("_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz", lit) { // en_En.UTF-8
+	if strings.Contains(litEng, lit) { // en_En.UTF-8
 		return 0
 	}
-	if strings.Contains("АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя", lit) { // ru_RU.UTF-8
+	if strings.Contains(litRu, lit) { // ru_RU.UTF-8
 		return 0
 	}
 	if strings.Contains(".@!", lit) { // Если допустимые литеры
 		return 1
 	}
-	if strings.Contains("1234567890", lit) { // Если цифры
+	if strings.Contains(litDigit, lit) { // Если цифры
 		return 2
 	}
 	return 3

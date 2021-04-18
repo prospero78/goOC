@@ -1,23 +1,30 @@
 package scanner
 
-import (
-	//"fmt"
-	"log"
-	"oc/internal/app/scanner/stringsource"
-	"oc/internal/app/scanner/word"
-	"strings"
-)
-
 /*
 	Пакет предоставляет сканер для разбора исходника
 */
+
+import (
+	// "fmt"
+	"log"
+	"strings"
+
+	"github.com/prospero78/goOC/internal/app/scanner/stringsource"
+	"github.com/prospero78/goOC/internal/app/scanner/word"
+)
+
+const (
+	litEng   = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+	litRu    = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя"
+	litDigit = "1234567890"
+)
 
 // TScanner -- операции с исходником
 type TScanner struct {
 	poolStr   []*stringsource.TStringSource
 	poolWord  []*word.TWord
 	runSource []rune // Текущая строка исходника
-	pos       int    //Позиция руны в строке
+	pos       int    // Позиция руны в строке
 	num       int    // Номер строки
 }
 
@@ -32,7 +39,7 @@ func New() *TScanner {
 
 // Scan -- сканирует исходник, разбивает на необходимые структуры
 func (sf *TScanner) Scan(nameMod, strSource string) {
-	//log.Printf("Scan")
+	// log.Printf("Scan")
 	poolString := strings.Split(strSource, "\n")
 	for num, str := range poolString {
 		ss := stringsource.New(num+1, str)
@@ -41,10 +48,10 @@ func (sf *TScanner) Scan(nameMod, strSource string) {
 	sf.scanString(strSource)
 
 	// Присовить всем словам имя модуля
-	for _, word:=range sf.poolWord{
+	for _, word := range sf.poolWord {
 		word.SetModule(&nameMod)
 	}
-	//log.Printf("TScanner.Run(): lines=%v word=%v\n", len(poolString), len(sf.poolWord))
+	// log.Printf("TScanner.Run(): lines=%v word=%v\n", len(poolString), len(sf.poolWord))
 	// for _, word := range sf.poolWord {
 	// 	fmt.Printf("%v\t", word.Word())
 	// }
@@ -218,16 +225,16 @@ func (sf *TScanner) isLetter() bool {
 		return false
 	}
 	lit := string(sf.runSource[0])
-	if strings.Contains("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz", lit) { // en_En.UTF-8
+	if strings.Contains(litEng, lit) { // en_En.UTF-8
 		return true
 	}
-	if strings.Contains("АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя", lit) { // ru_RU.UTF-8
+	if strings.Contains(litRu, lit) { // ru_RU.UTF-8
 		return true
 	}
 	if strings.Contains("_.@!", lit) { // Если допустимые литеры
 		return true
 	}
-	if strings.Contains("1234567890", lit) { // Если цифры
+	if strings.Contains(litDigit, lit) { // Если цифры
 		return true
 	}
 	return false
@@ -246,7 +253,7 @@ func (sf *TScanner) isString() bool {
 	for len(sf.runSource) != 0 {
 		lit := string(sf.runSource[0])
 		if lit == "\"" {
-			word+="\""
+			word += "\""
 			sf.pos++
 			sf.runSource = sf.runSource[1:]
 			sf.addWord(word)
