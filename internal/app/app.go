@@ -6,14 +6,14 @@ package app
 */
 
 import (
+	"io/ioutil"
+	"strings"
+
+	"github.com/sirupsen/logrus"
+
 	"github.com/prospero78/goOC/internal/app/modules"
 	"github.com/prospero78/goOC/internal/app/scanner"
 	"github.com/prospero78/goOC/internal/app/sectionset"
-	"io/ioutil"
-	"log"
-	"strings"
-	// "oc/internal/app/sectionset/module"
-	"os"
 )
 
 // TOc -- Оберон-компилятор (главный тип приложения)
@@ -26,25 +26,20 @@ type TOc struct {
 }
 
 // New -- взвращает указатель на новый ТОк
-func New(vers, build, data string) (oc *TOc, err error) {
-	lenArgs := len(os.Args)
-	if lenArgs < 2 {
-		log.Panicf("app.go/New(): for compile plis set file name\n")
-	}
-	filePath := os.Args[1]
+func New(vers, build, data, filePath string) (oc *TOc, err error) {
+	logrus.Debugln("app.go/New(): создание типа компилятора")
 	oc = &TOc{
 		scanner:  scanner.New(),
 		section:  sectionset.New(),
 		filePath: filePath,
 		modules:  modules.New(),
 	}
-	log.Printf("app.go/New(): создание типа компилятора")
 	return oc, nil
 }
 
 // Run -- запуск компилтора после создания объекта компилятора
 func (sf *TOc) Run() {
-	log.Printf("TOc.Run(): fileName=%v\n", sf.filePath)
+	logrus.WithField("filePath", sf.filePath).Debugln("TOc.Run()")
 	strSource := sf.readFile(sf.filePath)
 	poolName := strings.Split(sf.filePath, "/")
 	nameMod := poolName[len(poolName)-1]
@@ -58,7 +53,7 @@ func (sf *TOc) Run() {
 	sf.modules.SetMain(nameMain)
 	sf.modules.AddModule(sf.section.Module())
 	sf.getImport(nameMain)
-	log.Printf("Toc.Run(): all modules=%v\n", sf.modules.Len())
+	logrus.WithField("all modules", sf.modules.Len()).Debugln("Toc.Run()")
 	sf.modules.ProcessConstant()
 }
 
@@ -66,7 +61,7 @@ func (sf *TOc) Run() {
 func (sf *TOc) readFile(filePath string) (strSource string) {
 	binSource, err := ioutil.ReadFile(filePath)
 	if err != nil {
-		log.Panicf("TOc.readFile(): error in read file(%v)\n\t%v", filePath, err)
+		logrus.WithError(err).WithField("fileName", sf.filePath).Panicf("TOc.readFile(): error in read file\n")
 	}
 	strSource = string(binSource)
 	return strSource
@@ -78,7 +73,7 @@ func (sf *TOc) checkModuleName(fileName, moduleName string) {
 	fileName = fileName[len(sf.path):]
 	fileName = fileName[:len(fileName)-3]
 	if fileName != moduleName {
-		log.Panicf("TOc.checkModuleName(): fileName(%v)!=moduleName(%v)\n", fileName, moduleName)
+		logrus.Panicf("TOc.checkModuleName(): fileName(%v)!=moduleName(%v)\n", fileName, moduleName)
 	}
 }
 
@@ -87,7 +82,7 @@ func (sf *TOc) getImport(nameModule string) {
 	modules := sf.section.GetImport()
 	for _, module := range modules {
 		if module == nil {
-			log.Panicf("TOc.Run(): module==nil\n")
+			logrus.Panicf("TOc.Run(): module==nil\n")
 		}
 		sf.scanModule(module.Name())
 	}
