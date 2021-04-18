@@ -2,7 +2,8 @@ run.app:
 	clear
 	go fmt ./...
 	go build -o ./bin/oc ./cmd/gooc/main.go
-	./bin/oc ./bin/Main.o7
+	cd ./bin && \
+	./oc ./src/Main.o7
 mod:
 	clear
 	go fmt ./...
