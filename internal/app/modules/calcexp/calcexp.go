@@ -8,6 +8,7 @@ import (
 
 	"github.com/prospero78/goOC/internal/app/modules/calcword"
 	"github.com/prospero78/goOC/internal/app/scanner/word"
+	"github.com/prospero78/goOC/internal/types"
 )
 
 // TCalcExp -- операции с выражением
@@ -82,17 +83,17 @@ func (sf *TCalcExp) Calc() {
 // Складывает целые числа
 func (sf *TCalcExp) intPlus(wrd *word.TWord) {
 	res := sf.val.Word()
-	resNum, err := strconv.Atoi(res)
+	resNum, err := strconv.Atoi(string(res))
 	if err != nil {
 		log.Panicf("TCalcExp.Calc(): %q(%v:%v) val exp(%v) not number\n", *sf.val.Module(), sf.val.NumStr(), sf.val.Pos(), sf.val.Word())
 	}
 	res = wrd.Word()
-	resNum2, err := strconv.Atoi(res)
+	resNum2, err := strconv.Atoi(string(res))
 	if err != nil {
 		log.Panicf("TCalcExp.Calc(): %q(%v:%v) word(%v) not number\n", *sf.val.Module(), sf.val.NumStr(), sf.val.Pos(), wrd.Word())
 	}
 	resNum += resNum2
-	wrd = word.New(wrd.NumStr(), wrd.Pos(), fmt.Sprint(resNum))
+	wrd, err = word.New(wrd.NumStr(), wrd.Pos(), types.AWord(fmt.Sprint(resNum)))
 	wrd.SetModule(sf.val.Module())
 	sf.val = wrd
 }

@@ -17,13 +17,13 @@ import (
 
 // TModules -- операции с модулями для компиляции
 type TModules struct {
-	mainName    string                        // Имя главного модуля
-	poolModule  map[string]*module.TModule    // Пул модулей для компиляции
-	keywords    types.IKeywords               // Ключевые слова
-	modCurrent  *module.TModule               // Текущий обрабатываемый модуль
-	consCurrent *srcconst.TConst              // Текущая константа
-	expCurrent  *constexpres.TConstExpression // Текущее выражение для вычисления
-	wordCurrent *word.TWord                   // Текущее слово для обработки
+	mainName    types.AModule                     // Имя главного модуля
+	poolModule  map[types.AModule]*module.TModule // Пул модулей для компиляции
+	keywords    types.IKeywords                   // Ключевые слова
+	modCurrent  *module.TModule                   // Текущий обрабатываемый модуль
+	consCurrent *srcconst.TConst                  // Текущая константа
+	expCurrent  *constexpres.TConstExpression     // Текущее выражение для вычисления
+	wordCurrent *word.TWord                       // Текущее слово для обработки
 
 	stackConst    []*srcconst.TConst              // Стек для констант
 	stackConstExp []*constexpres.TConstExpression // стек для выражений констант
@@ -34,7 +34,7 @@ type TModules struct {
 // New -- возвращает новый *TModules
 func New() *TModules {
 	return &TModules{
-		poolModule: make(map[string]*module.TModule),
+		poolModule: make(map[types.AModule]*module.TModule),
 		keywords:   keywords.GetKeys(),
 		stackConst: make([]*srcconst.TConst, 0),
 		calcConst:  calcconst.New(),
@@ -43,7 +43,7 @@ func New() *TModules {
 }
 
 // SetMain -- устанавливает главный модуль программы
-func (sf *TModules) SetMain(name string) {
+func (sf *TModules) SetMain(name types.AModule) {
 	{ // Предусловия
 		if name == "" {
 			log.Panicf("TModules.SetMain(): name(%v)==''\n", name)
@@ -89,7 +89,7 @@ func (sf *TModules) Len() int {
 }
 
 // Рекурсивно проверяет наличие циклического импорта для указанного имени модуля
-func (sf *TModules) checkImport(module *module.TModule, name string) {
+func (sf *TModules) checkImport(module *module.TModule, name types.AModule) {
 	imports := module.GetImport()
 	// Найти имя модуля в импорте проверяемого модуля
 	// Импортируемый модуль ещё может быть не зарегистрирован
@@ -101,7 +101,7 @@ func (sf *TModules) checkImport(module *module.TModule, name string) {
 }
 
 // IsExist -- возвращает признак существования модуля в реестре модулей
-func (sf *TModules) IsExist(modname string) bool {
+func (sf *TModules) IsExist(modname types.AModule) bool {
 	_, ok := sf.poolModule[modname]
 	return ok
 }

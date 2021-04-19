@@ -6,6 +6,7 @@ import (
 
 	"github.com/prospero78/goOC/internal/app/scanner/word"
 	"github.com/prospero78/goOC/internal/app/sectionset/module/consts/srcconst/constexpres"
+	"github.com/prospero78/goOC/internal/types"
 )
 
 // TConst --  операции с константой секции CONST
@@ -54,7 +55,7 @@ func (sf *TConst) GetWords() []*word.TWord {
 }
 
 // Name -- возвращает имя константы
-func (sf *TConst) Name() string {
+func (sf *TConst) Name() types.AWord {
 	return sf.name.Word()
 }
 
@@ -94,6 +95,6 @@ func (sf *TConst) SetPoolWord(pool []*word.TWord) {
 }
 
 // Module -- возвращает имя модуля, к которой относится константа
-func (sf *TConst) Module() string {
+func (sf *TConst) Module() types.AModule {
 	return *sf.name.Module()
 }

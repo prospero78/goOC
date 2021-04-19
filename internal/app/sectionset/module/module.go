@@ -25,7 +25,7 @@ import (
 type TModule struct {
 	poolWord []*word.TWord      // пул слов модуля
 	keywords types.IKeywords    // Пул допустимыз ключевых слов
-	name     string             // Имя модуля
+	name     types.AModule      // Имя модуля
 	imports  *imports.TImports  //  Секция импорта
 	consts   *consts.TConsts    // Секция констант
 	otypes   *otypes.TOtypes    // Секция типов
@@ -62,7 +62,7 @@ func (sf *TModule) Set(poolWord []*word.TWord) (pool []*word.TWord, _len int) {
 	if sf.name != "" {
 		log.Panicf("TModule.Set(): name(%q) already set\n", sf.name)
 	}
-	sf.name = name.Word()
+	sf.name = types.AModule(name.Word())
 	delimeter := poolWord[2]
 	if delimeter.Word() != ";" {
 		log.Panicf("TModule.Set(): delimeter(%q) inname module bad\n", delimeter.Word())
@@ -72,7 +72,7 @@ func (sf *TModule) Set(poolWord []*word.TWord) (pool []*word.TWord, _len int) {
 	// Теперь перебрать все слова в модуле, лишнее вернуть
 	for len(poolWord) >= 2 {
 		word := poolWord[0]
-		name := word.Word()
+		name := types.AModule(word.Word())
 		if name == sf.name+"." {
 			poolWord = poolWord[2:]
 			// log.Printf("TModule.Set(): name=%q word=%v\n", sf.name, len(sf.poolWord))
@@ -106,7 +106,7 @@ func (sf *TModule) Split() {
 }
 
 // Name -- возвращает имя модуля после сканирования
-func (sf *TModule) Name() string {
+func (sf *TModule) Name() types.AModule {
 	return sf.name
 }
 

@@ -33,12 +33,12 @@ func (sf *TCalcWord) RecognizeType(word *word.TWord) (name, operation string) {
 	case word.Word() == ")": // Если конец выражения
 		word.SetType(")")
 	case word.IsName(): // Если присвоение из другого слова
-		return word.Word(), "type, val" // Запросить тип и значение этого слова
+		return string(word.Word()), "type, val" // Запросить тип и значение этого слова
 	case word.IsCompoundName(): // Имя состоит из нескольких частей
-		poolName := strings.Split(word.Word(), ".")
+		poolName := strings.Split(string(word.Word()), ".")
 		// Проверить, что "Модуль:имя"
 		if len(poolName) == 2 {
-			return word.Word(), "module, name, type, val"
+			return string(word.Word()), "module, name, type, val"
 		}
 	case word.Word() == "+": // Операция "+"
 		word.SetType("+")

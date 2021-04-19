@@ -43,11 +43,13 @@ func (sf *TImports) Split(pool []*word.TWord) []*word.TWord {
 		term := pool[0]
 		switch term.Word() {
 		case ",": // Прямое имя модуля
-			alais := alias.New(wordName.Word(), "")
+			_alias := types.AModule(wordName.Word())
+			alais := alias.New(_alias, "")
 			sf.poolAlias = append(sf.poolAlias, alais)
 			pool = pool[1:]
 		case ";": // Окончание импорта модулей
-			alais := alias.New(wordName.Word(), "")
+			_alias := types.AModule(wordName.Word())
+			alais := alias.New(_alias, "")
 			sf.poolAlias = append(sf.poolAlias, alais)
 			pool = pool[1:]
 			return pool
@@ -57,7 +59,9 @@ func (sf *TImports) Split(pool []*word.TWord) []*word.TWord {
 			if !wordTrueName.IsName() {
 				log.Panicf("TImports.Split(): module wordTrueName (%q) not valid\n", wordTrueName.Word())
 			}
-			alias := alias.New(wordTrueName.Word(), wordName.Word())
+			_name := types.AModule(wordTrueName.Word())
+			_alias := types.AModule(wordName.Word())
+			alias := alias.New(_name, types.AModule(_alias))
 			sf.poolAlias = append(sf.poolAlias, alias)
 			pool = pool[1:]
 			term := pool[0]

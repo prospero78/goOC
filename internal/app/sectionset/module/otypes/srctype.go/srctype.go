@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/prospero78/goOC/internal/app/scanner/word"
+	"github.com/prospero78/goOC/internal/types"
 )
 
 /*
@@ -50,6 +51,6 @@ func (sf *TSrcType) Words() []*word.TWord {
 }
 
 // Name -- возвращает имя типа
-func (sf *TSrcType) Name() string {
+func (sf *TSrcType) Name() types.AWord {
 	return sf.word.Word()
 }

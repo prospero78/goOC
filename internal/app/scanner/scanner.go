@@ -11,6 +11,8 @@ import (
 
 	"github.com/prospero78/goOC/internal/app/scanner/stringsource"
 	"github.com/prospero78/goOC/internal/app/scanner/word"
+	"github.com/prospero78/goOC/internal/types"
+	"github.com/sirupsen/logrus"
 )
 
 const (
@@ -23,9 +25,9 @@ const (
 type TScanner struct {
 	poolStr   []*stringsource.TStringSource
 	poolWord  []*word.TWord
-	runSource []rune // Текущая строка исходника
-	pos       int    // Позиция руны в строке
-	num       int    // Номер строки
+	runSource []rune     // Текущая строка исходника
+	pos       types.APos // Позиция руны в строке
+	num       int        // Номер строки
 }
 
 // New -- возвращает новый *TScanner
@@ -38,7 +40,7 @@ func New() *TScanner {
 }
 
 // Scan -- сканирует исходник, разбивает на необходимые структуры
-func (sf *TScanner) Scan(nameMod, strSource string) {
+func (sf *TScanner) Scan(nameMod types.AModule, strSource string) {
 	// log.Printf("Scan")
 	poolString := strings.Split(strSource, "\n")
 	for num, str := range poolString {
@@ -99,7 +101,7 @@ func (sf *TScanner) isBracket() bool {
 	lit := string(sf.runSource[0])
 	if strings.Contains("()", lit) {
 		sf.pos++
-		sf.addWord(lit)
+		sf.addWord(types.AWord(lit))
 		isExp = true
 	}
 	if isExp {
@@ -153,7 +155,7 @@ func (sf *TScanner) isCompare() bool {
 	lit := string(sf.runSource[0])
 	if strings.Contains("=", lit) {
 		sf.pos++
-		sf.addWord(lit)
+		sf.addWord(types.AWord(lit))
 		isExp = true
 	}
 	if isExp {
@@ -190,7 +192,7 @@ func (sf *TScanner) isTerminalExp() bool {
 	lit := string(sf.runSource[0])
 	if strings.Contains(";*,-+/", lit) {
 		sf.pos++
-		sf.addWord(lit)
+		sf.addWord(types.AWord(lit))
 		isExp = true
 	}
 	if isExp {
@@ -248,7 +250,7 @@ func (sf *TScanner) isString() bool {
 		return false
 	}
 	sf.pos++
-	word := "\""
+	word := types.AWord("\"")
 	sf.runSource = sf.runSource[1:]
 	for len(sf.runSource) != 0 {
 		lit := string(sf.runSource[0])
@@ -260,7 +262,7 @@ func (sf *TScanner) isString() bool {
 			return true
 		}
 		sf.pos++
-		word += lit
+		word += types.AWord(lit)
 		sf.runSource = sf.runSource[1:]
 	}
 	return false
@@ -268,19 +270,22 @@ func (sf *TScanner) isString() bool {
 
 // Выбирает слово целиком из строки до разделителя
 func (sf *TScanner) getWord() {
-	word := ""
+	word := types.AWord("")
 	for sf.isLetter() {
 		lit := string(sf.runSource[0])
 		sf.pos++
-		word += lit
+		word += types.AWord(lit)
 		sf.runSource = sf.runSource[1:]
 	}
 	sf.addWord(word)
 }
 
 // Добавляет слово в пул слов
-func (sf *TScanner) addWord(wrd string) {
-	word := word.New(sf.num, sf.pos, wrd)
+func (sf *TScanner) addWord(wrd types.AWord) {
+	word, err := word.New(sf.num, sf.pos, wrd)
+	if err != nil {
+		logrus.WithError(err).Panicf("TScanner.addWord(): in create word")
+	}
 	sf.poolWord = append(sf.poolWord, word)
 }
 

@@ -14,6 +14,7 @@ import (
 	"github.com/prospero78/goOC/internal/app/modules"
 	"github.com/prospero78/goOC/internal/app/scanner"
 	"github.com/prospero78/goOC/internal/app/sectionset"
+	"github.com/prospero78/goOC/internal/types"
 )
 
 // TOc -- Оберон-компилятор (главный тип приложения)
@@ -42,7 +43,7 @@ func (sf *TOc) Run() {
 	logrus.WithField("filePath", sf.filePath).Debugln("TOc.Run()")
 	strSource := sf.readFile(sf.filePath)
 	poolName := strings.Split(sf.filePath, "/")
-	nameMod := poolName[len(poolName)-1]
+	nameMod := types.AModule(poolName[len(poolName)-1])
 	nameMod = nameMod[:len(nameMod)-3]
 	sf.scanner.Scan(nameMod, strSource)
 	// Разбить по секциям
@@ -68,16 +69,16 @@ func (sf *TOc) readFile(filePath string) (strSource string) {
 }
 
 // Проверяет имя модуля на соответствие имени файла
-func (sf *TOc) checkModuleName(fileName, moduleName string) {
+func (sf *TOc) checkModuleName(fileName string, moduleName types.AModule) {
 	// Проверить, что имя главного модуля совпадает с имнем файла
 	fileName = fileName[len(sf.path):]
 	fileName = fileName[:len(fileName)-3]
-	if fileName != moduleName {
+	if fileName != string(moduleName) {
 		logrus.Panicf("TOc.checkModuleName(): fileName(%v)!=moduleName(%v)\n", fileName, moduleName)
 	}
 }
 
-func (sf *TOc) getImport(nameModule string) {
+func (sf *TOc) getImport(nameModule types.AModule) {
 	// Получить остальные импорты модулей.
 	modules := sf.section.GetImport()
 	for _, module := range modules {
@@ -89,11 +90,11 @@ func (sf *TOc) getImport(nameModule string) {
 }
 
 // Готовит параметры под новый сканер
-func (sf *TOc) scanModule(moduleName string) {
+func (sf *TOc) scanModule(moduleName types.AModule) {
 	if sf.modules.IsExist(moduleName) {
 		return
 	}
-	filePath := sf.path + moduleName + ".o7"
+	filePath := sf.path + string(moduleName) + ".o7"
 	sf.scanner = scanner.New()
 	sf.section = sectionset.New()
 	strSource := sf.readFile(filePath)

@@ -2,11 +2,14 @@
 package word
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 
 	"github.com/sirupsen/logrus"
 
+	"github.com/prospero78/goOC/internal/app/scanner/word/litpos"
+	"github.com/prospero78/goOC/internal/app/scanner/word/strword"
 	"github.com/prospero78/goOC/internal/app/sectionset/module/keywords"
 	"github.com/prospero78/goOC/internal/types"
 )
@@ -19,44 +22,46 @@ const (
 
 // TWord -- операции со словом
 type TWord struct {
-	pos      int    // Позиция в строке
-	numStr   int    // Номер строки
-	word     string // Само слово
+	pos      types.IPosFix  // Позиция в строке
+	numStr   int            // Номер строки
+	word     types.IStrWord // Само слово
 	keywords types.IKeywords
-	strType  string  // Строковое представление типа
-	module   *string // Имя модуля для слова
+	strType  string         // Строковое представление типа
+	module   *types.AModule // Имя модуля для слова
 }
 
 // New -- возвращает новый *TWord
-func New(numStr, pos int, val string) *TWord {
+func New(numStr int, pos types.APos, strWord types.AWord) (*TWord, error) {
 	{ // Предусловия
 		if numStr < 1 {
 			logrus.Panicf("word.go/New(): numStr(%v)<1\n", numStr)
 		}
-		if pos < 0 {
-			logrus.Panicf("word.go/New(): pos(%v)<0\n", pos)
-		}
-		if val == "" {
-			logrus.Panicf("word.go/New(): val==''\n")
-		}
+	}
+	_pos, err := litpos.New(pos)
+	if err != nil {
+		return nil, fmt.Errorf("word.go/New(): in create IPosFix, err=%w", err)
+	}
+	_word, err := strword.New(strWord)
+	if err != nil {
+		return nil, fmt.Errorf("word.go/New(): in create IStrWord, err=%w", err)
 	}
 	word := &TWord{
-		pos:      pos,
+		pos:      _pos,
 		numStr:   numStr,
-		word:     val,
+		word:     _word,
 		keywords: keywords.GetKeys(),
 	}
-	return word
+	return word, nil
 }
 
 // Word -- возвращает хранимое слово
-func (sf *TWord) Word() string {
-	return sf.word
+func (sf *TWord) Word() types.AWord {
+	return sf.word.Get()
 }
 
 // Проверяет, что есть конкретная литера
 func (sf *TWord) isLetter(lit string) (res int) {
-	if len(sf.word) == 0 {
+	if sf.word.Len() == 0 {
 		logrus.Panicf("TWord.isLetter(): word==''")
 	}
 	if strings.Contains(litEng, lit) { // en_En.UTF-8
@@ -76,11 +81,11 @@ func (sf *TWord) isLetter(lit string) (res int) {
 
 // IsName -- проверяет слово на строгое соответствие требованиям к имени
 func (sf *TWord) IsName() bool {
-	lit := string([]rune(sf.word)[0])
+	lit := string([]rune(sf.word.Get())[0])
 	if res := sf.isLetter(lit); res != 0 { // Проверка на недопустимую первую литеру
 		return false
 	}
-	for _, rune := range []rune(sf.word) {
+	for _, rune := range []rune(sf.word.Get()) {
 		lit = string(rune)
 		if res := sf.isLetter(lit); !(res == 0 || res == 2) {
 			return false
@@ -106,7 +111,7 @@ func (sf *TWord) isName(name string) bool {
 
 // IsCompoundName -- проверяет, что имя является составным
 func (sf *TWord) IsCompoundName() bool {
-	poolName := strings.Split(sf.word, ".")
+	poolName := strings.Split(string(sf.word.Get()), ".")
 	for _, name := range poolName {
 		if !sf.isName(name) {
 			return false
@@ -122,23 +127,23 @@ func (sf *TWord) NumStr() int {
 
 // IsInt -- проверяет, что слово является целым числом
 func (sf *TWord) IsInt() bool {
-	if string(sf.word[0]) == "_" {
+	if string(sf.word.Get()[0]) == "_" {
 		return false
 	}
-	sf.word = strings.ReplaceAll(sf.word, "_", "")
-	_, err := strconv.Atoi(sf.word)
+	str := strings.ReplaceAll(string(sf.word.Get()), "_", "")
+	_, err := strconv.Atoi(str)
 	return err == nil
 }
 
 // IsReal -- проверяет, что слово является вещественным числом
 func (sf *TWord) IsReal() bool {
-	_, err := strconv.ParseFloat(sf.word, 64)
+	_, err := strconv.ParseFloat(string(sf.word.Get()), 64)
 	return err == nil
 }
 
 // IsString -- проверяет, что слово является строкой
 func (sf *TWord) IsString() bool {
-	run := []rune(sf.word)
+	run := []rune(sf.word.Get())
 	litBeg := string(run[0])
 	if litBeg != "\"" {
 		return false
@@ -152,10 +157,10 @@ func (sf *TWord) IsString() bool {
 
 // IsBool -- проверяет, что слово является булевым числом
 func (sf *TWord) IsBool() bool {
-	if sf.keywords.IsKey("TRUE", sf.word) {
+	if sf.keywords.IsKey("TRUE", sf.word.Get()) {
 		return true
 	}
-	if sf.keywords.IsKey("FALSE", sf.word) {
+	if sf.keywords.IsKey("FALSE", sf.word.Get()) {
 		return true
 	}
 	return false
@@ -184,7 +189,7 @@ func (sf *TWord) GetType() string {
 }
 
 // SetModule -- устанавливает имя модуля
-func (sf *TWord) SetModule(module *string) {
+func (sf *TWord) SetModule(module *types.AModule) {
 	if *module == "" {
 		logrus.Panicf("TWord.SetModule(): module=''\n")
 	}
@@ -192,11 +197,11 @@ func (sf *TWord) SetModule(module *string) {
 }
 
 // Module -- возвращает хранимое имя модуля
-func (sf *TWord) Module() *string {
+func (sf *TWord) Module() *types.AModule {
 	return sf.module
 }
 
 // Pos -- возвращает позицию в строке
-func (sf *TWord) Pos() int {
-	return sf.pos
+func (sf *TWord) Pos() types.APos {
+	return sf.pos.Get()
 }
