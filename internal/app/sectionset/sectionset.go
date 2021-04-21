@@ -43,7 +43,7 @@ func New() *TSectionSet {
 func (sf *TSectionSet) Split(scanner IScan) {
 	// log.Printf("TSectionSet()\n")
 	poolWord := scanner.PoolWord()
-	num := 0
+	num := types.ANumStr(0)
 	for _, word := range poolWord {
 		if num != word.NumStr() {
 			num = word.NumStr()

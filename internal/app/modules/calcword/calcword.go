@@ -2,14 +2,15 @@
 package calcword
 
 import (
-	"github.com/prospero78/goOC/internal/app/scanner/word"
 	"log"
 	"strings"
+
+	"github.com/prospero78/goOC/internal/app/scanner/word"
 )
 
 // TCalcWord -- операции по расчёту типа и значения слова
 type TCalcWord struct {
-	word *word.TWord
+	// word *word.TWord
 }
 
 // New -- возвращает новый *TCalcWord

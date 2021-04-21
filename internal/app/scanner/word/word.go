@@ -9,6 +9,7 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"github.com/prospero78/goOC/internal/app/scanner/word/litpos"
+	"github.com/prospero78/goOC/internal/app/scanner/word/numstr"
 	"github.com/prospero78/goOC/internal/app/scanner/word/strword"
 	"github.com/prospero78/goOC/internal/app/sectionset/module/keywords"
 	"github.com/prospero78/goOC/internal/types"
@@ -22,24 +23,23 @@ const (
 
 // TWord -- операции со словом
 type TWord struct {
-	pos      types.IPosFix  // Позиция в строке
-	numStr   int            // Номер строки
-	word     types.IStrWord // Само слово
-	keywords types.IKeywords
-	strType  string         // Строковое представление типа
-	module   *types.AModule // Имя модуля для слова
+	pos      types.IPosFix   // Позиция в строке
+	numStr   types.INumStr   // Номер строки
+	word     types.IStrWord  // Само слово
+	keywords types.IKeywords // Ссылка на глобальный объект ключевых слов
+	strType  string          // Строковое представление типа
+	module   *types.AModule  // Имя модуля для слова
 }
 
 // New -- возвращает новый *TWord
-func New(numStr int, pos types.APos, strWord types.AWord) (*TWord, error) {
-	{ // Предусловия
-		if numStr < 1 {
-			logrus.Panicf("word.go/New(): numStr(%v)<1\n", numStr)
-		}
-	}
+func New(numStr types.ANumStr, pos types.APos, strWord types.AWord) (*TWord, error) {
 	_pos, err := litpos.New(pos)
 	if err != nil {
 		return nil, fmt.Errorf("word.go/New(): in create IPosFix, err=%w", err)
+	}
+	_numStr, err := numstr.New(numStr)
+	if err != nil {
+		return nil, fmt.Errorf("word.go/New(): in create INumStr, err=%w", err)
 	}
 	_word, err := strword.New(strWord)
 	if err != nil {
@@ -47,7 +47,7 @@ func New(numStr int, pos types.APos, strWord types.AWord) (*TWord, error) {
 	}
 	word := &TWord{
 		pos:      _pos,
-		numStr:   numStr,
+		numStr:   _numStr,
 		word:     _word,
 		keywords: keywords.GetKeys(),
 	}
@@ -64,16 +64,14 @@ func (sf *TWord) isLetter(lit string) (res int) {
 	if sf.word.Len() == 0 {
 		logrus.Panicf("TWord.isLetter(): word==''")
 	}
-	if strings.Contains(litEng, lit) { // en_En.UTF-8
+	switch {
+	case strings.Contains(litEng, lit): // en_En.UTF-8
 		return 0
-	}
-	if strings.Contains(litRu, lit) { // ru_RU.UTF-8
+	case strings.Contains(litRu, lit): // ru_RU.UTF-8
 		return 0
-	}
-	if strings.Contains(".@!", lit) { // Если допустимые литеры
+	case strings.Contains(".@!", lit): // Если допустимые литеры
 		return 1
-	}
-	if strings.Contains(litDigit, lit) { // Если цифры
+	case strings.Contains(litDigit, lit): // Если цифры
 		return 2
 	}
 	return 3
@@ -81,13 +79,13 @@ func (sf *TWord) isLetter(lit string) (res int) {
 
 // IsName -- проверяет слово на строгое соответствие требованиям к имени
 func (sf *TWord) IsName() bool {
-	lit := string([]rune(sf.word.Get())[0])
-	if res := sf.isLetter(lit); res != 0 { // Проверка на недопустимую первую литеру
+	firstLit := string([]rune(sf.word.Get())[0])
+	if res := sf.isLetter(firstLit); res != 0 { // Проверка на недопустимую первую литеру
 		return false
 	}
-	for _, rune := range []rune(sf.word.Get()) {
-		lit = string(rune)
-		if res := sf.isLetter(lit); !(res == 0 || res == 2) {
+	for _, rune := range sf.word.Get() {
+		nextLit := string(rune)
+		if res := sf.isLetter(nextLit); !(res == 0 || res == 2) {
 			return false
 		}
 	}
@@ -95,14 +93,14 @@ func (sf *TWord) IsName() bool {
 }
 
 // Проверяет часть имени на строгое соответствие требованиям к имени
-func (sf *TWord) isName(name string) bool {
-	lit := string([]rune(name)[0])
-	if res := sf.isLetter(lit); res != 0 { // Проверка на недопустимую первую литеру
+func (sf *TWord) checkPartName(name string) bool {
+	firstLit := string([]rune(name)[0])
+	if res := sf.isLetter(firstLit); res != 0 { // Проверка на недопустимую первую литеру
 		return false
 	}
 	for _, rune := range name {
-		lit = string(rune)
-		if res := sf.isLetter(lit); !(res == 0 || res == 2) {
+		nextLit := string(rune)
+		if res := sf.isLetter(nextLit); !(res == 0 || res == 2) {
 			return false
 		}
 	}
@@ -113,7 +111,7 @@ func (sf *TWord) isName(name string) bool {
 func (sf *TWord) IsCompoundName() bool {
 	poolName := strings.Split(string(sf.word.Get()), ".")
 	for _, name := range poolName {
-		if !sf.isName(name) {
+		if !sf.checkPartName(name) {
 			return false
 		}
 	}
@@ -121,8 +119,8 @@ func (sf *TWord) IsCompoundName() bool {
 }
 
 // NumStr -- возвращает номер строки
-func (sf *TWord) NumStr() int {
-	return sf.numStr
+func (sf *TWord) NumStr() types.ANumStr {
+	return sf.numStr.Get()
 }
 
 // IsInt -- проверяет, что слово является целым числом
@@ -141,26 +139,23 @@ func (sf *TWord) IsReal() bool {
 	return err == nil
 }
 
-// IsString -- проверяет, что слово является строкой
+// IsString -- проверяет, что слово является строкой (должно быть в кавычках)
 func (sf *TWord) IsString() bool {
 	run := []rune(sf.word.Get())
-	litBeg := string(run[0])
-	if litBeg != "\"" {
+	litFirst := string(run[0])
+	if litFirst != "\"" {
 		return false
 	}
 	litEnd := string(run[len(run)-1:])
-	if litEnd != "\"" {
-		return false
-	}
-	return true
+	return litEnd == "\""
 }
 
 // IsBool -- проверяет, что слово является булевым числом
 func (sf *TWord) IsBool() bool {
-	if sf.keywords.IsKey("TRUE", sf.word.Get()) {
+	switch {
+	case sf.keywords.IsKey("TRUE", sf.word.Get()):
 		return true
-	}
-	if sf.keywords.IsKey("FALSE", sf.word.Get()) {
+	case sf.keywords.IsKey("FALSE", sf.word.Get()):
 		return true
 	}
 	return false
@@ -168,17 +163,14 @@ func (sf *TWord) IsBool() bool {
 
 // SetType -- устанавливает значение типа слова
 func (sf *TWord) SetType(strType string) {
-	if strType == "" {
+	switch {
+	case strType == "":
 		logrus.Panicf("TWord.SetType(): strType==''\n")
-	}
-	if sf.strType != "" {
-		if sf.strType != strType {
-			logrus.Panicf("TWord.SetType(): type(%v)!=strType(%v)\n", sf.strType, strType)
+	case sf.strType != "":
+		if sf.strType == strType {
+			return
 		}
-		return
-	}
-	if sf.strType != "" {
-		logrus.Panicf("TWord.SetType(): type(%v) already set, strType=%v\n", sf.strType, strType)
+		logrus.Panicf("TWord.SetType(): type(%v)!=strType(%v)\n", sf.strType, strType)
 	}
 	sf.strType = strType
 }

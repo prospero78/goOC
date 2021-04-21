@@ -13,4 +13,7 @@ type (
 
 	// AModule -- строковое представление имени модуля
 	AModule string
+
+	// ANumStr -- номер строки исходника
+	ANumStr int
 )

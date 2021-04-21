@@ -6,6 +6,7 @@ package app
 */
 
 import (
+	"fmt"
 	"io/ioutil"
 	"strings"
 
@@ -26,7 +27,7 @@ type TOc struct {
 	path     string                  // общий путь к файлу
 }
 
-// New -- взвращает указатель на новый ТОк
+// New -- возвращает новый *TOc
 func New(vers, build, data, filePath string) (oc *TOc, err error) {
 	logrus.Debugln("app.go/New(): создание типа компилятора")
 	oc = &TOc{
@@ -39,9 +40,12 @@ func New(vers, build, data, filePath string) (oc *TOc, err error) {
 }
 
 // Run -- запуск компилтора после создания объекта компилятора
-func (sf *TOc) Run() {
+func (sf *TOc) Run() error {
 	logrus.WithField("filePath", sf.filePath).Debugln("TOc.Run()")
-	strSource := sf.readFile(sf.filePath)
+	strSource, err := sf.readFile(sf.filePath)
+	if err != nil {
+		return fmt.Errorf("TOc.Run(): in read source file\n\t%w", err)
+	}
 	poolName := strings.Split(sf.filePath, "/")
 	nameMod := types.AModule(poolName[len(poolName)-1])
 	nameMod = nameMod[:len(nameMod)-3]
@@ -53,19 +57,20 @@ func (sf *TOc) Run() {
 	sf.checkModuleName(sf.filePath, nameMain)
 	sf.modules.SetMain(nameMain)
 	sf.modules.AddModule(sf.section.Module())
-	sf.getImport(nameMain)
+	sf.getImport()
 	logrus.WithField("all modules", sf.modules.Len()).Debugln("Toc.Run()")
 	sf.modules.ProcessConstant()
+	return nil
 }
 
 // По требованию читает файл, возвращает содержимое
-func (sf *TOc) readFile(filePath string) (strSource string) {
+func (sf *TOc) readFile(filePath string) (strSource string, err error) {
 	binSource, err := ioutil.ReadFile(filePath)
 	if err != nil {
-		logrus.WithError(err).WithField("fileName", sf.filePath).Panicf("TOc.readFile(): error in read file\n")
+		return "", fmt.Errorf("TOc.readFile(): error in read file\n\t%w", err)
 	}
 	strSource = string(binSource)
-	return strSource
+	return strSource, nil
 }
 
 // Проверяет имя модуля на соответствие имени файла
@@ -78,29 +83,35 @@ func (sf *TOc) checkModuleName(fileName string, moduleName types.AModule) {
 	}
 }
 
-func (sf *TOc) getImport(nameModule types.AModule) {
+func (sf *TOc) getImport() {
 	// Получить остальные импорты модулей.
 	modules := sf.section.GetImport()
 	for _, module := range modules {
 		if module == nil {
 			logrus.Panicf("TOc.Run(): module==nil\n")
 		}
-		sf.scanModule(module.Name())
+		if err := sf.scanModule(module.Name()); err != nil {
+			logrus.WithField("module", module.Name()).Panicf("TOc.Run(): in scam module\n")
+		}
 	}
 }
 
 // Готовит параметры под новый сканер
-func (sf *TOc) scanModule(moduleName types.AModule) {
+func (sf *TOc) scanModule(moduleName types.AModule) error {
 	if sf.modules.IsExist(moduleName) {
-		return
+		return nil
 	}
 	filePath := sf.path + string(moduleName) + ".o7"
 	sf.scanner = scanner.New()
 	sf.section = sectionset.New()
-	strSource := sf.readFile(filePath)
+	strSource, err := sf.readFile(filePath)
+	if err != nil {
+		return fmt.Errorf("TOc.scanModule(): in read file\n\t%w", err)
+	}
 	sf.scanner.Scan(moduleName, strSource)
 	sf.section.Split(sf.scanner)
 	module := sf.section.Module()
 	sf.checkModuleName(filePath, module.Name())
 	sf.modules.AddModule(module)
+	return nil
 }

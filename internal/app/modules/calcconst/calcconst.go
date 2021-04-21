@@ -12,9 +12,9 @@ import (
 
 // TCalcConst -- операци ипо вычислению констант
 type TCalcConst struct {
-	wordCurrent *word.TWord
-	calcWord    *calcword.TCalcWord // Вычисление слова
-	calcExp     *calcexp.TCalcExp   // Вычисление выражения
+	// wordCurrent *word.TWord
+	calcWord *calcword.TCalcWord // Вычисление слова
+	calcExp  *calcexp.TCalcExp   // Вычисление выражения
 }
 
 // New -- возвращает новый *TCalcConst

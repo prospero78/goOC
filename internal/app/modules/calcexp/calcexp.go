@@ -94,6 +94,9 @@ func (sf *TCalcExp) intPlus(wrd *word.TWord) {
 	}
 	resNum += resNum2
 	wrd, err = word.New(wrd.NumStr(), wrd.Pos(), types.AWord(fmt.Sprint(resNum)))
+	if err != nil {
+		log.Panicf("TCalcExp.Calc(): in create word\n\t%v", err)
+	}
 	wrd.SetModule(sf.val.Module())
 	sf.val = wrd
 }

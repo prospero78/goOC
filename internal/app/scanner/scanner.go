@@ -25,9 +25,9 @@ const (
 type TScanner struct {
 	poolStr   []*stringsource.TStringSource
 	poolWord  []*word.TWord
-	runSource []rune     // Текущая строка исходника
-	pos       types.APos // Позиция руны в строке
-	num       int        // Номер строки
+	runSource []rune        // Текущая строка исходника
+	pos       types.APos    // Позиция руны в строке
+	num       types.ANumStr // Номер строки
 }
 
 // New -- возвращает новый *TScanner

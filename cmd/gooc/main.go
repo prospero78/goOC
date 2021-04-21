@@ -11,8 +11,8 @@ import (
 
 var (
 	vers  = "0.0.8"
-	build = "0098"
-	data  = "2021-04-19 20:31:16"
+	build = "0100"
+	data  = "2021-04-21 22:34:25"
 )
 
 func main() {
@@ -23,5 +23,7 @@ func main() {
 	if err != nil {
 		log.WithError(err).Panicf("main(): Запуск приложения")
 	}
-	app.Run()
+	if err := app.Run(); err != nil {
+		log.WithError(err).Panicf("main(): in run app\n")
+	}
 }

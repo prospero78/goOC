@@ -11,7 +11,6 @@ import (
 
 // TArgOc -- операции с параметрами запуска
 type TArgOc struct {
-	debug    bool
 	fileName string
 }
 
