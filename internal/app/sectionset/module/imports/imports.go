@@ -61,7 +61,7 @@ func (sf *TImports) Split(pool []*word.TWord) []*word.TWord {
 			}
 			_name := types.AModule(wordTrueName.Word())
 			_alias := types.AModule(wordName.Word())
-			alias := alias.New(_name, types.AModule(_alias))
+			alias := alias.New(_name, _alias)
 			sf.poolAlias = append(sf.poolAlias, alias)
 			pool = pool[1:]
 			term := pool[0]

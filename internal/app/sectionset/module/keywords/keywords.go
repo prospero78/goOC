@@ -8,7 +8,7 @@ import "github.com/prospero78/goOC/internal/types"
 
 // TKeywords -- операции с ключевыми словами
 type TKeywords struct {
-	dictKey map[string][]string
+	dictKey map[types.AWord][]types.AWord
 }
 
 var (
@@ -23,7 +23,7 @@ func GetKeys() types.IKeywords {
 
 func init() {
 	keys = &TKeywords{
-		dictKey: make(map[string][]string),
+		dictKey: make(map[types.AWord][]types.AWord),
 	}
 	keys.addKeyword("MODULE", "МОДУЛЬ")
 	keys.addKeyword("IMPORT", "ИМПОРТ")
@@ -40,7 +40,7 @@ func init() {
 }
 
 // IsKey -- проверяет ключевое слово с необходимым образцом
-func (sf *TKeywords) IsKey(sample, key string) bool {
+func (sf *TKeywords) IsKey(sample, key types.AWord) bool {
 	keyword, ok := sf.dictKey[sample]
 	if !ok {
 		return false
@@ -54,8 +54,8 @@ func (sf *TKeywords) IsKey(sample, key string) bool {
 }
 
 // Конструирует срез допустимых ключевых слов по позиции
-func (sf *TKeywords) addKeyword(primarKey string, otherkeys ...string) {
-	res := make([]string, 0)
+func (sf *TKeywords) addKeyword(primarKey types.AWord, otherkeys ...types.AWord) {
+	res := make([]types.AWord, 0)
 	res = append(res, primarKey)
 	res = append(res, otherkeys...)
 	sf.dictKey[primarKey] = res

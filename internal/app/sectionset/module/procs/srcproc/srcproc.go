@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/prospero78/goOC/internal/app/scanner/word"
+	"github.com/prospero78/goOC/internal/types"
 )
 
 /*
@@ -33,6 +34,6 @@ func (sf *TSrcProc) AddWord(word *word.TWord) {
 }
 
 // Name -- возвращает хранимое имя процедуры
-func (sf *TSrcProc) Name() string {
+func (sf *TSrcProc) Name() types.AWord {
 	return sf.name.Word()
 }

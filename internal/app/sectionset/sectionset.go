@@ -17,6 +17,7 @@ import (
 	"github.com/prospero78/goOC/internal/app/sectionset/comment"
 	"github.com/prospero78/goOC/internal/app/sectionset/module"
 	"github.com/prospero78/goOC/internal/app/sectionset/module/imports/alias"
+	"github.com/prospero78/goOC/internal/types"
 )
 
 // IScan -- интерфейс к сканеру
@@ -58,7 +59,7 @@ func (sf *TSectionSet) Split(scanner IScan) {
 }
 
 // ModuleName -- возвращает имя модуля после сканирования
-func (sf *TSectionSet) ModuleName() string {
+func (sf *TSectionSet) ModuleName() types.AModule {
 	return sf.module.Name()
 }
 
