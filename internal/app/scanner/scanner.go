@@ -9,6 +9,7 @@ import (
 	"log"
 	"strings"
 
+	"github.com/prospero78/goOC/internal/app/scanner/isletter"
 	"github.com/prospero78/goOC/internal/app/scanner/stringsource"
 	"github.com/prospero78/goOC/internal/app/scanner/word"
 	"github.com/prospero78/goOC/internal/types"
@@ -23,18 +24,18 @@ const (
 
 // TScanner -- операции с исходником
 type TScanner struct {
-	poolStr   []*stringsource.TStringSource
-	poolWord  []types.IWord
-	runSource []rune        // Текущая строка исходника
-	pos       types.APos    // Позиция руны в строке
-	num       types.ANumStr // Номер строки
+	listStr  []*stringsource.TStringSource
+	listWord []types.IWord
+	listRune []rune        // Текущая строка исходника
+	pos      types.APos    // Позиция руны в строке
+	num      types.ANumStr // Номер строки
 }
 
 // New -- возвращает новый *TScanner
 func New() *TScanner {
 	return &TScanner{
-		poolStr:  make([]*stringsource.TStringSource, 0),
-		poolWord: make([]types.IWord, 0),
+		listStr:  make([]*stringsource.TStringSource, 0),
+		listWord: make([]types.IWord, 0),
 		num:      1,
 	}
 }
@@ -42,15 +43,15 @@ func New() *TScanner {
 // Scan -- сканирует исходник, разбивает на необходимые структуры
 func (sf *TScanner) Scan(nameMod types.AModule, strSource string) {
 	// log.Printf("Scan")
-	poolString := strings.Split(strSource, "\n")
-	for num, str := range poolString {
+	listString := strings.Split(strSource, "\n")
+	for num, str := range listString {
 		ss := stringsource.New(num+1, str)
-		sf.poolStr = append(sf.poolStr, ss)
+		sf.listStr = append(sf.listStr, ss)
 	}
 	sf.scanString(strSource)
 
 	// Присовить всем словам имя модуля
-	for _, word := range sf.poolWord {
+	for _, word := range sf.listWord {
 		if err := word.SetModule(&nameMod); err != nil {
 			logrus.WithError(err).Panicf("TScanner.Scan(): in set module for word\n")
 		}
@@ -63,9 +64,10 @@ func (sf *TScanner) Scan(nameMod types.AModule, strSource string) {
 
 // Сканирует каждую строку, разбивает на слова
 func (sf *TScanner) scanString(strSource string) {
-	sf.runSource = []rune(strSource)
-	for len(sf.runSource) > 0 {
-		if sf.isLetter() { // Если начало слова
+	sf.listRune = []rune(strSource)
+	for len(sf.listRune) > 0 {
+		lit := string(sf.listRune[0])
+		if isletter.Check(lit) { // Если начало слова
 			sf.getWord()
 			continue
 		}
@@ -93,21 +95,21 @@ func (sf *TScanner) scanString(strSource string) {
 		if sf.isBracket() { // Проверка на скобки
 			continue
 		}
-		log.Panicf("TScanner.scanString(): неизвестная литера (%q)\n", string(sf.runSource[0]))
+		log.Panicf("TScanner.scanString(): неизвестная литера (%q)\n", string(sf.listRune[0]))
 	}
 }
 
 // Проверяет, что литера является скобкой
 func (sf *TScanner) isBracket() bool {
 	isExp := false
-	lit := string(sf.runSource[0])
+	lit := string(sf.listRune[0])
 	if strings.Contains("()", lit) {
 		sf.pos++
 		sf.addWord(types.AWord(lit))
 		isExp = true
 	}
 	if isExp {
-		sf.runSource = sf.runSource[1:]
+		sf.listRune = sf.listRune[1:]
 		return true
 	}
 	return false
@@ -115,53 +117,57 @@ func (sf *TScanner) isBracket() bool {
 
 // Выбирает закрытие комментария
 func (sf *TScanner) isCommentClose() bool {
-	lit := string(sf.runSource[0])
+	lit := string(sf.listRune[0])
 	if lit != "*" {
 		return false
 	}
 	sf.pos++
-	sf.runSource = sf.runSource[1:]
-	lit = string(sf.runSource[0])
-	if lit != ")" {
+	sf.listRune = sf.listRune[1:]
+	lit = string(sf.listRune[0])
+	switch lit {
+	case ")":
+		sf.pos++
+		sf.addWord("*)")
+		sf.listRune = sf.listRune[1:]
+		return true
+	default:
 		sf.addWord("*")
 		return true
 	}
-	sf.pos++
-	sf.addWord("*)")
-	sf.runSource = sf.runSource[1:]
-	return true
 }
 
 // Выбирает открытие комментария
 func (sf *TScanner) isCommentOpen() bool {
-	lit := string(sf.runSource[0])
+	lit := string(sf.listRune[0])
 	if lit != "(" {
 		return false
 	}
 	sf.pos++
-	sf.runSource = sf.runSource[1:]
-	lit = string(sf.runSource[0])
-	if lit != "*" {
+	sf.listRune = sf.listRune[1:]
+	lit = string(sf.listRune[0])
+	switch lit {
+	case "*":
+		sf.pos++
+		sf.listRune = sf.listRune[1:]
+		sf.addWord("(*")
+		return true
+	default:
 		sf.addWord("(")
 		return true
 	}
-	sf.pos++
-	sf.runSource = sf.runSource[1:]
-	sf.addWord("(*")
-	return true
 }
 
 // Проверяет, что литера является сравнением
 func (sf *TScanner) isCompare() bool {
 	isExp := false
-	lit := string(sf.runSource[0])
+	lit := string(sf.listRune[0])
 	if strings.Contains("=", lit) {
 		sf.pos++
 		sf.addWord(types.AWord(lit))
 		isExp = true
 	}
 	if isExp {
-		sf.runSource = sf.runSource[1:]
+		sf.listRune = sf.listRune[1:]
 		return true
 	}
 	return false
@@ -169,21 +175,21 @@ func (sf *TScanner) isCompare() bool {
 
 // Проверяет, что литера является объявлением/присвоением
 func (sf *TScanner) isDeclaration() bool {
-	lit := string(sf.runSource[0])
+	lit := string(sf.listRune[0])
 	if lit != ":" {
 		return false
 	}
 
 	sf.pos++
-	sf.runSource = sf.runSource[1:]
-	lit = string(sf.runSource[0])
+	sf.listRune = sf.listRune[1:]
+	lit = string(sf.listRune[0])
 	if lit != "=" {
 		sf.addWord(":")
 		return true
 	}
 
 	sf.pos++
-	sf.runSource = sf.runSource[1:]
+	sf.listRune = sf.listRune[1:]
 	sf.addWord(":=")
 	return true
 }
@@ -191,14 +197,14 @@ func (sf *TScanner) isDeclaration() bool {
 // Проверяет, что литера является терминалом выражений
 func (sf *TScanner) isTerminalExp() bool {
 	isExp := false
-	lit := string(sf.runSource[0])
+	lit := string(sf.listRune[0])
 	if strings.Contains(";*,-+/", lit) {
 		sf.pos++
 		sf.addWord(types.AWord(lit))
 		isExp = true
 	}
 	if isExp {
-		sf.runSource = sf.runSource[1:]
+		sf.listRune = sf.listRune[1:]
 		return true
 	}
 	return false
@@ -206,7 +212,7 @@ func (sf *TScanner) isTerminalExp() bool {
 
 // Проверяет, что литера является пустым терминалом слов
 func (sf *TScanner) isTerminalEmpty() (res bool) {
-	lit := string(sf.runSource[0])
+	lit := string(sf.listRune[0])
 	if strings.Contains(" \t", lit) {
 		res = true
 	}
@@ -216,7 +222,7 @@ func (sf *TScanner) isTerminalEmpty() (res bool) {
 		res = true
 	}
 	if res {
-		sf.runSource = sf.runSource[1:]
+		sf.listRune = sf.listRune[1:]
 		sf.pos++
 		return true
 	}
@@ -225,10 +231,10 @@ func (sf *TScanner) isTerminalEmpty() (res bool) {
 
 // Проверяет, что литера -- буква
 func (sf *TScanner) isLetter() bool {
-	if len(sf.runSource) == 0 {
+	if len(sf.listRune) == 0 {
 		return false
 	}
-	lit := string(sf.runSource[0])
+	lit := string(sf.listRune[0])
 	if strings.Contains(litEng, lit) { // en_En.UTF-8
 		return true
 	}
@@ -247,25 +253,25 @@ func (sf *TScanner) isLetter() bool {
 // Выбирает строку в кавычках
 func (sf *TScanner) isString() bool {
 
-	lit := string(sf.runSource[0])
+	lit := string(sf.listRune[0])
 	if lit != "\"" {
 		return false
 	}
 	sf.pos++
 	word := types.AWord("\"")
-	sf.runSource = sf.runSource[1:]
-	for len(sf.runSource) != 0 {
-		lit := string(sf.runSource[0])
+	sf.listRune = sf.listRune[1:]
+	for len(sf.listRune) != 0 {
+		lit := string(sf.listRune[0])
 		if lit == "\"" {
 			word += "\""
 			sf.pos++
-			sf.runSource = sf.runSource[1:]
+			sf.listRune = sf.listRune[1:]
 			sf.addWord(word)
 			return true
 		}
 		sf.pos++
 		word += types.AWord(lit)
-		sf.runSource = sf.runSource[1:]
+		sf.listRune = sf.listRune[1:]
 	}
 	return false
 }
@@ -274,10 +280,10 @@ func (sf *TScanner) isString() bool {
 func (sf *TScanner) getWord() {
 	word := types.AWord("")
 	for sf.isLetter() {
-		lit := string(sf.runSource[0])
+		lit := string(sf.listRune[0])
 		sf.pos++
 		word += types.AWord(lit)
-		sf.runSource = sf.runSource[1:]
+		sf.listRune = sf.listRune[1:]
 	}
 	sf.addWord(word)
 }
@@ -288,12 +294,12 @@ func (sf *TScanner) addWord(wrd types.AWord) {
 	if err != nil {
 		logrus.WithError(err).Panicf("TScanner.addWord(): in create word")
 	}
-	sf.poolWord = append(sf.poolWord, word)
+	sf.listWord = append(sf.listWord, word)
 }
 
 // ListWord -- возвращает список слов после обработки
 func (sf *TScanner) ListWord() (res []types.IWord) {
 	res = make([]types.IWord, 0)
-	res = append(res, sf.poolWord...)
+	res = append(res, sf.listWord...)
 	return res
 }
