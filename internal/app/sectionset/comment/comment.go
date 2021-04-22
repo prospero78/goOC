@@ -8,24 +8,24 @@ import (
 	// "fmt"
 	"log"
 
-	"github.com/prospero78/goOC/internal/app/scanner/word"
+	"github.com/prospero78/goOC/internal/types"
 )
 
 // TComment -- операции с секцией коментариев
 type TComment struct {
-	poolWord []*word.TWord
+	listWord []types.IWord
 }
 
 // New -- возвращает новый *TComment
 func New() *TComment {
 	return &TComment{
-		poolWord: make([]*word.TWord, 0),
+		listWord: make([]types.IWord, 0),
 	}
 }
 
 // Set -- выделяет из пула слов комментарии и возвращает остаток (кроме тех, что за концом модуля).
-func (sf *TComment) Set(poolWord []*word.TWord) (poolRes []*word.TWord) {
-	poolRes = make([]*word.TWord, 0)
+func (sf *TComment) Set(poolWord []types.IWord) (poolRes []types.IWord) {
+	poolRes = make([]types.IWord, 0)
 	level := 0
 	for len(poolWord) > 0 {
 		word := poolWord[0]
@@ -43,7 +43,7 @@ func (sf *TComment) Set(poolWord []*word.TWord) (poolRes []*word.TWord) {
 			continue
 		default:
 			if level > 0 {
-				sf.poolWord = append(sf.poolWord, word)
+				sf.listWord = append(sf.listWord, word)
 				poolWord = poolWord[1:]
 				continue
 			}
@@ -58,11 +58,11 @@ func (sf *TComment) Set(poolWord []*word.TWord) (poolRes []*word.TWord) {
 }
 
 // AddPoolWord -- добавляет слова комментариев за концом модуля
-func (sf TComment) AddPoolWord(poolWord []*word.TWord) int {
+func (sf TComment) AddPoolWord(poolWord []types.IWord) int {
 	if poolWord == nil {
 		log.Panicf("TComment.AddPoolWord(): poolWord==nil\n")
 	}
-	sf.poolWord = append(sf.poolWord, poolWord...)
+	sf.listWord = append(sf.listWord, poolWord...)
 	// log.Printf("TComment.AddPoolWord(): len=%v", len(sf.poolWord))
-	return len(sf.poolWord)
+	return len(sf.listWord)
 }

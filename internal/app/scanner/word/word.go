@@ -8,8 +8,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	"github.com/prospero78/goOC/internal/app/scanner/word/litpos"
-	"github.com/prospero78/goOC/internal/app/scanner/word/numstr"
+	"github.com/prospero78/goOC/internal/app/scanner/word/coord"
 	"github.com/prospero78/goOC/internal/app/scanner/word/strword"
 	"github.com/prospero78/goOC/internal/app/sectionset/module/keywords"
 	"github.com/prospero78/goOC/internal/types"
@@ -23,8 +22,7 @@ const (
 
 // TWord -- операции со словом
 type TWord struct {
-	pos      types.IPosFix   // Позиция в строке
-	numStr   types.INumStr   // Номер строки
+	coord    types.ICoordFix // Координаты литеры
 	word     types.IStrWord  // Само слово
 	keywords types.IKeywords // Ссылка на глобальный объект ключевых слов
 	strType  string          // Строковое представление типа
@@ -33,21 +31,16 @@ type TWord struct {
 
 // New -- возвращает новый *TWord
 func New(numStr types.ANumStr, pos types.APos, strWord types.AWord) (*TWord, error) {
-	_pos, err := litpos.New(pos)
+	_coord, err := coord.New(pos, numStr)
 	if err != nil {
-		return nil, fmt.Errorf("word.go/New(): in create IPosFix, err=%w", err)
-	}
-	_numStr, err := numstr.New(numStr)
-	if err != nil {
-		return nil, fmt.Errorf("word.go/New(): in create INumStr, err=%w", err)
+		return nil, fmt.Errorf("word.go/New(): in create (ICoord), err=%w", err)
 	}
 	_word, err := strword.New(strWord)
 	if err != nil {
 		return nil, fmt.Errorf("word.go/New(): in create IStrWord, err=%w", err)
 	}
 	word := &TWord{
-		pos:      _pos,
-		numStr:   _numStr,
+		coord:    _coord,
 		word:     _word,
 		keywords: keywords.GetKeys(),
 	}
@@ -120,7 +113,7 @@ func (sf *TWord) IsCompoundName() bool {
 
 // NumStr -- возвращает номер строки
 func (sf *TWord) NumStr() types.ANumStr {
-	return sf.numStr.Get()
+	return sf.coord.NumStr()
 }
 
 // IsInt -- проверяет, что слово является целым числом
@@ -181,11 +174,12 @@ func (sf *TWord) GetType() string {
 }
 
 // SetModule -- устанавливает имя модуля
-func (sf *TWord) SetModule(module *types.AModule) {
+func (sf *TWord) SetModule(module *types.AModule) error {
 	if *module == "" {
-		logrus.Panicf("TWord.SetModule(): module=''\n")
+		return fmt.Errorf("TWord.SetModule(): module=''\n")
 	}
 	sf.module = module
+	return nil
 }
 
 // Module -- возвращает хранимое имя модуля
@@ -195,5 +189,5 @@ func (sf *TWord) Module() *types.AModule {
 
 // Pos -- возвращает позицию в строке
 func (sf *TWord) Pos() types.APos {
-	return sf.pos.Get()
+	return sf.coord.Pos()
 }

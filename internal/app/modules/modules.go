@@ -161,22 +161,22 @@ func (sf *TModules) setConstType() {
 		// sf.exprConstCalc(exp)
 		sf.stackConstExp = append(sf.stackConstExp, sf.expCurrent)
 		sf.expCurrent = sf.consCurrent.GetExpres()
-		poolWord := sf.consCurrent.GetWords()
-		poolWord = poolWord[1:] // Откинуть открывающую скобку
-		for len(poolWord) > 0 {
-			word := poolWord[0]
+		listOld := sf.consCurrent.GetWords()
+		listOld = listOld[1:] // Откинуть открывающую скобку
+		for len(listOld) > 0 {
+			word := listOld[0]
 			sf.expCurrent.AddWord(word)
-			poolWord = poolWord[1:]
+			listOld = listOld[1:]
 			if word.Word() == ")" {
 				break
 			}
 		}
 		sf.exprConstCalc()
 		// После передачи слов в выражение -- надо сформировать новый словарь слов
-		poolNew := make([]*word.TWord, 0)
-		poolNew = append(poolNew, sf.expCurrent.GetWord())
-		poolNew = append(poolNew, poolWord...)
-		sf.consCurrent.SetPoolWord(poolNew)
+		listNew := make([]types.IWord, 0)
+		listNew = append(listNew, sf.expCurrent.GetWord())
+		listNew = append(listNew, listOld...)
+		sf.consCurrent.SetPoolWord(listNew)
 		sf.exprConstCalc()
 		sf.expCurrent = sf.stackConstExp[len(sf.stackConstExp)-1]
 	}

@@ -24,7 +24,7 @@ const (
 // TScanner -- операции с исходником
 type TScanner struct {
 	poolStr   []*stringsource.TStringSource
-	poolWord  []*word.TWord
+	poolWord  []types.IWord
 	runSource []rune        // Текущая строка исходника
 	pos       types.APos    // Позиция руны в строке
 	num       types.ANumStr // Номер строки
@@ -34,7 +34,7 @@ type TScanner struct {
 func New() *TScanner {
 	return &TScanner{
 		poolStr:  make([]*stringsource.TStringSource, 0),
-		poolWord: make([]*word.TWord, 0),
+		poolWord: make([]types.IWord, 0),
 		num:      1,
 	}
 }
@@ -51,7 +51,9 @@ func (sf *TScanner) Scan(nameMod types.AModule, strSource string) {
 
 	// Присовить всем словам имя модуля
 	for _, word := range sf.poolWord {
-		word.SetModule(&nameMod)
+		if err := word.SetModule(&nameMod); err != nil {
+			logrus.WithError(err).Panicf("TScanner.Scan(): in set module for word\n")
+		}
 	}
 	// log.Printf("TScanner.Run(): lines=%v word=%v\n", len(poolString), len(sf.poolWord))
 	// for _, word := range sf.poolWord {
@@ -289,9 +291,9 @@ func (sf *TScanner) addWord(wrd types.AWord) {
 	sf.poolWord = append(sf.poolWord, word)
 }
 
-// PoolWord -- возвращает пул слов после обработки
-func (sf *TScanner) PoolWord() (res []*word.TWord) {
-	res = make([]*word.TWord, 0)
+// ListWord -- возвращает список слов после обработки
+func (sf *TScanner) ListWord() (res []types.IWord) {
+	res = make([]types.IWord, 0)
 	res = append(res, sf.poolWord...)
 	return res
 }

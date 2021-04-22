@@ -3,7 +3,6 @@ package srcvar
 import (
 	"log"
 
-	"github.com/prospero78/goOC/internal/app/scanner/word"
 	"github.com/prospero78/goOC/internal/types"
 )
 
@@ -13,25 +12,25 @@ import (
 
 // TSrcVar -- операции о словами переменной
 type TSrcVar struct {
-	poolWord []*word.TWord
-	name     *word.TWord
+	listWord []types.IWord
+	name     types.IWord
 	isExport bool
 }
 
 // New -- возвращает новый *TScrVar
-func New(name *word.TWord) *TSrcVar {
+func New(name types.IWord) *TSrcVar {
 	return &TSrcVar{
-		poolWord: make([]*word.TWord, 0),
+		listWord: make([]types.IWord, 0),
 		name:     name,
 	}
 }
 
 // AddWord -- добавляет слово в словарь переменных
-func (sf *TSrcVar) AddWord(word *word.TWord) {
+func (sf *TSrcVar) AddWord(word types.IWord) {
 	if word == nil {
 		log.Panicf("TSrcVar.AddWord(): word==nil\n")
 	}
-	sf.poolWord = append(sf.poolWord, word)
+	sf.listWord = append(sf.listWord, word)
 }
 
 // Name -- возвращает хранимое имя переменной
@@ -48,6 +47,6 @@ func (sf *TSrcVar) SetExport() {
 }
 
 // Words -- возвращает хранимые слова типа
-func (sf *TSrcVar) Words() []*word.TWord {
-	return sf.poolWord
+func (sf *TSrcVar) Words() []types.IWord {
+	return sf.listWord
 }

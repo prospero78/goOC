@@ -3,7 +3,6 @@ package srcproc
 import (
 	"log"
 
-	"github.com/prospero78/goOC/internal/app/scanner/word"
 	"github.com/prospero78/goOC/internal/types"
 )
 
@@ -13,24 +12,24 @@ import (
 
 // TSrcProc --
 type TSrcProc struct {
-	poolWord []*word.TWord
-	name     *word.TWord
+	listWord []types.IWord
+	name     types.IWord
 }
 
 // New -- возвращает новый *TSrcProc
-func New(name *word.TWord) *TSrcProc {
+func New(name types.IWord) *TSrcProc {
 	return &TSrcProc{
-		poolWord: make([]*word.TWord, 0),
+		listWord: make([]types.IWord, 0),
 		name:     name,
 	}
 }
 
 // AddWord -- добавляет слово в пул слов процедуры
-func (sf *TSrcProc) AddWord(word *word.TWord) {
+func (sf *TSrcProc) AddWord(word types.IWord) {
 	if word == nil {
 		log.Panicf("TSrcProc.AddWord(): word==nil\n")
 	}
-	sf.poolWord = append(sf.poolWord, word)
+	sf.listWord = append(sf.listWord, word)
 }
 
 // Name -- возвращает хранимое имя процедуры

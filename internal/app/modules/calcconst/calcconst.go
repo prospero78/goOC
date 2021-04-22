@@ -6,8 +6,8 @@ import (
 
 	"github.com/prospero78/goOC/internal/app/modules/calcexp"
 	"github.com/prospero78/goOC/internal/app/modules/calcword"
-	"github.com/prospero78/goOC/internal/app/scanner/word"
 	"github.com/prospero78/goOC/internal/app/sectionset/module/consts/srcconst"
+	"github.com/prospero78/goOC/internal/types"
 )
 
 // TCalcConst -- операци ипо вычислению констант
@@ -27,26 +27,26 @@ func New() *TCalcConst {
 
 // Calc -- рассчитывает константу
 func (sf *TCalcConst) Calc(cons *srcconst.TConst) {
-	pool := cons.GetWords()
-	if len(pool) == 0 { // У константы нет имени. Теоретически, это невозможно
+	listWord := cons.GetWords()
+	if len(listWord) == 0 { // У константы нет имени. Теоретически, это невозможно
 		log.Panicf("TModules.processConstant(): const(%v) not have type\n", cons.Name())
 	}
 	if cons.Name() == "\"цЯблоки\"" {
 		log.Print("")
 	}
-	lenPool := len(pool)
+	lenPool := len(listWord)
 	fnCheckWord := func() bool {
 		adr := 0
 		for {
-			pool = cons.GetWords()
-			if adr >= len(pool) {
+			listWord = cons.GetWords()
+			if adr >= len(listWord) {
 				sf.setType(cons)
 				return false
 			}
-			word := pool[adr]
+			word := listWord[adr]
 			adr++
 			sf.calcWord.RecognizeType(word)
-			_lenPool := len(pool)
+			_lenPool := len(listWord)
 			if _lenPool < lenPool {
 				lenPool = _lenPool
 				return true
@@ -54,8 +54,8 @@ func (sf *TCalcConst) Calc(cons *srcconst.TConst) {
 		}
 	}
 
-	if len(pool) == 1 {
-		word := pool[0]
+	if len(listWord) == 1 {
+		word := listWord[0]
 		sf.calcWord.RecognizeType(word)
 		sf.setType(cons)
 		return
@@ -75,12 +75,12 @@ func (sf *TCalcConst) setType(cons *srcconst.TConst) {
 	default: // Тип имеет выражение и его надо вычислить
 		// exp := sf.consCurrent.GetExpres()
 		// sf.exprConstCalc(exp)
-		poolWord := cons.GetWords()
-		poolWord = poolWord[1:] // Откинуть открывающую скобку
-		for len(poolWord) > 0 {
-			word := poolWord[0]
+		listWord := cons.GetWords()
+		listWord = listWord[1:] // Откинуть открывающую скобку
+		for len(listWord) > 0 {
+			word := listWord[0]
 			sf.calcExp.AddWord(word)
-			poolWord = poolWord[1:]
+			listWord = listWord[1:]
 			if word.Word() == ")" {
 				break
 			}
@@ -90,9 +90,9 @@ func (sf *TCalcConst) setType(cons *srcconst.TConst) {
 		sf.calcExp.RecognizeType()
 
 		// После передачи слов в выражение -- надо сформировать новый словарь слов
-		poolNew := make([]*word.TWord, 0)
-		poolNew = append(poolNew, poolWord...)
-		cons.SetPoolWord(poolNew)
+		listNew := make([]types.IWord, 0)
+		listNew = append(listNew, listWord...)
+		cons.SetPoolWord(listNew)
 		sf.calcExp.Calc()
 	}
 }

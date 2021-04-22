@@ -4,23 +4,22 @@ package srcconst
 import (
 	"log"
 
-	"github.com/prospero78/goOC/internal/app/scanner/word"
 	"github.com/prospero78/goOC/internal/app/sectionset/module/consts/srcconst/constexpres"
 	"github.com/prospero78/goOC/internal/types"
 )
 
 // TConst --  операции с константой секции CONST
 type TConst struct {
-	name     *word.TWord
+	name     types.IWord
 	isExport bool
-	poolWord []*word.TWord
+	listWord []types.IWord
 	strType  string                        // Строковое представление типа
 	exp      *constexpres.TConstExpression // Выражение для константы
 
 }
 
 // New -- возвращает новый *TConst
-func New(name *word.TWord) *TConst {
+func New(name types.IWord) *TConst {
 	{ // Предусловия
 		if name == nil {
 			log.Panicf("srcconst.go/New(): name==nil\n")
@@ -28,7 +27,7 @@ func New(name *word.TWord) *TConst {
 	}
 	return &TConst{
 		name:     name,
-		poolWord: make([]*word.TWord, 0),
+		listWord: make([]types.IWord, 0),
 		exp:      constexpres.New(),
 	}
 }
@@ -42,16 +41,16 @@ func (sf *TConst) SetExport() {
 }
 
 // AddWord -- добавляет слова в константу
-func (sf *TConst) AddWord(word *word.TWord) {
+func (sf *TConst) AddWord(word types.IWord) {
 	if word == nil {
 		log.Panicf("TConst.AddWord(): word==nil\n")
 	}
-	sf.poolWord = append(sf.poolWord, word)
+	sf.listWord = append(sf.listWord, word)
 }
 
 // GetWords -- возвращает слова константы
-func (sf *TConst) GetWords() []*word.TWord {
-	return sf.poolWord
+func (sf *TConst) GetWords() []types.IWord {
+	return sf.listWord
 }
 
 // Name -- возвращает имя константы
@@ -87,11 +86,11 @@ func (sf *TConst) GetExpres() *constexpres.TConstExpression {
 }
 
 // SetPoolWord -- устанавливает пул слов после обработки выражения
-func (sf *TConst) SetPoolWord(pool []*word.TWord) {
-	if pool == nil {
+func (sf *TConst) SetPoolWord(listWord []types.IWord) {
+	if listWord == nil {
 		log.Panicf("TConst.SetPoolWord(): pool==nil\n")
 	}
-	sf.poolWord = pool
+	sf.listWord = listWord
 }
 
 // Module -- возвращает имя модуля, к которой относится константа

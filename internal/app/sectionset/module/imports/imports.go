@@ -7,7 +7,6 @@ package imports
 import (
 	"log"
 
-	"github.com/prospero78/goOC/internal/app/scanner/word"
 	"github.com/prospero78/goOC/internal/app/sectionset/module/imports/alias"
 	"github.com/prospero78/goOC/internal/app/sectionset/module/keywords"
 	"github.com/prospero78/goOC/internal/types"
@@ -28,7 +27,7 @@ func New() *TImports {
 }
 
 // Split -- выделяет слова импорта и возвращает что осталось
-func (sf *TImports) Split(pool []*word.TWord) []*word.TWord {
+func (sf *TImports) Split(pool []types.IWord) []types.IWord {
 	imp := pool[0]
 	if !sf.keywords.IsKey("IMPORT", imp.Word()) { // Если нет импорта -- сраз всё вернуть
 		return pool

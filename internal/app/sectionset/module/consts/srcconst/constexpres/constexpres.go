@@ -5,25 +5,25 @@ package constexpres
 import (
 	"log"
 
-	"github.com/prospero78/goOC/internal/app/scanner/word"
+	"github.com/prospero78/goOC/internal/types"
 )
 
 // TConstExpression -- операции с вычислимым выражением констант
 type TConstExpression struct {
-	poolWord []*word.TWord // Члены выражения
-	word     *word.TWord   // Фактическое значение
+	listWord []types.IWord // Члены выражения
+	word     types.IWord   // Фактическое значение
 }
 
 // New -- возвращает новый *TExpression
 func New() *TConstExpression {
 	return &TConstExpression{
-		poolWord: make([]*word.TWord, 0),
+		listWord: make([]types.IWord, 0),
 	}
 }
 
 // GetWords -- возвращает слова выражения
-func (sf TConstExpression) GetWords() []*word.TWord {
-	return sf.poolWord
+func (sf TConstExpression) GetWords() []types.IWord {
+	return sf.listWord
 }
 
 // SetType -- устанавливает значение типа константы
@@ -38,14 +38,14 @@ func (sf *TConstExpression) SetType(strType string) {
 }
 
 // AddWord -- добавляет слово в выражение
-func (sf *TConstExpression) AddWord(word *word.TWord) {
+func (sf *TConstExpression) AddWord(word types.IWord) {
 	if word == nil {
 		log.Panicf("TConstExpression.AddWord(): word==nil\n")
 	}
-	sf.poolWord = append(sf.poolWord, word)
+	sf.listWord = append(sf.listWord, word)
 }
 
 // GetWord -- возвращает хранимое слово значения
-func (sf *TConstExpression) GetWord() *word.TWord {
+func (sf *TConstExpression) GetWord() types.IWord {
 	return sf.word
 }

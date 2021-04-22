@@ -13,31 +13,31 @@ import (
 
 // TCalcExp -- операции с выражением
 type TCalcExp struct {
-	val      *word.TWord
-	poolWord []*word.TWord
+	val      types.IWord
+	listWord []types.IWord
 	calcWord *calcword.TCalcWord
 }
 
 // New -- возвращает новый *TCalcExp
 func New() *TCalcExp {
 	return &TCalcExp{
-		poolWord: make([]*word.TWord, 0),
+		listWord: make([]types.IWord, 0),
 		calcWord: calcword.New(),
 	}
 }
 
 // AddWord -- добавляет слово в выражение
-func (sf *TCalcExp) AddWord(word *word.TWord) {
+func (sf *TCalcExp) AddWord(word types.IWord) {
 	if word == nil {
 		log.Panicf("TCalcExp.AddWord(): word==nil\n")
 	}
-	sf.poolWord = append(sf.poolWord, word)
+	sf.listWord = append(sf.listWord, word)
 }
 
 // RecognizeType -- распознаёт тип выражения
 func (sf *TCalcExp) RecognizeType() (name, operation string) {
 	// log.Panicf("TCalcExp.RecognizeType(): доделать\n")
-	for _, word := range sf.poolWord {
+	for _, word := range sf.listWord {
 		if word.GetType() == "" {
 			name, operation = sf.calcWord.RecognizeType(word)
 			if name != "" || operation != "" {
@@ -59,7 +59,7 @@ func (sf *TCalcExp) RecognizeType() (name, operation string) {
 func (sf *TCalcExp) Calc() {
 	// log.Panicf("TCalcExp.Calc(): доделать\n")
 	op := ""
-	for _, wrd := range sf.poolWord {
+	for _, wrd := range sf.listWord {
 		// выполнить операции в соответствии со своим типом
 		switch wrd.GetType() {
 		case "INTEGER":
@@ -81,7 +81,7 @@ func (sf *TCalcExp) Calc() {
 }
 
 // Складывает целые числа
-func (sf *TCalcExp) intPlus(wrd *word.TWord) {
+func (sf *TCalcExp) intPlus(wrd types.IWord) {
 	res := sf.val.Word()
 	resNum, err := strconv.Atoi(string(res))
 	if err != nil {
@@ -102,6 +102,6 @@ func (sf *TCalcExp) intPlus(wrd *word.TWord) {
 }
 
 // Вычитает целые числа
-func (sf *TCalcExp) intMinus(word *word.TWord) {
+func (sf *TCalcExp) intMinus(word types.IWord) {
 	log.Panicf("TCalcExp.intMinus(): доделать\n")
 }

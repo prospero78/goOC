@@ -20,7 +20,7 @@ import (
 
 // TOc -- Оберон-компилятор (главный тип приложения)
 type TOc struct {
-	scanner  *scanner.TScanner       // сканнер слов в модуле
+	scanner  types.IScanner          // сканнер слов в модуле
 	section  *sectionset.TSectionSet // разбивщик модуля на секции
 	modules  *modules.TModules       // Набор модулей для компиляции
 	filePath string                  // Имя главного файла для компиляции

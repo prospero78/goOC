@@ -7,7 +7,6 @@ package consts
 import (
 	"log"
 
-	"github.com/prospero78/goOC/internal/app/scanner/word"
 	"github.com/prospero78/goOC/internal/app/sectionset/module/consts/srcconst"
 	"github.com/prospero78/goOC/internal/app/sectionset/module/keywords"
 	"github.com/prospero78/goOC/internal/types"
@@ -28,7 +27,7 @@ func New() *TConsts {
 }
 
 // Split -- вырезает секцию констант, если она есть
-func (sf *TConsts) Split(pool []*word.TWord) []*word.TWord {
+func (sf *TConsts) Split(pool []types.IWord) []types.IWord {
 	word := pool[0]
 	if !sf.keywords.IsKey("CONST", word.Word()) {
 		return pool

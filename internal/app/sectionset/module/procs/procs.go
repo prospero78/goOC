@@ -3,7 +3,6 @@ package procs
 import (
 	"log"
 
-	"github.com/prospero78/goOC/internal/app/scanner/word"
 	"github.com/prospero78/goOC/internal/app/sectionset/module/keywords"
 	"github.com/prospero78/goOC/internal/app/sectionset/module/procs/srcproc"
 	"github.com/prospero78/goOC/internal/types"
@@ -28,50 +27,50 @@ func New() *TProcedures {
 }
 
 // Split -- вырезает все слова процедур, формирует словарь
-func (sf *TProcedures) Split(pool []*word.TWord) []*word.TWord {
+func (sf *TProcedures) Split(listWord []types.IWord) []types.IWord {
 	for {
 		// Проверить, что впереди реально процедура
-		word := pool[0]
+		word := listWord[0]
 		if !sf.keywords.IsKey("PROCEDURE", word.Word()) {
-			return pool
+			return listWord
 		}
-		pool = pool[1:]
-		name := pool[0]
+		listWord = listWord[1:]
+		name := listWord[0]
 		if !name.IsName() {
 			log.Panicf("TProcessing.getProcedure(): name(%v) must be strong\n", name.Word())
 		}
-		pool = pool[1:]
+		listWord = listWord[1:]
 		proc := srcproc.New(name)
-		pool = sf.getProcedure(proc, pool)
+		listWord = sf.getProcedure(proc, listWord)
 		sf.poolProc = append(sf.poolProc, proc)
 	}
 }
 
 // Рекурсивная функция для вычисления процедур.
 // Внутри процедуры могут быть ещё процедуры
-func (sf *TProcedures) getProcedure(proc *srcproc.TSrcProc, pool []*word.TWord) []*word.TWord {
+func (sf *TProcedures) getProcedure(proc *srcproc.TSrcProc, listWord []types.IWord) []types.IWord {
 	for {
-		word := pool[0]
+		word := listWord[0]
 		if sf.keywords.IsKey("PROCEDURE", word.Word()) {
-			pool = pool[1:]
-			pool = sf.getProcedure(proc, pool)
-			word = pool[0]
+			listWord = listWord[1:]
+			listWord = sf.getProcedure(proc, listWord)
+			word = listWord[0]
 		}
 		if !sf.keywords.IsKey("END", word.Word()) {
 			proc.AddWord(word)
-			pool = pool[1:]
+			listWord = listWord[1:]
 			continue
 		}
-		name := pool[1]
-		term := pool[2]
+		name := listWord[1]
+		term := listWord[2]
 		if name.Word() != proc.Name() && term.Word() != ";" {
 			proc.AddWord(word)
-			pool = pool[1:]
+			listWord = listWord[1:]
 			continue
 		}
 		// Это точно конец процедуры.
-		pool = pool[3:]
-		return pool
+		listWord = listWord[3:]
+		return listWord
 	}
 }
 

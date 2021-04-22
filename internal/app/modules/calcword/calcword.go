@@ -5,7 +5,7 @@ import (
 	"log"
 	"strings"
 
-	"github.com/prospero78/goOC/internal/app/scanner/word"
+	"github.com/prospero78/goOC/internal/types"
 )
 
 // TCalcWord -- операции по расчёту типа и значения слова
@@ -19,7 +19,7 @@ func New() *TCalcWord {
 }
 
 // RecognizeType -- распознаёт тип слова
-func (sf *TCalcWord) RecognizeType(word *word.TWord) (name, operation string) {
+func (sf *TCalcWord) RecognizeType(word types.IWord) (name, operation string) {
 	switch {
 	case word.IsInt(): // Если целое
 		word.SetType("INTEGER")

@@ -8,7 +8,6 @@ package module
 import (
 	"log"
 
-	"github.com/prospero78/goOC/internal/app/scanner/word"
 	"github.com/prospero78/goOC/internal/app/sectionset/module/begin"
 	"github.com/prospero78/goOC/internal/app/sectionset/module/consts"
 	"github.com/prospero78/goOC/internal/app/sectionset/module/consts/srcconst"
@@ -23,7 +22,7 @@ import (
 
 // TModule -- операции со словами модуля
 type TModule struct {
-	poolWord []*word.TWord      // пул слов модуля
+	listWord []types.IWord      // пул слов модуля
 	keywords types.IKeywords    // Пул допустимыз ключевых слов
 	name     types.AModule      // Имя модуля
 	imports  *imports.TImports  //  Секция импорта
@@ -37,7 +36,7 @@ type TModule struct {
 // New -- возвращает новый *TModule
 func New() *TModule {
 	return &TModule{
-		poolWord: make([]*word.TWord, 0),
+		listWord: make([]types.IWord, 0),
 		keywords: keywords.GetKeys(),
 		imports:  imports.New(),
 		consts:   consts.New(),
@@ -49,7 +48,7 @@ func New() *TModule {
 }
 
 // Set -- вырезает все слова модуля, возвращает слова за модулем
-func (sf *TModule) Set(poolWord []*word.TWord) (pool []*word.TWord, _len int) {
+func (sf *TModule) Set(poolWord []types.IWord) (pool []types.IWord, _len int) {
 	// Проверить наличие ключевого слова МОДУЛЬ, имени модуля и разделителя
 	module := poolWord[0]
 	if !sf.keywords.IsKey("MODULE", module.Word()) {
@@ -76,9 +75,9 @@ func (sf *TModule) Set(poolWord []*word.TWord) (pool []*word.TWord, _len int) {
 		if name == sf.name+"." {
 			poolWord = poolWord[2:]
 			// log.Printf("TModule.Set(): name=%q word=%v\n", sf.name, len(sf.poolWord))
-			return poolWord, len(sf.poolWord)
+			return poolWord, len(sf.listWord)
 		}
-		sf.poolWord = append(sf.poolWord, word)
+		sf.listWord = append(sf.listWord, word)
 		poolWord = poolWord[1:]
 	}
 	log.Panicf("TModule.Set(): not find end module\n")
@@ -87,21 +86,21 @@ func (sf *TModule) Set(poolWord []*word.TWord) (pool []*word.TWord, _len int) {
 
 // Split -- разделяет по требованию слова модуля по секциям
 func (sf *TModule) Split() {
-	poolWord := make([]*word.TWord, 0)
-	poolWord = append(poolWord, sf.poolWord...)
-	poolWord = sf.imports.Split(poolWord)
+	listWord := make([]types.IWord, 0)
+	listWord = append(listWord, sf.listWord...)
+	listWord = sf.imports.Split(listWord)
 	log.Printf("TModule.Split() %q imports=%v", sf.name, sf.imports.Len())
-	poolWord = sf.consts.Split(poolWord)
+	listWord = sf.consts.Split(listWord)
 	// log.Printf("TModule.Split(): const=%v\n", sf.consts.Len())
-	poolWord = sf.otypes.Split(poolWord)
+	listWord = sf.otypes.Split(listWord)
 	// log.Printf("TModule.Split(): types=%v\n", sf.otypes.Len())
-	poolWord = sf.vars.Split(poolWord)
+	listWord = sf.vars.Split(listWord)
 	// log.Printf("TModule.Split(): vars=%v\n", sf.vars.Len())
-	poolWord = sf.procs.Split(poolWord)
+	listWord = sf.procs.Split(listWord)
 	// log.Printf("TModule.Split(): procs=%v\n", sf.procs.Len())
-	poolWord = sf.begin.Split(poolWord)
-	if len(poolWord) != 0 {
-		log.Panicf("TModule.Split(): after BEGIN poolWord len(%v)!=0\n", len(poolWord))
+	listWord = sf.begin.Split(listWord)
+	if len(listWord) != 0 {
+		log.Panicf("TModule.Split(): after BEGIN poolWord len(%v)!=0\n", len(listWord))
 	}
 }
 

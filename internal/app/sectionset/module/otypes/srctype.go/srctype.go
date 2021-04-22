@@ -3,7 +3,6 @@ package srctype
 import (
 	"log"
 
-	"github.com/prospero78/goOC/internal/app/scanner/word"
 	"github.com/prospero78/goOC/internal/types"
 )
 
@@ -13,19 +12,19 @@ import (
 
 // TSrcType -- операции со словами типа из исходника
 type TSrcType struct {
-	word     *word.TWord
+	word     types.IWord
 	isExport bool
-	poolWord []*word.TWord // Слова описателя типа
+	listWord []types.IWord // Слова описателя типа
 }
 
 // New -- возвращает новый *TSrcType
-func New(wrd *word.TWord) *TSrcType {
+func New(wrd types.IWord) *TSrcType {
 	if wrd == nil {
 		log.Panicf("srctype.go/New(): wrd==nil\n")
 	}
 	st := &TSrcType{
 		word:     wrd,
-		poolWord: make([]*word.TWord, 0),
+		listWord: make([]types.IWord, 0),
 	}
 	return st
 }
@@ -38,16 +37,16 @@ func (sf *TSrcType) SetExport() {
 }
 
 // AddWord -- добавляет слово в описатель типа
-func (sf *TSrcType) AddWord(word *word.TWord) {
+func (sf *TSrcType) AddWord(word types.IWord) {
 	if word == nil {
 		log.Panicf("TSrcType.AddWord(): word==nil\n")
 	}
-	sf.poolWord = append(sf.poolWord, word)
+	sf.listWord = append(sf.listWord, word)
 }
 
 // Words -- возвращает хранимые слова типа
-func (sf *TSrcType) Words() []*word.TWord {
-	return sf.poolWord
+func (sf *TSrcType) Words() []types.IWord {
+	return sf.listWord
 }
 
 // Name -- возвращает имя типа

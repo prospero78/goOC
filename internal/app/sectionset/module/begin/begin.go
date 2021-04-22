@@ -7,7 +7,6 @@ package begin
 import (
 	"log"
 
-	"github.com/prospero78/goOC/internal/app/scanner/word"
 	"github.com/prospero78/goOC/internal/app/sectionset/module/keywords"
 	"github.com/prospero78/goOC/internal/types"
 )
@@ -15,34 +14,34 @@ import (
 // TBegin -- операци ис секцией BEGIN модуля
 type TBegin struct {
 	keywords types.IKeywords
-	poolWord []*word.TWord
+	listWord []types.IWord
 }
 
 // New -- возвращает новый *TBegin
 func New() *TBegin {
 	return &TBegin{
 		keywords: keywords.GetKeys(),
-		poolWord: make([]*word.TWord, 0),
+		listWord: make([]types.IWord, 0),
 	}
 }
 
 // Split -- вырезает слова модуля секции BEGIN. Слов остаться не должно.
-func (sf *TBegin) Split(pool []*word.TWord) []*word.TWord {
+func (sf *TBegin) Split(listWord []types.IWord) []types.IWord {
 	// Проверить, что есть секция BEGIN
-	sec := pool[0]
+	sec := listWord[0]
 	if !sf.keywords.IsKey("BEGIN", sec.Word()) {
-		return pool
+		return listWord
 	}
-	pool = pool[1:]
-	for len(pool) > 1 {
-		sf.poolWord = append(sf.poolWord, pool[0])
-		pool = pool[1:]
+	listWord = listWord[1:]
+	for len(listWord) > 1 {
+		sf.listWord = append(sf.listWord, listWord[0])
+		listWord = listWord[1:]
 	}
 	// Проверить, что последнее слово "END"
-	end := pool[0]
+	end := listWord[0]
 	if !sf.keywords.IsKey("END", end.Word()) {
 		log.Panicf("TBegin.Split(): word(%v)!='end'\n", end.Word())
 	}
-	pool = pool[1:]
-	return pool
+	listWord = listWord[1:]
+	return listWord
 }

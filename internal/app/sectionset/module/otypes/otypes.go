@@ -7,7 +7,6 @@ package otypes
 import (
 	"log"
 
-	"github.com/prospero78/goOC/internal/app/scanner/word"
 	"github.com/prospero78/goOC/internal/app/sectionset/module/keywords"
 	"github.com/prospero78/goOC/internal/types"
 
@@ -29,27 +28,27 @@ func New() *TOtypes {
 }
 
 // Split -- вырезает слова секции типов, остаток возвращает
-func (sf *TOtypes) Split(pool []*word.TWord) []*word.TWord {
+func (sf *TOtypes) Split(listWord []types.IWord) []types.IWord {
 	// Убедиться, что есть секция типов
-	word := pool[0]
+	word := listWord[0]
 	if !sf.keywords.IsKey("TYPE", word.Word()) {
-		return pool
+		return listWord
 	}
-	pool = pool[1:]
-	for len(pool) > 4 {
+	listWord = listWord[1:]
+	for len(listWord) > 4 {
 		// Получить слова типа, признак: <; name = >
-		for len(pool) > 0 {
-			word := pool[0]
+		for len(listWord) > 0 {
+			word := listWord[0]
 			if sf.keywords.IsKey("VAR", word.Word()) {
-				return pool
+				return listWord
 			}
 			if sf.keywords.IsKey("PROCEDURE", word.Word()) {
-				return pool
+				return listWord
 			}
 			if sf.keywords.IsKey("BEGIN", word.Word()) {
-				return pool
+				return listWord
 			}
-			pool = sf.fillTypes(pool)
+			listWord = sf.fillTypes(listWord)
 		}
 	}
 	log.Panicf("TOtypes.Split(): not have end for TYPE\n")
@@ -57,100 +56,100 @@ func (sf *TOtypes) Split(pool []*word.TWord) []*word.TWord {
 }
 
 // Заполняет один тип, возвращает остаток
-func (sf *TOtypes) fillTypes(pool []*word.TWord) []*word.TWord {
-	name := pool[0] // Проверить на разделитель
+func (sf *TOtypes) fillTypes(listWord []types.IWord) []types.IWord {
+	name := listWord[0] // Проверить на разделитель
 	otp := srctype.New(name)
 	sf.poolType = append(sf.poolType, otp)
 	if !name.IsName() {
 		log.Panicf("TOtypes.fillTypes(): bad name(%v) for type\n", name.Word())
 	}
-	pool = pool[1:]
+	listWord = listWord[1:]
 	isRec := false
 	for {
-		pool = sf.checkExport(otp, pool)
-		pool = sf.checkAsign(pool)
-		pool, isRec = sf.checkRecord(otp, pool)
+		listWord = sf.checkExport(otp, listWord)
+		listWord = sf.checkAsign(listWord)
+		listWord, isRec = sf.checkRecord(otp, listWord)
 		if isRec {
-			return pool
+			return listWord
 		}
-		term := pool[1]
+		term := listWord[1]
 		if term.Word() != ";" {
-			otp.AddWord(pool[0])
-			pool = pool[1:]
+			otp.AddWord(listWord[0])
+			listWord = listWord[1:]
 			continue
 		}
-		nameNext := pool[2]
+		nameNext := listWord[2]
 		if !nameNext.IsName() {
 			log.Panicf("TOtypes.fiilTypes(): nameNext=%q\n", nameNext.Word())
 		}
-		term = pool[3]
+		term = listWord[3]
 		if !(term.Word() == "=" || term.Word() == "*") {
 			// log.Panicf("TOtypes.fiilTypes(): term=%q\n", term.Word())
-			otp.AddWord(pool[0])
-			otp.AddWord(pool[1])
-			otp.AddWord(pool[2])
-			otp.AddWord(pool[3])
-			pool = pool[4:]
+			otp.AddWord(listWord[0])
+			otp.AddWord(listWord[1])
+			otp.AddWord(listWord[2])
+			otp.AddWord(listWord[3])
+			listWord = listWord[4:]
 			continue
 		}
-		otp.AddWord(pool[0])
-		pool = pool[2:] // отбросить слово типа вместе с окончательным разделителем
-		return pool
+		otp.AddWord(listWord[0])
+		listWord = listWord[2:] // отбросить слово типа вместе с окончательным разделителем
+		return listWord
 	}
 }
 
 // проверяет наличие экспорта в списке слов
-func (sf *TOtypes) checkExport(otp *srctype.TSrcType, pool []*word.TWord) []*word.TWord {
-	exp := pool[0]
+func (sf *TOtypes) checkExport(otp *srctype.TSrcType, listWord []types.IWord) []types.IWord {
+	exp := listWord[0]
 	if exp.Word() == "*" {
 		otp.SetExport()
-		pool = pool[1:]
+		listWord = listWord[1:]
 	}
-	return pool
+	return listWord
 }
 
 // Проверяет наличие присвоения в указанной позиции
-func (sf *TOtypes) checkAsign(pool []*word.TWord) (pl []*word.TWord) {
-	assign := pool[0]
+func (sf *TOtypes) checkAsign(listWord []types.IWord) (pl []types.IWord) {
+	assign := listWord[0]
 	if assign.Word() != "=" { // Признак определения типа
 		// log.Panicf("TOtypes.checkAsign(): bad assign(%v) for type\n", assign.Word())
-		return pool
+		return listWord
 	}
 	// Получить описатель типа
-	pool = pool[1:]
-	return pool
+	listWord = listWord[1:]
+	return listWord
 }
 
 // Проверяет наличие слова RECORD (если есть -- добавляет всё до <END>)
-func (sf *TOtypes) checkRecord(otp *srctype.TSrcType, pool []*word.TWord) (pl []*word.TWord, res bool) {
-	record := pool[0]
+func (sf *TOtypes) checkRecord(otp *srctype.TSrcType, listWord []types.IWord) (pl []types.IWord, res bool) {
+	record := listWord[0]
 	if !sf.keywords.IsKey("RECORD", record.Word()) {
-		return pool, false
+		return listWord, false
 	}
-	otp.AddWord(pool[0])
-	pool = pool[1:]
+	otp.AddWord(listWord[0])
+	listWord = listWord[1:]
 	// Это запись, добавляем все до <END;>, если опять встретится RECORD
 	// вызовем рекурсивно себя
 	isRec := false
 	for {
-		word := pool[0]
+		word := listWord[0]
 		if sf.keywords.IsKey("RECORD", word.Word()) { // Рекурсивный вызов
-			pool, isRec = sf.checkRecord(otp, pool)
+			listWord, isRec = sf.checkRecord(otp, listWord)
 			if isRec {
-				word = pool[0]
+				word = listWord[0]
 			}
 		}
 		if !sf.keywords.IsKey("END", word.Word()) {
-			otp.AddWord(pool[0])
-			pool = pool[1:]
+			otp.AddWord(listWord[0])
+			listWord = listWord[1:]
 			continue
 		}
 		// Если конец -- проверить разделитель
-		term := pool[1]
+		term := listWord[1]
 		if term.Word() == ";" {
-			otp.AddWord(pool[0])
-			pool = pool[2:]
-			return pool, true
+			otp.AddWord(listWord[0])
+			listWord = listWord[2:]
+			return listWord, true
 		}
 		log.Panicf("TOtypes.checkRecord(): unknown word=%+v\n", term)
 	}

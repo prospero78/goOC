@@ -3,7 +3,6 @@ package vars
 import (
 	"log"
 
-	"github.com/prospero78/goOC/internal/app/scanner/word"
 	"github.com/prospero78/goOC/internal/app/sectionset/module/keywords"
 	"github.com/prospero78/goOC/internal/app/sectionset/module/vars/srcvar"
 	"github.com/prospero78/goOC/internal/types"
@@ -28,126 +27,126 @@ func New() *TVars {
 }
 
 // Split -- вырезает слова из секции переменных
-func (sf *TVars) Split(pool []*word.TWord) []*word.TWord {
+func (sf *TVars) Split(listWord []types.IWord) []types.IWord {
 	// Убедиться, что это секция переменных
-	keyVar := pool[0]
+	keyVar := listWord[0]
 	if !sf.keywords.IsKey("VAR", keyVar.Word()) {
-		return pool
+		return listWord
 	}
 	// В цикле перебрать все переменные
-	pool = pool[1:]
+	listWord = listWord[1:]
 	isRec := false
-	for len(pool) > 0 {
-		name := pool[0]
+	for len(listWord) > 0 {
+		name := listWord[0]
 		if !name.IsName() {
 			log.Panicf("TVars.Split(): word(%v) must by name\n", name.Word())
 		}
 		if sf.keywords.IsKey("PROCEDURE", name.Word()) {
-			return pool
+			return listWord
 		}
 		if sf.keywords.IsKey("BEGIN", name.Word()) {
-			return pool
+			return listWord
 		}
-		pool = pool[1:]
+		listWord = listWord[1:]
 		svar := srcvar.New(name)
-		pool = sf.checkExport(svar, pool)
-		pool = sf.checkDefine(pool)
-		pool, isRec = sf.checkRecord(svar, pool)
+		listWord = sf.checkExport(svar, listWord)
+		listWord = sf.checkDefine(listWord)
+		listWord, isRec = sf.checkRecord(svar, listWord)
 		if isRec {
 			sf.poolVar = append(sf.poolVar, svar)
 			continue
 		}
 		isSimple := false
-		if pool, isSimple = sf.findVarWord(svar, pool); isSimple {
-			if pool[1].Word() == ";" {
-				pool = pool[2:]
+		if listWord, isSimple = sf.findVarWord(svar, listWord); isSimple {
+			if listWord[1].Word() == ";" {
+				listWord = listWord[2:]
 				sf.poolVar = append(sf.poolVar, svar)
 				continue
 			}
 		}
 		sf.poolVar = append(sf.poolVar, svar)
 		// Могут просто закончиться переменные и начаться процедуры
-		if pool[0].Word() == ";" {
-			pool = pool[1:]
+		if listWord[0].Word() == ";" {
+			listWord = listWord[1:]
 		}
 	}
-	return pool
+	return listWord
 }
 
 // Ищет все слова переменной, если выражение простое -- возвращает признак
-func (sf *TVars) findVarWord(svar *srcvar.TSrcVar, pool []*word.TWord) (pl []*word.TWord, isSimple bool) {
-	term := pool[1]
+func (sf *TVars) findVarWord(svar *srcvar.TSrcVar, listWord []types.IWord) (pl []types.IWord, isSimple bool) {
+	term := listWord[1]
 	isRec := false
 	if term.Word() == ";" {
-		svar.AddWord(pool[0])
-		pool = pool[1:]
-		return pool, true
+		svar.AddWord(listWord[0])
+		listWord = listWord[1:]
+		return listWord, true
 	}
 	for term.Word() != ";" {
-		pool, isRec = sf.checkRecord(svar, pool)
+		listWord, isRec = sf.checkRecord(svar, listWord)
 		if isRec {
-			return pool, false
+			return listWord, false
 		}
-		svar.AddWord(pool[0])
-		pool = pool[1:]
-		term = pool[0]
+		svar.AddWord(listWord[0])
+		listWord = listWord[1:]
+		term = listWord[0]
 		continue
 	}
-	return pool, false
+	return listWord, false
 }
 
 // проверяет наличие экспорта в списке слов
-func (sf *TVars) checkExport(svar *srcvar.TSrcVar, pool []*word.TWord) []*word.TWord {
-	exp := pool[0]
+func (sf *TVars) checkExport(svar *srcvar.TSrcVar, listWord []types.IWord) []types.IWord {
+	exp := listWord[0]
 	if exp.Word() == "*" {
 		svar.SetExport()
-		pool = pool[1:]
+		listWord = listWord[1:]
 	}
-	return pool
+	return listWord
 }
 
 // Проверяет наличие присвоения в указанной позиции
-func (sf *TVars) checkDefine(pool []*word.TWord) (pl []*word.TWord) {
-	define := pool[0]
+func (sf *TVars) checkDefine(listWord []types.IWord) (pl []types.IWord) {
+	define := listWord[0]
 	if define.Word() != ":" { // Признак определения типа
 		// log.Panicf("TVars.checkAsign(): bad assign(%v) for type\n", assign.Word())
-		return pool
+		return listWord
 	}
 	// Получить описатель типа
-	pool = pool[1:]
-	return pool
+	listWord = listWord[1:]
+	return listWord
 }
 
 // Проверяет наличие слова RECORD (если есть -- добавляет всё до <END>)
-func (sf *TVars) checkRecord(svar *srcvar.TSrcVar, pool []*word.TWord) (pl []*word.TWord, res bool) {
-	record := pool[0]
+func (sf *TVars) checkRecord(svar *srcvar.TSrcVar, listWord []types.IWord) (pl []types.IWord, res bool) {
+	record := listWord[0]
 	if !sf.keywords.IsKey("RECORD", record.Word()) {
-		return pool, false
+		return listWord, false
 	}
-	svar.AddWord(pool[0])
-	pool = pool[1:]
+	svar.AddWord(listWord[0])
+	listWord = listWord[1:]
 	// Это запись, добавляем все до <END;>, если опять встретится RECORD
 	// вызовем рекурсивно себя
 	isRec := false
 	for {
-		word := pool[0]
+		word := listWord[0]
 		if sf.keywords.IsKey("RECORD", word.Word()) { // Рекурсивный вызов
-			pool, isRec = sf.checkRecord(svar, pool)
+			listWord, isRec = sf.checkRecord(svar, listWord)
 			if isRec {
-				word = pool[0]
+				word = listWord[0]
 			}
 		}
 		if !sf.keywords.IsKey("END", word.Word()) {
-			svar.AddWord(pool[0])
-			pool = pool[1:]
+			svar.AddWord(listWord[0])
+			listWord = listWord[1:]
 			continue
 		}
 		// Если конец -- проверить разделитель
-		term := pool[1]
+		term := listWord[1]
 		if term.Word() == ";" {
-			svar.AddWord(pool[0])
-			pool = pool[2:]
-			return pool, true
+			svar.AddWord(listWord[0])
+			listWord = listWord[2:]
+			return listWord, true
 		}
 		log.Panicf("TVars.checkRecord(): unknown word=%+v\n", term)
 	}
