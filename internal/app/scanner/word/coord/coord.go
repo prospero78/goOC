@@ -4,8 +4,8 @@ package coord
 import (
 	"fmt"
 
-	"github.com/prospero78/goOC/internal/app/scanner/word/litpos"
-	"github.com/prospero78/goOC/internal/app/scanner/word/numstr"
+	"github.com/prospero78/goOC/internal/app/scanner/word/coord/litpos"
+	"github.com/prospero78/goOC/internal/app/scanner/word/coord/numstr"
 	"github.com/prospero78/goOC/internal/types"
 )
 

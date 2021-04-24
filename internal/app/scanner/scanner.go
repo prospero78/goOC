@@ -6,7 +6,7 @@ package scanner
 
 import (
 	// "fmt"
-	"log"
+	"fmt"
 	"strings"
 
 	"github.com/prospero78/goOC/internal/app/scanner/isletter"
@@ -63,7 +63,7 @@ func (sf *TScanner) Scan(nameMod types.AModule, strSource string) {
 }
 
 // Сканирует каждую строку, разбивает на слова
-func (sf *TScanner) scanString(strSource string) {
+func (sf *TScanner) scanString(strSource string) (err error) {
 	sf.listRune = []rune(strSource)
 	for len(sf.listRune) > 0 {
 		lit := string(sf.listRune[0])
@@ -92,27 +92,34 @@ func (sf *TScanner) scanString(strSource string) {
 		if sf.isString() { // Проверка на строку
 			continue
 		}
-		if sf.isBracket() { // Проверка на скобки
+		isBracket, err := sf.isBracket()
+		if err != nil {
+			return fmt.Errorf("TScanner.scanString(): при проверке круглых скобок\n\t%w", err)
+		}
+		if isBracket { // Проверка на скобки
 			continue
 		}
-		log.Panicf("TScanner.scanString(): неизвестная литера (%q)\n", string(sf.listRune[0]))
+		return fmt.Errorf("TScanner.scanString(): неизвестная литера (%q)\n", string(sf.listRune[0]))
 	}
+	return nil
 }
 
 // Проверяет, что литера является скобкой
-func (sf *TScanner) isBracket() bool {
+func (sf *TScanner) isBracket() (isBracket bool, err error) {
 	isExp := false
 	lit := string(sf.listRune[0])
 	if strings.Contains("()", lit) {
 		sf.pos++
-		sf.addWord(types.AWord(lit))
+		if err = sf.addWord(types.AWord(lit)); err != nil {
+			return false, fmt.Errorf("TScabber.isBracket(): in add round bracket\n\t%w", err)
+		}
 		isExp = true
 	}
 	if isExp {
 		sf.listRune = sf.listRune[1:]
-		return true
+		return true, nil
 	}
-	return false
+	return false, nil
 }
 
 // Выбирает закрытие комментария
@@ -289,12 +296,13 @@ func (sf *TScanner) getWord() {
 }
 
 // Добавляет слово в пул слов
-func (sf *TScanner) addWord(wrd types.AWord) {
+func (sf *TScanner) addWord(wrd types.AWord) error {
 	word, err := word.New(sf.num, sf.pos, wrd)
 	if err != nil {
-		logrus.WithError(err).Panicf("TScanner.addWord(): in create word")
+		return fmt.Errorf("TScanner.addWord(): in create word\n\t%w", err)
 	}
 	sf.listWord = append(sf.listWord, word)
+	return err
 }
 
 // ListWord -- возвращает список слов после обработки
