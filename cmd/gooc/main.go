@@ -10,9 +10,9 @@ import (
 )
 
 var (
-	vers  = "0.0.8"
-	build = "0100"
-	data  = "2021-04-22 20:08:33"
+	vers  = "0.0.9"
+	build = "0102"
+	data  = "2021-04-24 08:14:24"
 )
 
 func main() {
