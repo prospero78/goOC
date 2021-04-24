@@ -23,6 +23,16 @@ func New(pos types.APos) (_pos types.IPos, err error) {
 	return _pos, nil
 }
 
+// Reset -- сбрасывает значение позиции
+func (sf *TPos) Reset() {
+	sf.val = 0
+}
+
+// Inc -- увеличивает значение на +1
+func (sf *TPos) Inc() {
+	sf.val++
+}
+
 // Get -- возвращает хранимое значение кординаты
 func (sf *TPos) Get() types.APos {
 	return sf.val
