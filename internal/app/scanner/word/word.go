@@ -31,7 +31,7 @@ type TWord struct {
 
 // New -- возвращает новый *TWord
 func New(numStr types.ANumStr, pos types.APos, strWord types.AWord) (*TWord, error) {
-	_coord, err := coord.New(pos, numStr)
+	_coord, err := coord.New(numStr, pos)
 	if err != nil {
 		return nil, fmt.Errorf("word.go/New(): in create (ICoord), err=%w", err)
 	}

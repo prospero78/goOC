@@ -16,7 +16,7 @@ type TCoord struct {
 }
 
 // New -- возвращает новый ICoord
-func New(pos types.APos, numStr types.ANumStr) (types.ICoord, error) {
+func New(numStr types.ANumStr, pos types.APos) (types.ICoord, error) {
 	_pos, err := litpos.New(pos)
 	if err != nil {
 		return nil, fmt.Errorf("coord.go/New(): in create pos\n\t%w", err)
@@ -49,7 +49,7 @@ func (sf *TCoord) SetNumStr(numStr types.ANumStr) error {
 }
 
 // Set -- устанавливает координаты
-func (sf *TCoord) Set(pos types.APos, numStr types.ANumStr) error {
+func (sf *TCoord) Set(numStr types.ANumStr, pos types.APos) error {
 	if err := sf.pos.Set(pos); err != nil {
 		return fmt.Errorf("TCoord.Set(): in set pos\n\t%w", err)
 	}

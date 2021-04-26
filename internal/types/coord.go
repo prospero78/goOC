@@ -46,7 +46,7 @@ type ICoordFix interface {
 type ICoord interface {
 	ICoordFix
 	// Set -- устанавливает координаты
-	Set(APos, ANumStr) error
+	Set(ANumStr, APos) error
 	// SetPos -- устанавливает позицию литеры
 	SetPos(APos) error
 	// SetNumStr -- устанавливает номер строки
