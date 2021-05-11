@@ -1,2 +1,4 @@
 *.exe
 /oc
+/goc
+/guioc
