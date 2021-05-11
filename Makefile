@@ -5,6 +5,13 @@ run.app:
 	cd ./bin && \
 	export DEBUG=true && \
 	./oc ./src/Main.o7
+run.gui:
+	clear
+	go fmt ./...
+	go build -o ./bin/guioc ./cmd/guioc/main.go
+	cd ./bin && \
+	export DEBUG=true && \
+	./guioc ./src/Main.o7
 mod:
 	clear
 	go fmt ./...
