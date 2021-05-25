@@ -28,7 +28,6 @@ func New() *TWinAbout {
 
 Лицензия: BSD-2`
 	txtAbout := widget.NewLabel(strAbout)
-	txtAbout.SetText(strAbout)
 	boxTop := container.New(layout.NewAdaptiveGridLayout(1), txtAbout)
 	// txtAbout.Resize(fyne.NewSize(320, 240))
 	wa.btnHide = widget.NewButton("Закрыть", wa.Hide)
