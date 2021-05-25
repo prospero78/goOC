@@ -20,14 +20,17 @@ func New() *TWinAbout {
 		winAbout: fyne.CurrentApp().NewWindow("О программе"),
 	}
 	wa.winAbout.Resize(fyne.Size{Width: 320, Height: 240})
-	txtAbout := widget.NewMultiLineEntry()
-	txtAbout.Text = `Программа создана в рамках проекта по созданию Оберон-компилятора
+	strAbout := `Программа создана в рамках проекта по созданию Оберон-компилятора
 на golang.
+
 
 2021 (c) prospero78su
 
 Лицензия: BSD-2`
-	boxTop := container.New(layout.NewMaxLayout(), txtAbout)
+	txtAbout := widget.NewLabel(strAbout)
+	txtAbout.SetText(strAbout)
+	boxTop := container.New(layout.NewAdaptiveGridLayout(1), txtAbout)
+	// txtAbout.Resize(fyne.NewSize(320, 240))
 	wa.btnHide = widget.NewButton("Закрыть", wa.Hide)
 	layBottom := layout.NewBorderLayout(nil, wa.btnHide, nil, nil)
 	boxBottom := container.New(layBottom, wa.btnHide)
