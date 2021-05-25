@@ -24,7 +24,7 @@ func New() *TGui {
 func (sf *TGui) Run() {
 	sf.app = app.New()
 	sf.winAbout = winabout.New()
-	sf.winMain = winmain.New(sf.app, sf.winAbout.Show)
+	sf.winMain = winmain.New(sf.app, sf.winAbout.Show, sf.app.Quit)
 	sf.winMain.Show()
 	sf.app.Run()
 }
